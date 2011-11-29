@@ -264,6 +264,11 @@ case class Hasher ( private val value: Array[Byte] ) {
     def this ( value: String ) = this( value.getBytes )
 
     /**
+     * Adds in a salt to this value
+     */
+    def salt ( salt: String ) = Hasher( value ++ salt.getBytes )
+
+    /**
      * Generates an MD5 hash of this string
      */
     def md5: Hash = Hasher.md5(value)

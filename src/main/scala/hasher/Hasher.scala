@@ -1,6 +1,8 @@
 package hasher
 
 import java.security.MessageDigest
+import java.util.zip.CRC32
+import java.nio.ByteBuffer
 
 import javax.xml.bind.DatatypeConverter
 
@@ -113,6 +115,30 @@ object Algo extends Enumeration {
     }
 
     /**
+     * Implements CRC32 checksums
+     */
+    trait CRC32Algo extends Algo {
+
+        /** {@inheritDoc} */
+        override def hash ( value: Array[Byte] ): Hash = {
+            val hash = new CRC32
+            hash.reset()
+            hash.update( value )
+
+            val result = hash.getValue()
+
+            // Convert the int returned by CRC32 into a byte list
+            val bytes = ByteBuffer.allocate(8).putLong( result ).array
+
+            // Trim any leading zeroes off of the byte list
+            val trimmed = bytes.dropWhile( _ == 0 ).toArray
+
+            Hash( this, trimmed )
+        }
+
+    }
+
+    /**
      * The base class to unite the enum values with the Algo trait
      */
     sealed case class AlgoType ( val name: String ) extends Val
@@ -121,6 +147,7 @@ object Algo extends Enumeration {
     val SHA1 = new AlgoType("SHA-1") with MessageDigestAlgo
     val SHA256 = new AlgoType("SHA-256") with MessageDigestAlgo
     val BCrypt = new AlgoType("BCrypt") with BCryptAlgo
+    val CRC32 = new AlgoType("CRC32") with CRC32Algo
 }
 
 
@@ -200,6 +227,16 @@ object Hasher {
     def sha256 ( value: Array[Byte] ): Hash = Algo.SHA256.hash( value )
 
     /**
+     * Generates a crc32 hash of a string
+     */
+    def crc32 ( value: String ): Hash = Algo.CRC32.hash( value )
+
+    /**
+     * Generates a crc32 hash of a byte array
+     */
+    def crc32 ( value: Array[Byte] ): Hash = Algo.CRC32.hash( value )
+
+    /**
      * Generates a bcrypt hash of a string
      */
     def bcrypt ( value: String ): Hash = Algo.BCrypt.hash( value )
@@ -255,6 +292,16 @@ case class Hasher ( private val value: Array[Byte] ) {
      * Determines whether this value sha256s to a given hash
      */
     def sha256sTo( hash: String ): Boolean = Algo.SHA256.hashesTo(value, hash)
+
+    /**
+     * Generates a crc32 hash of this string
+     */
+    def crc32: Hash = Hasher.crc32(value)
+
+    /**
+     * Determines whether this value crc32s to a given hash
+     */
+    def crc32sTo( hash: String ): Boolean = Algo.CRC32.hashesTo(value, hash)
 
     /**
      * Generates a bcrypt hash of this string

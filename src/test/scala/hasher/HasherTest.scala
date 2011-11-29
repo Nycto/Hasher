@@ -20,6 +20,8 @@ class HasherTest extends Specification {
         "aa0c55ad015a3bf4f1b2b0" +
         "b822cd15d6c15b0f00a08"
 
+    val crc32ed = "d87f7e0c"
+
     val bcrypted =
         "24326124313024755658345747674b" +
         "524749445643414b5941655a494f41" +
@@ -49,6 +51,7 @@ class HasherTest extends Specification {
         "be MD5 hashable " in { str.md5.hex must_== md5ed }
         "be SHA-1 hashable " in { str.sha1.hex must_== sha1ed }
         "be SHA-256 hashable " in { str.sha256.hex must_== sha256ed }
+        "be CRC32 hashable " in { str.crc32.hex must_== crc32ed }
 
         "be BCrypt hashable " in {
             str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
@@ -73,6 +76,13 @@ class HasherTest extends Specification {
             (str sha256sTo "AHashThatIsWrong") must beFalse
             (str sha256sTo "SomeHashThatIsWrong") must beFalse
             (str sha256sTo "") must beFalse
+        }
+
+        "be comparable to a CRC32 Hash" in {
+            (str crc32sTo crc32ed) must beTrue
+            (str crc32sTo "AHashThatIsWrong") must beFalse
+            (str crc32sTo "SomeHashThatIsWrong") must beFalse
+            (str crc32sTo "") must beFalse
         }
 
         "be comparable to a BCrypt Hash" in {
@@ -104,6 +114,7 @@ class HasherTest extends Specification {
         "md5 hash strings" in { Hasher.md5( str ).hex must_== md5ed }
         "sha1 hash strings" in { Hasher.sha1( str ).hex must_== sha1ed }
         "sha256 hash strings" in { Hasher.sha256( str ).hex must_== sha256ed }
+        "crc32 hash strings" in { Hasher.crc32( str ).hex must_== crc32ed }
 
         "BCrypt hash strings" in {
             Hasher.bcrypt(str).hex must beMatching("^[a-zA-Z0-9]{120}$")
@@ -112,6 +123,7 @@ class HasherTest extends Specification {
         "md5 hash byte arrays" in { Hasher.md5(bytes).hex must_== md5ed }
         "sha1 hash byte arrays" in { Hasher.sha1(bytes).hex must_== sha1ed }
         "sha256 hash byte arrays" in { Hasher.sha256(bytes).hex must_== sha256ed }
+        "crc32 hash byte arrays" in { Hasher.crc32(bytes).hex must_== crc32ed }
 
         "BCrypt hash byte arrays" in {
             Hasher.bcrypt(bytes).hex must beMatching("^[a-zA-Z0-9]{120}$")

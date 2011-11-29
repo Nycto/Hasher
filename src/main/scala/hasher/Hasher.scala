@@ -4,6 +4,8 @@ import java.security.MessageDigest
 
 import javax.xml.bind.DatatypeConverter
 
+import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
+
 /**
  * A list of implicit conversion methods
  */
@@ -89,6 +91,28 @@ object Algo extends Enumeration {
     }
 
     /**
+     * Implements BCrypt hashing
+     */
+    trait BCryptAlgo extends Algo {
+
+        /** {@inheritDoc} */
+        override def hash ( value: Array[Byte] ): Hash = {
+            val str = new String(value)
+            Hash( this, jBCrypt.hashpw(str, jBCrypt.gensalt()).getBytes )
+        }
+
+        /** {@inheritDoc} */
+        override def hashesTo ( plain: Array[Byte], vs: Hash ): Boolean = {
+            // jBCrypt chokes on empty hashes, so we compensate
+            new String(vs.bytes) match {
+                case "" => false
+                case str => jBCrypt.checkpw( new String(plain), str )
+            }
+        }
+
+    }
+
+    /**
      * The base class to unite the enum values with the Algo trait
      */
     sealed case class AlgoType ( val name: String ) extends Val
@@ -96,6 +120,7 @@ object Algo extends Enumeration {
     val MD5 = new AlgoType("MD5") with MessageDigestAlgo
     val SHA1 = new AlgoType("SHA-1") with MessageDigestAlgo
     val SHA256 = new AlgoType("SHA-256") with MessageDigestAlgo
+    val BCrypt = new AlgoType("BCrypt") with BCryptAlgo
 }
 
 
@@ -175,6 +200,16 @@ object Hasher {
     def sha256 ( value: Array[Byte] ): Hash = Algo.SHA256.hash( value )
 
     /**
+     * Generates a bcrypt hash of a string
+     */
+    def bcrypt ( value: String ): Hash = Algo.BCrypt.hash( value )
+
+    /**
+     * Generates a bcrypt hash of a byte array
+     */
+    def bcrypt ( value: Array[Byte] ): Hash = Algo.BCrypt.hash( value )
+
+    /**
      * Builds a Hasher from a string
      */
     def apply ( from: String ): Hasher = new Hasher(from)
@@ -199,8 +234,7 @@ case class Hasher ( private val value: Array[Byte] ) {
     /**
      * Determines whether this value md5s to a given hash
      */
-    def md5sTo( hash: String ): Boolean
-        = Algo.MD5.hashesTo(value, hash)
+    def md5sTo( hash: String ): Boolean = Algo.MD5.hashesTo(value, hash)
 
     /**
      * Generates a sha1 hash of this string
@@ -210,8 +244,7 @@ case class Hasher ( private val value: Array[Byte] ) {
     /**
      * Determines whether this value sha1s to a given hash
      */
-    def sha1sTo( hash: String ): Boolean
-        = Algo.SHA1.hashesTo(value, hash)
+    def sha1sTo( hash: String ): Boolean = Algo.SHA1.hashesTo(value, hash)
 
     /**
      * Generates a sha256 hash of this string
@@ -221,8 +254,17 @@ case class Hasher ( private val value: Array[Byte] ) {
     /**
      * Determines whether this value sha256s to a given hash
      */
-    def sha256sTo( hash: String ): Boolean
-        = Algo.SHA256.hashesTo(value, hash)
+    def sha256sTo( hash: String ): Boolean = Algo.SHA256.hashesTo(value, hash)
+
+    /**
+     * Generates a bcrypt hash of this string
+     */
+    def bcrypt: Hash = Hasher.bcrypt(value)
+
+    /**
+     * Determines whether this value bcrypts to a given hash
+     */
+    def bcryptsTo( hash: String ): Boolean = Algo.BCrypt.hashesTo(value, hash)
 
 }
 

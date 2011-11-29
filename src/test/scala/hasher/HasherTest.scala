@@ -20,6 +20,12 @@ class HasherTest extends Specification {
         "aa0c55ad015a3bf4f1b2b0" +
         "b822cd15d6c15b0f00a08"
 
+    val bcrypted =
+        "24326124313024755658345747674b" +
+        "524749445643414b5941655a494f41" +
+        "4b4f3468543759437053796167356a" +
+        "2f5a365261377253334b636b796c32"
+
 
     "A Hash" should {
 
@@ -44,22 +50,36 @@ class HasherTest extends Specification {
         "be SHA-1 hashable " in { str.sha1.hex must_== sha1ed }
         "be SHA-256 hashable " in { str.sha256.hex must_== sha256ed }
 
+        "be BCrypt hashable " in {
+            str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+
         "be comparable to an MD5 Hash" in {
             (str md5sTo md5ed) must beTrue
             (str md5sTo "AHashThatIsWrong") must beFalse
             (str md5sTo "SomeHashThatIsWrong") must beFalse
+            (str md5sTo "") must beFalse
         }
 
         "be comparable to a SHA1 Hash" in {
             (str sha1sTo sha1ed) must beTrue
             (str sha1sTo "AHashThatIsWrong") must beFalse
             (str sha1sTo "SomeHashThatIsWrong") must beFalse
+            (str sha1sTo "") must beFalse
         }
 
         "be comparable to a SHA256 Hash" in {
             (str sha256sTo sha256ed) must beTrue
             (str sha256sTo "AHashThatIsWrong") must beFalse
             (str sha256sTo "SomeHashThatIsWrong") must beFalse
+            (str sha256sTo "") must beFalse
+        }
+
+        "be comparable to a BCrypt Hash" in {
+            (str bcryptsTo bcrypted) must beTrue
+            (str bcryptsTo "AHashThatIsWrong") must beFalse
+            (str bcryptsTo "SomeHashThatIsWrong") must beFalse
+            (str bcryptsTo "") must beFalse
         }
 
     }
@@ -71,6 +91,10 @@ class HasherTest extends Specification {
         "be MD5 hashable " in { bytes.md5.hex must_== md5ed }
         "be SHA-1 hashable " in { bytes.sha1.hex must_== sha1ed }
         "be SHA-256 hashable " in { bytes.sha256.hex must_== sha256ed }
+
+        "be BCrypt hashable " in {
+            bytes.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
     }
 
     "The static methods" should {
@@ -81,9 +105,17 @@ class HasherTest extends Specification {
         "sha1 hash strings" in { Hasher.sha1( str ).hex must_== sha1ed }
         "sha256 hash strings" in { Hasher.sha256( str ).hex must_== sha256ed }
 
+        "BCrypt hash strings" in {
+            Hasher.bcrypt(str).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+
         "md5 hash byte arrays" in { Hasher.md5(bytes).hex must_== md5ed }
         "sha1 hash byte arrays" in { Hasher.sha1(bytes).hex must_== sha1ed }
         "sha256 hash byte arrays" in { Hasher.sha256(bytes).hex must_== sha256ed }
+
+        "BCrypt hash byte arrays" in {
+            Hasher.bcrypt(bytes).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
     }
 
 }

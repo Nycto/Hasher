@@ -2,27 +2,88 @@ package test.scala.hasher
 
 import org.specs2.mutable._
 
-import hasher.Hasher._
-
 class HasherTest extends Specification {
+
+
+    // The data being hashed
+    val str: String = "test"
+    val bytes: Array[Byte] = str.getBytes
+
+
+    // These values represent the string "test" as various hashes
+    val md5ed = "098f6bcd4621d373cade4e832627b4f6"
+
+    val sha1ed = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+
+    val sha256ed =
+        "9f86d081884c7d659a2fe" +
+        "aa0c55ad015a3bf4f1b2b0" +
+        "b822cd15d6c15b0f00a08"
+
+
+    "A Hash" should {
+
+        import hasher.Implicits._
+
+        "convert to a string implicitly" in {
+            val hash: String = str.md5
+            hash must_== md5ed
+        }
+
+        "convert to a byte array implicitly" in {
+            val hash: Array[Byte] = str.sha1
+            ok
+        }
+    }
 
     "A String" should {
 
-        "be MD5 hashable " in {
-            "test".md5 must_== "098f6bcd4621d373cade4e832627b4f6"
+        import hasher.Implicits._
+
+        "be MD5 hashable " in { str.md5.hex must_== md5ed }
+        "be SHA-1 hashable " in { str.sha1.hex must_== sha1ed }
+        "be SHA-256 hashable " in { str.sha256.hex must_== sha256ed }
+
+        "be comparable to an MD5 Hash" in {
+            (str md5sTo md5ed) must beTrue
+            (str md5sTo "AHashThatIsWrong") must beFalse
+            (str md5sTo "SomeHashThatIsWrong") must beFalse
         }
 
-        "be SHA-1 hashable " in {
-            "test".sha1 must_== "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+        "be comparable to a SHA1 Hash" in {
+            (str sha1sTo sha1ed) must beTrue
+            (str sha1sTo "AHashThatIsWrong") must beFalse
+            (str sha1sTo "SomeHashThatIsWrong") must beFalse
         }
 
-        "be SHA-256 hashable " in {
-            "test".sha256 must_==
-                "9f86d081884c7d659a2fe" +
-                "aa0c55ad015a3bf4f1b2b0" +
-                "b822cd15d6c15b0f00a08"
+        "be comparable to a SHA256 Hash" in {
+            (str sha256sTo sha256ed) must beTrue
+            (str sha256sTo "AHashThatIsWrong") must beFalse
+            (str sha256sTo "SomeHashThatIsWrong") must beFalse
         }
 
+    }
+
+    "A Byte Array" should {
+
+        import hasher.Implicits._
+
+        "be MD5 hashable " in { bytes.md5.hex must_== md5ed }
+        "be SHA-1 hashable " in { bytes.sha1.hex must_== sha1ed }
+        "be SHA-256 hashable " in { bytes.sha256.hex must_== sha256ed }
+    }
+
+    "The static methods" should {
+
+        import hasher.Hasher
+
+        "md5 hash strings" in { Hasher.md5( str ).hex must_== md5ed }
+        "sha1 hash strings" in { Hasher.sha1( str ).hex must_== sha1ed }
+        "sha256 hash strings" in { Hasher.sha256( str ).hex must_== sha256ed }
+
+        "md5 hash byte arrays" in { Hasher.md5(bytes).hex must_== md5ed }
+        "sha1 hash byte arrays" in { Hasher.sha1(bytes).hex must_== sha1ed }
+        "sha256 hash byte arrays" in { Hasher.sha256(bytes).hex must_== sha256ed }
     }
 
 }

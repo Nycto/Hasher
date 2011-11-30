@@ -1,10 +1,6 @@
 package hasher
 
 import java.security.MessageDigest
-import java.util.zip.CRC32
-import java.nio.ByteBuffer
-
-import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
 
 
 /**
@@ -68,6 +64,8 @@ object Algo extends Enumeration {
      */
     trait BCryptAlgo extends Algo {
 
+        import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
+
         /** {@inheritDoc} */
         override def hash ( value: Array[Byte] ): Hash = {
             val str = new String(value)
@@ -92,6 +90,10 @@ object Algo extends Enumeration {
 
         /** {@inheritDoc} */
         override def hash ( value: Array[Byte] ): Hash = {
+
+            import java.util.zip.CRC32
+            import java.nio.ByteBuffer
+
             val hash = new CRC32
             hash.reset()
             hash.update( value )

@@ -109,6 +109,20 @@ class HasherTest extends Specification {
         "be BCrypt hashable " in {
             bytes.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+
+        "be comparable to an MD5 Hash" in { (bytes md5sTo md5ed) must beTrue }
+        "be comparable to a SHA1 Hash" in { (bytes sha1sTo sha1ed) must beTrue }
+        "be comparable to a SHA256 Hash" in {
+            (bytes sha256sTo sha256ed) must beTrue
+        }
+        "be comparable to a CRC32 Hash" in {
+            (bytes crc32sTo crc32ed) must beTrue
+        }
+        "be comparable to a BCrypt Hash" in {
+            (bytes bcryptsTo bcrypted) must beTrue
+        }
+
+        "be saltable" in { bytes.salt("sweet").md5.hex must_== md5Salted }
     }
 
     "The static methods" should {

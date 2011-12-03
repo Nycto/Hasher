@@ -12,7 +12,6 @@ class HasherTest extends Specification {
 
     // These values represent the string "test" as various hashes
     val md5ed = "098f6bcd4621d373cade4e832627b4f6"
-    val md5Salted = "dc5e57cb22c65a6ab3fc057313f7a2c1"
 
     val sha1ed = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
 
@@ -96,11 +95,6 @@ class HasherTest extends Specification {
             (str bcryptsTo "SomeHashThatIsWrong") must beFalse
             (str bcryptsTo "") must beFalse
         }
-
-        "be saltable" in {
-            str.salt("sweet").md5.hex must_== md5Salted
-            ( str.salt("sweet") md5sTo md5Salted ) must beTrue
-        }
     }
 
     "On a Byte Array, the implicit hash methods" should {
@@ -130,8 +124,6 @@ class HasherTest extends Specification {
         "compare to a BCrypt Hash" in {
             (bytes bcryptsTo bcrypted) must beTrue
         }
-
-        "be saltable" in { bytes.salt("sweet").md5.hex must_== md5Salted }
     }
 
     "The static methods" should {

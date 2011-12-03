@@ -45,17 +45,22 @@ class HasherTest extends Specification {
         }
     }
 
-    "A String" should {
+    "On a String, the implicit hash methods" should {
 
         import hasher.Implicits._
 
-        "be MD5 hashable " in { str.md5.hex must_== md5ed }
-        "be SHA-1 hashable " in { str.sha1.hex must_== sha1ed }
-        "be SHA-256 hashable " in { str.sha256.hex must_== sha256ed }
-        "be CRC32 hashable " in { str.crc32.hex must_== crc32ed }
-        "be BCrypt hashable " in {
+        "MD5 hash" in { str.md5.hex must_== md5ed }
+        "SHA-1 hash" in { str.sha1.hex must_== sha1ed }
+        "SHA-256 hash" in { str.sha256.hex must_== sha256ed }
+        "CRC32 hash" in { str.crc32.hex must_== crc32ed }
+        "BCrypt hash" in {
             str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+    }
+
+    "On a String, the implicit compare methods" should {
+
+        import hasher.Implicits._
 
         "be comparable to an MD5 Hash" in {
             (str md5sTo md5ed) must beTrue
@@ -96,29 +101,33 @@ class HasherTest extends Specification {
             str.salt("sweet").md5.hex must_== md5Salted
             ( str.salt("sweet") md5sTo md5Salted ) must beTrue
         }
-
     }
 
-    "A Byte Array" should {
+    "On a Byte Array, the implicit hash methods" should {
 
         import hasher.Implicits._
 
-        "be MD5 hashable " in { bytes.md5.hex must_== md5ed }
-        "be SHA-1 hashable " in { bytes.sha1.hex must_== sha1ed }
-        "be SHA-256 hashable " in { bytes.sha256.hex must_== sha256ed }
-        "be BCrypt hashable " in {
+        "MD5 hash " in { bytes.md5.hex must_== md5ed }
+        "SHA-1 hash" in { bytes.sha1.hex must_== sha1ed }
+        "SHA-256 hash" in { bytes.sha256.hex must_== sha256ed }
+        "BCrypt hash" in {
             bytes.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+    }
 
-        "be comparable to an MD5 Hash" in { (bytes md5sTo md5ed) must beTrue }
-        "be comparable to a SHA1 Hash" in { (bytes sha1sTo sha1ed) must beTrue }
-        "be comparable to a SHA256 Hash" in {
+    "On a Byte Array, the implicit compare methods" should {
+
+        import hasher.Implicits._
+
+        "compare to an MD5 Hash" in { (bytes md5sTo md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (bytes sha1sTo sha1ed) must beTrue }
+        "compare to a SHA256 Hash" in {
             (bytes sha256sTo sha256ed) must beTrue
         }
-        "be comparable to a CRC32 Hash" in {
+        "compare to a CRC32 Hash" in {
             (bytes crc32sTo crc32ed) must beTrue
         }
-        "be comparable to a BCrypt Hash" in {
+        "compare to a BCrypt Hash" in {
             (bytes bcryptsTo bcrypted) must beTrue
         }
 

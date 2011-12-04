@@ -100,6 +100,18 @@ class HasherTest extends Specification {
         }
     }
 
+    "On a String, the implicit salt method" should {
+
+        import hasher.Implicits._
+
+        val saltedMd5 = "d615489ad65aad3f6138728a02221e95"
+
+        "change the hash" in {
+            str.salt("one").salt("two").md5.hex must_== saltedMd5
+            (str.salt("one").salt("two") md5sTo saltedMd5) must beTrue
+        }
+    }
+
     "On a Byte Array, the implicit hash methods" should {
 
         import hasher.Implicits._

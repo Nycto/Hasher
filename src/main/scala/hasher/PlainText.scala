@@ -10,7 +10,7 @@ trait PlainText {
     /**
      * Populates the digest
      */
-    protected def fill ( algo: Algo ): Algo
+    protected[hasher] def fill ( algo: Algo ): Algo
 
     /**
      * Hashes an InputStream according to this algorithm.
@@ -36,7 +36,7 @@ trait PlainText {
 /**
  * A plain text representation of a Byte Array
  */
-private case class PlainTextBytes (
+private class PlainTextBytes (
     private val value: Array[Byte]
 ) extends PlainText {
 
@@ -46,7 +46,7 @@ private case class PlainTextBytes (
     def this ( value: String ) = this( value.getBytes )
 
     /** {@inheritDoc} */
-    override protected def fill ( algo: Algo ): Algo
+    override protected[hasher] def fill ( algo: Algo ): Algo
         = algo.add( value, value.length )
 
 }
@@ -59,7 +59,7 @@ private class PlainTextStream (
 ) extends PlainText {
 
     /** {@inheritDoc} */
-    override protected def fill ( algo: Algo ): Algo = {
+    override protected[hasher] def fill ( algo: Algo ): Algo = {
         val buffer = new Array[Byte](8192)
 
         def next: Unit = {
@@ -74,6 +74,21 @@ private class PlainTextStream (
         finally stream.close
 
         algo
+    }
+
+}
+
+/**
+ * A PlainText wrapper that adds a salt
+ */
+private class PlainTextSalt (
+    private val inner: PlainText, private val salt: Array[Byte]
+) extends PlainText {
+
+    /** {@inheritDoc} */
+    override protected[hasher] def fill ( algo: Algo ): Algo = {
+        algo.add( salt, salt.length )
+        inner.fill( algo )
     }
 
 }

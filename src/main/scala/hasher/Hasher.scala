@@ -122,6 +122,17 @@ case class Hasher private ( private val value: PlainText ) {
     def this ( value: InputStream ) = this( new PlainTextStream(value) )
 
     /**
+     * Adds a salt from an array of bytes
+     */
+    def salt ( saltValue: Array[Byte] ): Hasher
+        = Hasher( new PlainTextSalt(value, saltValue) )
+
+    /**
+     * Adds a salt from a string
+     */
+    def salt ( saltValue: String ): Hasher = salt( saltValue.getBytes )
+
+    /**
      * Generates an MD5 hash of this string
      */
     def md5: Hash = value.hash( Algo.md5 )

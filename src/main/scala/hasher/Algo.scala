@@ -4,124 +4,162 @@ import java.security.MessageDigest
 
 
 /**
- * The base class for the list of available algorithms
+ * The base class for a hashing algorithm
  */
 trait Algo {
 
     /**
-     * The name of this algorithm
+     * Adds a list of bytes to this algorithm
      */
-    def name: String
+    def add ( bytes: Array[Byte], length: Int ): Algo
 
     /**
-     * Hashes a value according to this algorithm.
+     * Calculates the hash of the collected bytes so far
      */
-    def hash ( value: Array[Byte] ): Hash
+    def hash: Hash
 
     /**
-     * Hashes a string according to this algorithm.
+     * Determines whether the collected bytes compute to a given hash
      */
-    def hash ( value: String ): Hash = hash( value.getBytes )
-
-    /**
-     * Determines whether a plain text computes to a given hash
-     */
-    def hashesTo ( plain: Array[Byte], vs: Hash ): Boolean
-        = MessageDigest.isEqual( hash(plain).bytes, vs.bytes )
-
-    /**
-     * Determines whether a plain text computes to a given hash string
-     */
-    def hashesTo ( plain: Array[Byte], vs: String ): Boolean = {
-        try { hashesTo( plain, Hash(this, vs) ) }
-        catch { case _:IllegalArgumentException => false }
-    }
+    def hashesTo ( vs: Hash ): Boolean
 
 }
 
 /**
- * A list of the supported algorithms
+ * Companion
  */
-object Algo extends Enumeration {
+object Algo {
 
     /**
-     * A base class for algorithms based on Java's build in MessageDigest
+     * Builds a new algorithm
      */
-    trait MessageDigestAlgo extends Algo {
-
-        /** {@inheritDoc} */
-        override def hash ( value: Array[Byte] ): Hash = {
-            val hash = MessageDigest.getInstance( name )
-            hash.reset()
-            hash.update( value )
-            Hash( this, hash.digest() )
-        }
-
+    private[hasher] case class Builder (
+        private val callback: (Builder) => Algo
+    ) {
+        /**
+         * Builds a new algo object
+         */
+        def apply (): Algo = callback(this)
     }
 
+    private[hasher] val md5
+        = Builder( (build) => new MessageDigestAlgo(build, "MD5") )
+
+    private[hasher] val sha1
+        = Builder( (build) => new MessageDigestAlgo(build, "SHA-1") )
+
+    private[hasher] val sha256
+        = Builder( (build) => new MessageDigestAlgo(build, "SHA-256") )
+
+    private[hasher] val crc32 = Builder( (build) => new CRC32Algo )
+
+    private[hasher] val bcrypt = Builder( (build) => new BCryptAlgo )
+
+}
+
+/**
+ * The implementation for hashes that use MessageDigest
+ */
+private class MessageDigestAlgo (
+    private val algo: Algo.Builder, name: String
+) extends Algo {
+
+    import java.security.MessageDigest
+
     /**
-     * Implements BCrypt hashing
+     * The digest to collect data into
      */
-    trait BCryptAlgo extends Algo {
+    private val digest = MessageDigest.getInstance( name )
 
-        import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
-
-        /** {@inheritDoc} */
-        override def hash ( value: Array[Byte] ): Hash = {
-            val str = new String(value)
-            Hash( this, jBCrypt.hashpw(str, jBCrypt.gensalt()).getBytes )
-        }
-
-        /** {@inheritDoc} */
-        override def hashesTo ( plain: Array[Byte], vs: Hash ): Boolean = {
-            // jBCrypt chokes on empty hashes, so we compensate
-            new String(vs.bytes) match {
-                case "" => false
-                case str => jBCrypt.checkpw( new String(plain), str )
-            }
-        }
-
+    /** {@inheritDoc} */
+    override def add ( bytes: Array[Byte], length: Int ): Algo = {
+        digest.update(bytes, 0, length)
+        this
     }
 
+    /** {@inheritDoc} */
+    override def hash: Hash = Hash( digest.digest )
+
+    /** {@inheritDoc} */
+    override def hashesTo ( vs: Hash ): Boolean
+        = MessageDigest.isEqual( digest.digest, vs.bytes )
+
+}
+
+/**
+ * The CRC32 hash implementation
+ */
+private class CRC32Algo extends Algo {
+
+    import java.util.zip.CRC32
+    import java.security.MessageDigest
+
     /**
-     * Implements CRC32 checksums
+     * The digest to collect data into
      */
-    trait CRC32Algo extends Algo {
+    private val digest = new CRC32
 
-        /** {@inheritDoc} */
-        override def hash ( value: Array[Byte] ): Hash = {
-
-            import java.util.zip.CRC32
-            import java.nio.ByteBuffer
-
-            val hash = new CRC32
-            hash.reset()
-            hash.update( value )
-
-            val result = hash.getValue()
-
-            // Convert the int returned by CRC32 into a byte list
-            val bytes = ByteBuffer.allocate(8).putLong( result ).array
-
-            // Trim any leading zeroes off of the byte list
-            val trimmed = bytes.dropWhile( _ == 0 ).toArray
-
-            Hash( this, trimmed )
-        }
-
+    /** {@inheritDoc} */
+    override def add ( bytes: Array[Byte], length: Int ): Algo = {
+        digest.update(bytes, 0, length)
+        this
     }
 
+    /** {@inheritDoc} */
+    override def hash: Hash = {
+
+        import java.nio.ByteBuffer
+
+        // Convert the int returned by CRC32 into a byte list
+        val bytes = ByteBuffer.allocate(8).putLong( digest.getValue ).array
+
+        // Trim any leading zeroes off of the byte list
+        val trimmed = bytes.dropWhile( _ == 0 ).toArray
+
+        Hash( trimmed )
+    }
+
+    /** {@inheritDoc} */
+    override def hashesTo ( vs: Hash ): Boolean
+        = MessageDigest.isEqual( hash.bytes, vs.bytes )
+
+}
+
+/**
+ * The BCrypt hash implementation
+ */
+private class BCryptAlgo extends Algo {
+
+    import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
+
     /**
-     * The base class to unite the enum values with the Algo trait
+     * The collected value to hash
      */
-    sealed case class AlgoType ( val name: String ) extends Val
+    private val value = new StringBuilder
 
+    /** {@inheritDoc} */
+    override def add ( bytes: Array[Byte], length: Int ): Algo = {
+        value.append( new String(bytes, 0, length) )
+        this
+    }
 
-    val MD5 = new AlgoType("MD5") with MessageDigestAlgo
-    val SHA1 = new AlgoType("SHA-1") with MessageDigestAlgo
-    val SHA256 = new AlgoType("SHA-256") with MessageDigestAlgo
-    val BCrypt = new AlgoType("BCrypt") with BCryptAlgo
-    val CRC32 = new AlgoType("CRC32") with CRC32Algo
+    /** {@inheritDoc} */
+    override def hash: Hash = {
+        Hash( jBCrypt.hashpw(
+            value.toString,
+            jBCrypt.gensalt()
+        ).getBytes )
+    }
+
+    /** {@inheritDoc} */
+    override def hashesTo ( vs: Hash ): Boolean = {
+        // jBCrypt chokes on empty hashes, so we compensate
+        new String(vs.bytes) match {
+            case "" => false
+            case str => jBCrypt.checkpw( value.toString, str )
+        }
+    }
+
 }
 
 

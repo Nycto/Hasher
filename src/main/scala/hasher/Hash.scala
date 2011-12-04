@@ -9,26 +9,21 @@ object Hash {
     /**
      * Constructor...
      */
-    def apply ( algo: Algo, string: String ) = new Hash(algo, string)
-
-    /**
-     * Converts a hex string to an array of Bytes
-     */
-    private def hexToBytes ( str: String ): Array[Byte] = {
-        str.grouped(2).map( Integer.parseInt(_, 16).byteValue ).toArray
-    }
+    def apply ( string: String ) = new Hash(string)
 
 }
 
 /**
  * Represents a hash
  */
-case class Hash ( val algo: Algo, val bytes: Array[Byte] ) {
+case class Hash ( val bytes: Array[Byte] ) {
 
     /**
      * Constructs a hash from a hex string
      */
-    def this ( algo: Algo, hex: String ) = this( algo, Hash.hexToBytes(hex) )
+    def this ( hex: String ) = this(
+        hex.grouped(2).map( Integer.parseInt(_, 16).byteValue ).toArray
+    )
 
     /**
      * Converts this hash to a hex encoded string

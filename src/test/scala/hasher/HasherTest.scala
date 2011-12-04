@@ -23,6 +23,10 @@ class HasherTest extends Specification {
         "aa0c55ad015a3bf4f1b2b0" +
         "b822cd15d6c15b0f00a08"
 
+    val sha384ed =
+        "768412320f7b0aa5812fce428dc4706b3cae50e02a64caa1" +
+        "6a782249bfe8efc4b7ef1ccb126255d196047dfedf17a0a9"
+
     val sha512ed =
         "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db2" +
         "7ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
@@ -58,6 +62,7 @@ class HasherTest extends Specification {
         "MD5 hash" in { str.md5.hex must_== md5ed }
         "SHA-1 hash" in { str.sha1.hex must_== sha1ed }
         "SHA-256 hash" in { str.sha256.hex must_== sha256ed }
+        "SHA-384 hash" in { str.sha384.hex must_== sha384ed }
         "SHA-512 hash" in { str.sha512.hex must_== sha512ed }
         "CRC32 hash" in { str.crc32.hex must_== crc32ed }
         "BCrypt hash" in {
@@ -88,6 +93,13 @@ class HasherTest extends Specification {
             (str sha256sTo "AHashThatIsWrong") must beFalse
             (str sha256sTo "SomeHashThatIsWrong") must beFalse
             (str sha256sTo "") must beFalse
+        }
+
+        "be comparable to a SHA384 Hash" in {
+            (str sha384sTo sha384ed) must beTrue
+            (str sha384sTo "AHashThatIsWrong") must beFalse
+            (str sha384sTo "SomeHashThatIsWrong") must beFalse
+            (str sha384sTo "") must beFalse
         }
 
         "be comparable to a SHA512 Hash" in {
@@ -131,6 +143,7 @@ class HasherTest extends Specification {
         "MD5 hash " in { bytes.md5.hex must_== md5ed }
         "SHA-1 hash" in { bytes.sha1.hex must_== sha1ed }
         "SHA-256 hash" in { bytes.sha256.hex must_== sha256ed }
+        "SHA-384 hash" in { bytes.sha384.hex must_== sha384ed }
         "SHA-512 hash" in { bytes.sha512.hex must_== sha512ed }
         "CRC32 hash" in { bytes.crc32.hex must_== crc32ed}
         "BCrypt hash" in {
@@ -146,6 +159,9 @@ class HasherTest extends Specification {
         "compare to a SHA1 Hash" in { (bytes sha1sTo sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
             (bytes sha256sTo sha256ed) must beTrue
+        }
+        "compare to a SHA384 Hash" in {
+            (bytes sha384sTo sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
             (bytes sha512sTo sha512ed) must beTrue
@@ -165,6 +181,7 @@ class HasherTest extends Specification {
         "MD5 hash " in { stream.md5.hex must_== md5ed }
         "SHA-1 hash" in { stream.sha1.hex must_== sha1ed }
         "SHA-256 hash" in { stream.sha256.hex must_== sha256ed }
+        "SHA-384 hash" in { stream.sha384.hex must_== sha384ed }
         "SHA-512 hash" in { stream.sha512.hex must_== sha512ed }
         "CRC32 hash" in { stream.crc32.hex must_== crc32ed }
         "BCrypt hash" in {
@@ -180,6 +197,9 @@ class HasherTest extends Specification {
         "compare to a SHA1 Hash" in { (stream sha1sTo sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
             (stream sha256sTo sha256ed) must beTrue
+        }
+        "compare to a SHA384 Hash" in {
+            (stream sha384sTo sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
             (stream sha512sTo sha512ed) must beTrue
@@ -199,6 +219,8 @@ class HasherTest extends Specification {
         "md5 hash" in { Hasher.md5( str ).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1( str ).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256( str ).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384( str ).hex must_== sha384ed }
+        "sha256 hash" in { Hasher.sha256( str ).hex must_== sha256ed }
         "sha512 hash" in { Hasher.sha512( str ).hex must_== sha512ed }
         "crc32 hash" in { Hasher.crc32( str ).hex must_== crc32ed }
         "BCrypt hash" in {
@@ -213,6 +235,7 @@ class HasherTest extends Specification {
         "md5 hash" in { Hasher.md5(bytes).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1(bytes).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256(bytes).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(bytes).hex must_== sha384ed }
         "sha512 hash" in { Hasher.sha512(bytes).hex must_== sha512ed }
         "crc32 hash" in { Hasher.crc32(bytes).hex must_== crc32ed }
         "BCrypt hash" in {
@@ -227,6 +250,7 @@ class HasherTest extends Specification {
         "md5 hash" in { Hasher.md5(stream).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1(stream).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256(stream).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(stream).hex must_== sha384ed }
         "sha512 hash" in { Hasher.sha512(stream).hex must_== sha512ed }
         "crc32 hash" in { Hasher.crc32(stream).hex must_== crc32ed }
         "BCrypt hash" in {
@@ -253,6 +277,12 @@ class HasherTest extends Specification {
             Hasher.sha256(large).hex must_==
                 "c86f210e0efad769d6ade6f924a85200" +
                 "be38917fa99e33b360aa24535716359b"
+        }
+
+        "sha384 hash" in {
+            Hasher.sha384(large).hex must_==
+                "b0d8bf15ba996e77281796e899cc412f0dc2ae6b62a1aabd" +
+                "a848eecd7c2fef607167efac88f8a4e57c65e43d9751117a"
         }
 
         "sha512 hash" in {

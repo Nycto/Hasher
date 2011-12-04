@@ -24,6 +24,11 @@ object Hasher {
     def sha256 = new Algo( Digest.sha256 )
 
     /**
+     * Generates a sha384 hash of a string
+     */
+    def sha384 = new Algo( Digest.sha384 )
+
+    /**
      * Generates a sha512 hash of a string
      */
     def sha512 = new Algo( Digest.sha512 )
@@ -117,6 +122,17 @@ case class Hasher private ( private val value: PlainText ) {
      */
     def sha256sTo( hash: String ): Boolean
         = value.hashesTo( Digest.sha256, hash )
+
+    /**
+     * Generates a sha384 hash of this string
+     */
+    def sha384: Hash = value.hash( Digest.sha384 )
+
+    /**
+     * Determines whether this value sha384s to a given hash
+     */
+    def sha384sTo( hash: String ): Boolean
+        = value.hashesTo( Digest.sha384, hash )
 
     /**
      * Generates a sha512 hash of this string

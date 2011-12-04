@@ -51,6 +51,9 @@ object Digest {
     private[hasher] val sha256
         = Builder( (build) => new MessageDigest(build, "SHA-256") )
 
+    private[hasher] val sha384
+        = Builder( (build) => new MessageDigest(build, "SHA-384") )
+
     private[hasher] val sha512
         = Builder( (build) => new MessageDigest(build, "SHA-512") )
 

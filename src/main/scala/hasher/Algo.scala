@@ -53,6 +53,9 @@ object Algo {
     private[hasher] val sha256
         = Builder( (build) => new MessageDigestAlgo(build, "SHA-256") )
 
+    private[hasher] val sha512
+        = Builder( (build) => new MessageDigestAlgo(build, "SHA-512") )
+
     private[hasher] val crc32 = Builder( (build) => new CRC32Algo )
 
     private[hasher] val bcrypt = Builder( (build) => new BCryptAlgo )

@@ -54,6 +54,21 @@ object Hasher {
     def sha256 ( value: InputStream ): Hash = Hasher(value).sha256
 
     /**
+     * Generates a sha512 hash of a string
+     */
+    def sha512 ( value: String ): Hash = Hasher(value).sha512
+
+    /**
+     * Generates a sha512 hash of a byte array
+     */
+    def sha512 ( value: Array[Byte] ): Hash = Hasher(value).sha512
+
+    /**
+     * Generates an SHA512 hash of an input stream
+     */
+    def sha512 ( value: InputStream ): Hash = Hasher(value).sha512
+
+    /**
      * Generates a crc32 hash of a string
      */
     def crc32 ( value: String ): Hash = Hasher(value).crc32
@@ -161,6 +176,16 @@ case class Hasher private ( private val value: PlainText ) {
      * Determines whether this value sha256s to a given hash
      */
     def sha256sTo( hash: String ): Boolean = value.hashesTo( Algo.sha256, hash )
+
+    /**
+     * Generates a sha512 hash of this string
+     */
+    def sha512: Hash = value.hash( Algo.sha512 )
+
+    /**
+     * Determines whether this value sha512s to a given hash
+     */
+    def sha512sTo( hash: String ): Boolean = value.hashesTo( Algo.sha512, hash )
 
     /**
      * Generates a crc32 hash of this string

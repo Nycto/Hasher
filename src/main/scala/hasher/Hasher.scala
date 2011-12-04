@@ -11,92 +11,32 @@ object Hasher {
     /**
      * Generates an MD5 hash of a string
      */
-    def md5 ( value: String ): Hash = Hasher(value).md5
-
-    /**
-     * Generates an MD5 hash of a byte array
-     */
-    def md5 ( value: Array[Byte] ): Hash = Hasher(value).md5
-
-    /**
-     * Generates an MD5 hash of an input stream
-     */
-    def md5 ( value: InputStream ): Hash = Hasher(value).md5
+    def md5 = new Algo( Digest.md5 )
 
     /**
      * Generates a sha1 hash of a string
      */
-    def sha1 ( value: String ): Hash = Hasher(value).sha1
-
-    /**
-     * Generates a sha1 hash of a byte array
-     */
-    def sha1 ( value: Array[Byte] ): Hash = Hasher(value).sha1
-
-    /**
-     * Generates an SHA1 hash of an input stream
-     */
-    def sha1 ( value: InputStream ): Hash = Hasher(value).sha1
+    def sha1 = new Algo( Digest.sha1 )
 
     /**
      * Generates a sha256 hash of a string
      */
-    def sha256 ( value: String ): Hash = Hasher(value).sha256
-
-    /**
-     * Generates a sha256 hash of a byte array
-     */
-    def sha256 ( value: Array[Byte] ): Hash = Hasher(value).sha256
-
-    /**
-     * Generates an SHA256 hash of an input stream
-     */
-    def sha256 ( value: InputStream ): Hash = Hasher(value).sha256
+    def sha256 = new Algo( Digest.sha256 )
 
     /**
      * Generates a sha512 hash of a string
      */
-    def sha512 ( value: String ): Hash = Hasher(value).sha512
-
-    /**
-     * Generates a sha512 hash of a byte array
-     */
-    def sha512 ( value: Array[Byte] ): Hash = Hasher(value).sha512
-
-    /**
-     * Generates an SHA512 hash of an input stream
-     */
-    def sha512 ( value: InputStream ): Hash = Hasher(value).sha512
+    def sha512 = new Algo( Digest.sha512 )
 
     /**
      * Generates a crc32 hash of a string
      */
-    def crc32 ( value: String ): Hash = Hasher(value).crc32
-
-    /**
-     * Generates a crc32 hash of a byte array
-     */
-    def crc32 ( value: Array[Byte] ): Hash = Hasher(value).crc32
-
-    /**
-     * Generates an crc32 hash of an input stream
-     */
-    def crc32 ( value: InputStream ): Hash = Hasher(value).crc32
+    def crc32 = new Algo( Digest.crc32 )
 
     /**
      * Generates a bcrypt hash of a string
      */
-    def bcrypt ( value: String ): Hash = Hasher(value).bcrypt
-
-    /**
-     * Generates a bcrypt hash of a byte array
-     */
-    def bcrypt ( value: Array[Byte] ): Hash = Hasher(value).bcrypt
-
-    /**
-     * Generates a bycrpt hash of an input stream
-     */
-    def bcrypt ( value: InputStream ): Hash = Hasher(value).bcrypt
+    def bcrypt = new Algo( Digest.bcrypt )
 
 
     /**

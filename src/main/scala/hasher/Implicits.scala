@@ -1,6 +1,7 @@
 package hasher
 
 import java.io.InputStream
+import java.io.Reader
 
 
 /**
@@ -22,6 +23,11 @@ object Implicits {
      * Implicitly creates a hasher from an Input Stream
      */
     implicit def streamToHasher ( from: InputStream ): Hasher = Hasher(from)
+
+    /**
+     * Implicitly creates a hasher from a Reader
+     */
+    implicit def readerToHasher ( from: Reader ): Hasher = Hasher(from)
 
     /**
      * Implicitly converts from a hash to a string

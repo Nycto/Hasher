@@ -1,6 +1,7 @@
 package hasher
 
 import java.io.InputStream
+import java.io.Reader
 
 
 /**
@@ -59,6 +60,11 @@ object Hasher {
      */
     def apply ( from: InputStream ): Hasher = new Hasher(from)
 
+    /**
+     * Builds a Hasher from a Reader
+     */
+    def apply ( from: Reader ): Hasher = new Hasher(from)
+
 }
 
 /**
@@ -79,7 +85,12 @@ case class Hasher private ( private val value: PlainText ) {
     /**
      * Constructor for accepting InputStream.
      */
-    def this ( value: InputStream ) = this( new PlainTextStream(value) )
+    def this ( value: InputStream ) = this( new PlainTextResource(value) )
+
+    /**
+     * Constructor for accepting Readers.
+     */
+    def this ( value: Reader ) = this( new PlainTextResource(value) )
 
     /**
      * Adds a salt from an array of bytes

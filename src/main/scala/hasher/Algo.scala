@@ -1,6 +1,7 @@
 package hasher
 
 import java.io.InputStream
+import java.io.Reader
 
 
 /**
@@ -24,7 +25,13 @@ class Algo ( private val digest: Digest.Builder ) {
      * Generates a hash of an input stream
      */
     def apply ( value: InputStream ): Hash
-        = new PlainTextStream(value).hash( digest )
+        = new PlainTextResource(value).hash( digest )
+
+    /**
+     * Generates a hash of a Reader
+     */
+    def apply ( value: Reader ): Hash
+        = new PlainTextResource(value).hash( digest )
 
 }
 

@@ -1,19 +1,17 @@
 package hasher
 
-import java.security.MessageDigest
-
 import java.io.InputStream
 
 
 /**
  * The base class for a hashing algorithm
  */
-trait Algo {
+trait Digest {
 
     /**
      * Adds a list of bytes to this algorithm
      */
-    def add ( bytes: Array[Byte], length: Int ): Algo
+    def add ( bytes: Array[Byte], length: Int ): Digest
 
     /**
      * Calculates the hash of the collected bytes so far
@@ -30,71 +28,71 @@ trait Algo {
 /**
  * Companion
  */
-object Algo {
+object Digest {
 
     /**
      * Builds a new algorithm
      */
     private[hasher] case class Builder (
-        private val callback: (Builder) => Algo
+        private val callback: (Builder) => Digest
     ) {
         /**
-         * Builds a new algo object
+         * Builds a new digest object
          */
-        def apply (): Algo = callback(this)
+        def apply (): Digest = callback(this)
     }
 
     private[hasher] val md5
-        = Builder( (build) => new MessageDigestAlgo(build, "MD5") )
+        = Builder( (build) => new MessageDigest(build, "MD5") )
 
     private[hasher] val sha1
-        = Builder( (build) => new MessageDigestAlgo(build, "SHA-1") )
+        = Builder( (build) => new MessageDigest(build, "SHA-1") )
 
     private[hasher] val sha256
-        = Builder( (build) => new MessageDigestAlgo(build, "SHA-256") )
+        = Builder( (build) => new MessageDigest(build, "SHA-256") )
 
     private[hasher] val sha512
-        = Builder( (build) => new MessageDigestAlgo(build, "SHA-512") )
+        = Builder( (build) => new MessageDigest(build, "SHA-512") )
 
-    private[hasher] val crc32 = Builder( (build) => new CRC32Algo )
+    private[hasher] val crc32 = Builder( (build) => new CRC32Digest )
 
-    private[hasher] val bcrypt = Builder( (build) => new BCryptAlgo )
+    private[hasher] val bcrypt = Builder( (build) => new BCryptDigest )
 
 }
 
 /**
  * The implementation for hashes that use MessageDigest
  */
-private class MessageDigestAlgo (
-    private val algo: Algo.Builder, name: String
-) extends Algo {
+private class MessageDigest (
+    private val digest: Digest.Builder, name: String
+) extends Digest {
 
-    import java.security.MessageDigest
+    import java.security.{MessageDigest => jMessageDigest}
 
     /**
      * The digest to collect data into
      */
-    private val digest = MessageDigest.getInstance( name )
+    private val jDigest = jMessageDigest.getInstance( name )
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Algo = {
-        digest.update(bytes, 0, length)
+    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+        jDigest.update(bytes, 0, length)
         this
     }
 
     /** {@inheritDoc} */
-    override def hash: Hash = Hash( digest.digest )
+    override def hash: Hash = Hash( jDigest.digest )
 
     /** {@inheritDoc} */
     override def hashesTo ( vs: Hash ): Boolean
-        = MessageDigest.isEqual( digest.digest, vs.bytes )
+        = jMessageDigest.isEqual( jDigest.digest, vs.bytes )
 
 }
 
 /**
  * The CRC32 hash implementation
  */
-private class CRC32Algo extends Algo {
+private class CRC32Digest extends Digest {
 
     import java.util.zip.CRC32
     import java.security.MessageDigest
@@ -105,7 +103,7 @@ private class CRC32Algo extends Algo {
     private val digest = new CRC32
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Algo = {
+    override def add ( bytes: Array[Byte], length: Int ): Digest = {
         digest.update(bytes, 0, length)
         this
     }
@@ -133,7 +131,7 @@ private class CRC32Algo extends Algo {
 /**
  * The BCrypt hash implementation
  */
-private class BCryptAlgo extends Algo {
+private class BCryptDigest extends Digest {
 
     import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
 
@@ -143,7 +141,7 @@ private class BCryptAlgo extends Algo {
     private val value = new StringBuilder
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Algo = {
+    override def add ( bytes: Array[Byte], length: Int ): Digest = {
         value.append( new String(bytes, 0, length) )
         this
     }

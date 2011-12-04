@@ -10,24 +10,24 @@ trait PlainText {
     /**
      * Populates the digest
      */
-    protected[hasher] def fill ( algo: Algo ): Algo
+    protected[hasher] def fill ( digest: Digest ): Digest
 
     /**
      * Hashes an InputStream according to this algorithm.
      */
-    def hash ( algo: Algo.Builder ): Hash = fill( algo() ).hash
+    def hash ( digest: Digest.Builder ): Hash = fill( digest() ).hash
 
     /**
      * Determines whether this value computes to a given hash
      */
-    def hashesTo ( algo: Algo.Builder, vs: Hash ): Boolean
-        = fill( algo() ).hashesTo( vs )
+    def hashesTo ( digest: Digest.Builder, vs: Hash ): Boolean
+        = fill( digest() ).hashesTo( vs )
 
     /**
      * Determines whether this value computes to a given hash string
      */
-    def hashesTo ( algo: Algo.Builder, vs: String ): Boolean = {
-        try { hashesTo( algo, Hash(vs) ) }
+    def hashesTo ( digest: Digest.Builder, vs: String ): Boolean = {
+        try { hashesTo( digest, Hash(vs) ) }
         catch { case _:IllegalArgumentException => false }
     }
 
@@ -46,8 +46,8 @@ private class PlainTextBytes (
     def this ( value: String ) = this( value.getBytes )
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( algo: Algo ): Algo
-        = algo.add( value, value.length )
+    override protected[hasher] def fill ( digest: Digest ): Digest
+        = digest.add( value, value.length )
 
 }
 
@@ -59,13 +59,13 @@ private class PlainTextStream (
 ) extends PlainText {
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( algo: Algo ): Algo = {
+    override protected[hasher] def fill ( digest: Digest ): Digest = {
         val buffer = new Array[Byte](8192)
 
         def next: Unit = {
             val read = stream.read(buffer)
             if ( read > 0 ) {
-                algo.add( buffer, read )
+                digest.add( buffer, read )
                 next
             }
         }
@@ -73,7 +73,7 @@ private class PlainTextStream (
         try next
         finally stream.close
 
-        algo
+        digest
     }
 
 }
@@ -86,9 +86,9 @@ private class PlainTextSalt (
 ) extends PlainText {
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( algo: Algo ): Algo = {
-        algo.add( salt, salt.length )
-        inner.fill( algo )
+    override protected[hasher] def fill ( digest: Digest ): Digest = {
+        digest.add( salt, salt.length )
+        inner.fill( digest )
     }
 
 }

@@ -150,62 +150,63 @@ case class Hasher private ( private val value: PlainText ) {
     /**
      * Generates an MD5 hash of this string
      */
-    def md5: Hash = value.hash( Algo.md5 )
+    def md5: Hash = value.hash( Digest.md5 )
 
     /**
      * Determines whether this value md5s to a given hash
      */
-    def md5sTo( hash: String ): Boolean = value.hashesTo( Algo.md5, hash )
+    def md5sTo( hash: String ): Boolean = value.hashesTo( Digest.md5, hash )
 
     /**
      * Generates a sha1 hash of this string
      */
-    def sha1: Hash = value.hash( Algo.sha1 )
+    def sha1: Hash = value.hash( Digest.sha1 )
 
     /**
      * Determines whether this value sha1s to a given hash
      */
-    def sha1sTo( hash: String ): Boolean = value.hashesTo( Algo.sha1, hash )
+    def sha1sTo( hash: String ): Boolean = value.hashesTo( Digest.sha1, hash )
 
     /**
      * Generates a sha256 hash of this string
      */
-    def sha256: Hash = value.hash( Algo.sha256 )
+    def sha256: Hash = value.hash( Digest.sha256 )
 
     /**
      * Determines whether this value sha256s to a given hash
      */
-    def sha256sTo( hash: String ): Boolean = value.hashesTo( Algo.sha256, hash )
+    def sha256sTo( hash: String ): Boolean
+        = value.hashesTo( Digest.sha256, hash )
 
     /**
      * Generates a sha512 hash of this string
      */
-    def sha512: Hash = value.hash( Algo.sha512 )
+    def sha512: Hash = value.hash( Digest.sha512 )
 
     /**
      * Determines whether this value sha512s to a given hash
      */
-    def sha512sTo( hash: String ): Boolean = value.hashesTo( Algo.sha512, hash )
+    def sha512sTo( hash: String ): Boolean = value.hashesTo( Digest.sha512, hash )
 
     /**
      * Generates a crc32 hash of this string
      */
-    def crc32: Hash = value.hash( Algo.crc32 )
+    def crc32: Hash = value.hash( Digest.crc32 )
 
     /**
      * Determines whether this value crc32s to a given hash
      */
-    def crc32sTo( hash: String ): Boolean = value.hashesTo( Algo.crc32, hash )
+    def crc32sTo( hash: String ): Boolean = value.hashesTo( Digest.crc32, hash )
 
     /**
      * Generates a bcrypt hash of this string
      */
-    def bcrypt: Hash = value.hash( Algo.bcrypt )
+    def bcrypt: Hash = value.hash( Digest.bcrypt )
 
     /**
      * Determines whether this value bcrypts to a given hash
      */
-    def bcryptsTo( hash: String ): Boolean = value.hashesTo( Algo.bcrypt, hash )
+    def bcryptsTo( hash: String ): Boolean = value.hashesTo( Digest.bcrypt, hash )
 
 }
 

@@ -1,5 +1,7 @@
 package hasher
 
+import java.io.InputStream
+
 
 /**
  * Helper methods for generating hashes
@@ -17,6 +19,11 @@ object Hasher {
     def md5 ( value: Array[Byte] ): Hash = Hasher(value).md5
 
     /**
+     * Generates an MD5 hash of an input stream
+     */
+    def md5 ( value: InputStream ): Hash = Hasher(value).md5
+
+    /**
      * Generates a sha1 hash of a string
      */
     def sha1 ( value: String ): Hash = Hasher(value).sha1
@@ -25,6 +32,11 @@ object Hasher {
      * Generates a sha1 hash of a byte array
      */
     def sha1 ( value: Array[Byte] ): Hash = Hasher(value).sha1
+
+    /**
+     * Generates an SHA1 hash of an input stream
+     */
+    def sha1 ( value: InputStream ): Hash = Hasher(value).sha1
 
     /**
      * Generates a sha256 hash of a string
@@ -37,6 +49,11 @@ object Hasher {
     def sha256 ( value: Array[Byte] ): Hash = Hasher(value).sha256
 
     /**
+     * Generates an SHA256 hash of an input stream
+     */
+    def sha256 ( value: InputStream ): Hash = Hasher(value).sha256
+
+    /**
      * Generates a crc32 hash of a string
      */
     def crc32 ( value: String ): Hash = Hasher(value).crc32
@@ -45,6 +62,11 @@ object Hasher {
      * Generates a crc32 hash of a byte array
      */
     def crc32 ( value: Array[Byte] ): Hash = Hasher(value).crc32
+
+    /**
+     * Generates an crc32 hash of an input stream
+     */
+    def crc32 ( value: InputStream ): Hash = Hasher(value).crc32
 
     /**
      * Generates a bcrypt hash of a string
@@ -56,6 +78,11 @@ object Hasher {
      */
     def bcrypt ( value: Array[Byte] ): Hash = Hasher(value).bcrypt
 
+    /**
+     * Generates a bycrpt hash of an input stream
+     */
+    def bcrypt ( value: InputStream ): Hash = Hasher(value).bcrypt
+
 
     /**
      * Builds a Hasher from an array of bytes
@@ -66,6 +93,11 @@ object Hasher {
      * Builds a Hasher from a string
      */
     def apply ( from: String ): Hasher = new Hasher(from)
+
+    /**
+     * Builds a Hasher from an InputStream
+     */
+    def apply ( from: InputStream ): Hasher = new Hasher(from)
 
 }
 
@@ -83,6 +115,11 @@ case class Hasher private ( private val value: PlainText ) {
      * Constructor for accepting strings.
      */
     def this ( value: String ) = this( value.getBytes )
+
+    /**
+     * Constructor for accepting InputStream.
+     */
+    def this ( value: InputStream ) = this( new PlainTextStream(value) )
 
     /**
      * Generates an MD5 hash of this string

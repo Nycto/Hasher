@@ -2,6 +2,8 @@ package hasher
 
 import java.security.MessageDigest
 
+import java.io.InputStream
+
 
 /**
  * The base class for a hashing algorithm

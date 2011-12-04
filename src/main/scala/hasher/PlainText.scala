@@ -1,5 +1,7 @@
 package hasher
 
+import java.io.InputStream
+
 /**
  * The base class for plain text representations
  */
@@ -49,4 +51,30 @@ private case class PlainTextBytes (
 
 }
 
+/**
+ * A plain text representation of an Input Stream
+ */
+private class PlainTextStream (
+    private val stream: InputStream
+) extends PlainText {
+
+    /** {@inheritDoc} */
+    override protected def fill ( algo: Algo ): Algo = {
+        val buffer = new Array[Byte](8192)
+
+        def next: Unit = {
+            val read = stream.read(buffer)
+            if ( read > 0 ) {
+                algo.add( buffer, read )
+                next
+            }
+        }
+
+        try next
+        finally stream.close
+
+        algo
+    }
+
+}
 

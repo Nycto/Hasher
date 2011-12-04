@@ -2,12 +2,15 @@ package test.scala.hasher
 
 import org.specs2.mutable._
 
+import java.io.ByteArrayInputStream
+
 class HasherTest extends Specification {
 
 
     // The data being hashed
     val str: String = "test"
     val bytes: Array[Byte] = str.getBytes
+    def stream = new ByteArrayInputStream( bytes )
 
 
     // These values represent the string "test" as various hashes
@@ -126,26 +129,99 @@ class HasherTest extends Specification {
         }
     }
 
-    "The static methods" should {
+    "On an Input Stream, the implicit hash methods" should {
+
+        import hasher.Implicits._
+
+        "MD5 hash " in { stream.md5.hex must_== md5ed }
+        "SHA-1 hash" in { stream.sha1.hex must_== sha1ed }
+        "SHA-256 hash" in { stream.sha256.hex must_== sha256ed }
+        "BCrypt hash" in {
+            stream.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "On an Input Stream, the implicit compare methods" should {
+
+        import hasher.Implicits._
+
+        "compare to an MD5 Hash" in { (stream md5sTo md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (stream sha1sTo sha1ed) must beTrue }
+        "compare to a SHA256 Hash" in {
+            (stream sha256sTo sha256ed) must beTrue
+        }
+        "compare to a CRC32 Hash" in {
+            (stream crc32sTo crc32ed) must beTrue
+        }
+        "compare to a BCrypt Hash" in {
+            (stream bcryptsTo bcrypted) must beTrue
+        }
+    }
+
+    "The static methods for strings" should {
 
         import hasher.Hasher
 
-        "md5 hash strings" in { Hasher.md5( str ).hex must_== md5ed }
-        "sha1 hash strings" in { Hasher.sha1( str ).hex must_== sha1ed }
-        "sha256 hash strings" in { Hasher.sha256( str ).hex must_== sha256ed }
-        "crc32 hash strings" in { Hasher.crc32( str ).hex must_== crc32ed }
-        "BCrypt hash strings" in {
+        "md5 hash" in { Hasher.md5( str ).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1( str ).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256( str ).hex must_== sha256ed }
+        "crc32 hash" in { Hasher.crc32( str ).hex must_== crc32ed }
+        "BCrypt hash" in {
             Hasher.bcrypt(str).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+    }
 
-        "md5 hash byte arrays" in { Hasher.md5(bytes).hex must_== md5ed }
-        "sha1 hash byte arrays" in { Hasher.sha1(bytes).hex must_== sha1ed }
-        "sha256 hash byte arrays" in {
-            Hasher.sha256(bytes).hex must_== sha256ed
-        }
-        "crc32 hash byte arrays" in { Hasher.crc32(bytes).hex must_== crc32ed }
-        "BCrypt hash byte arrays" in {
+    "The static methods for byte arrays" should {
+
+        import hasher.Hasher
+
+        "md5 hash" in { Hasher.md5(bytes).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(bytes).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(bytes).hex must_== sha256ed }
+        "crc32 hash" in { Hasher.crc32(bytes).hex must_== crc32ed }
+        "BCrypt hash" in {
             Hasher.bcrypt(bytes).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "The static methods for input streams" should {
+
+        import hasher.Hasher
+
+        "md5 hash" in { Hasher.md5(stream).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(stream).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(stream).hex must_== sha256ed }
+        "crc32 hash" in { Hasher.crc32(stream).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(stream).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "For large streams, the static methods for input streams" should {
+
+        import hasher.Hasher
+
+        def large = new ByteArrayInputStream( Array.fill(20000)(65.byteValue) )
+
+        "md5 hash" in {
+            Hasher.md5(large).hex must_== "0af181fb57f1eefb62b74081bbddb155"
+        }
+
+        "sha1 hash" in {
+            Hasher.sha1(large).hex must_==
+                "b9624c14586d4668cba0b2759229a49f1ea355b6"
+        }
+
+        "sha256 hash" in {
+            Hasher.sha256(large).hex must_==
+                "c86f210e0efad769d6ade6f924a85200" +
+                "be38917fa99e33b360aa24535716359b"
+        }
+
+        "crc32 hash" in { Hasher.crc32(large).hex must_== "d89a101b" }
+
+        "BCrypt hash" in {
+            Hasher.bcrypt(large).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
     }
 

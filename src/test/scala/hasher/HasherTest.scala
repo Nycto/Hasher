@@ -132,6 +132,7 @@ class HasherTest extends Specification {
         "SHA-1 hash" in { bytes.sha1.hex must_== sha1ed }
         "SHA-256 hash" in { bytes.sha256.hex must_== sha256ed }
         "SHA-512 hash" in { bytes.sha512.hex must_== sha512ed }
+        "CRC32 hash" in { bytes.crc32.hex must_== crc32ed}
         "BCrypt hash" in {
             bytes.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
@@ -165,6 +166,7 @@ class HasherTest extends Specification {
         "SHA-1 hash" in { stream.sha1.hex must_== sha1ed }
         "SHA-256 hash" in { stream.sha256.hex must_== sha256ed }
         "SHA-512 hash" in { stream.sha512.hex must_== sha512ed }
+        "CRC32 hash" in { stream.crc32.hex must_== crc32ed }
         "BCrypt hash" in {
             stream.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }

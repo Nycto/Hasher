@@ -130,66 +130,66 @@ case class Hasher private ( private val value: PlainText ) {
     /**
      * Generates an MD5 hash of this string
      */
-    def md5: Hash = value.hash( Digest.md5 )
+    def md5: Hash = Hasher.md5( value )
 
     /**
      * Determines whether this value md5s to a given hash
      */
-    def `md5_=` ( hash: String ): Boolean = value.hashesTo( Digest.md5, hash )
+    def `md5_=` ( hash: String ): Boolean = Hasher.md5.compare( value, hash )
 
     /**
      * Generates a sha1 hash of this string
      */
-    def sha1: Hash = value.hash( Digest.sha1 )
+    def sha1: Hash = Hasher.sha1( value )
 
     /**
      * Determines whether this value sha1s to a given hash
      */
-    def `sha1_=` ( hash: String ): Boolean = value.hashesTo( Digest.sha1, hash )
+    def `sha1_=` ( hash: String ): Boolean = Hasher.sha1.compare( value, hash )
 
     /**
      * Generates a sha256 hash of this string
      */
-    def sha256: Hash = value.hash( Digest.sha256 )
+    def sha256: Hash = Hasher.sha256( value )
 
     /**
      * Determines whether this value sha256s to a given hash
      */
     def `sha256_=` ( hash: String ): Boolean
-        = value.hashesTo( Digest.sha256, hash )
+        = Hasher.sha256.compare( value, hash )
 
     /**
      * Generates a sha384 hash of this string
      */
-    def sha384: Hash = value.hash( Digest.sha384 )
+    def sha384: Hash = Hasher.sha384( value )
 
     /**
      * Determines whether this value sha384s to a given hash
      */
     def `sha384_=` ( hash: String ): Boolean
-        = value.hashesTo( Digest.sha384, hash )
+        = Hasher.sha384.compare( value, hash )
 
     /**
      * Generates a sha512 hash of this string
      */
-    def sha512: Hash = value.hash( Digest.sha512 )
+    def sha512: Hash = Hasher.sha512( value )
 
     /**
      * Determines whether this value sha512s to a given hash
      */
     def `sha512_=` ( hash: String ): Boolean
-        = value.hashesTo( Digest.sha512, hash )
+        = Hasher.sha512.compare( value, hash )
 
     /**
      * Generates a crc32 hash of this string
      */
-    def crc32: Hash = value.hash( Digest.crc32 )
+    def crc32: Hash = Hasher.crc32( value )
 
     /**
      * Determines whether this value crc32s to a given hash
      */
     def `crc32_=` ( hash: String ): Boolean
-        = value.hashesTo( Digest.crc32, hash )
+        = Hasher.crc32.compare( value, hash )
 
     /**
      * Generates a bcrypt hash of this string
@@ -200,7 +200,7 @@ case class Hasher private ( private val value: PlainText ) {
      * Determines whether this value bcrypts to a given hash
      */
     def `bcrypt_=` ( hash: String ): Boolean
-        = value.hashesTo( Digest.bcrypt, hash )
+        = Hasher.bcrypt.compare( value, hash )
 
 }
 

@@ -7,10 +7,15 @@ import java.io.StringReader
 
 import scala.io.Source
 
+import hasher.Hasher
+
+
 class LargeValueTest extends Specification {
 
     // test data
-    val bytes =  Array.fill(20000)(65.byteValue)
+    val bytes = Array.fill(20000)(65.byteValue)
+    val str = new String(bytes)
+    val builder: StringBuilder = new StringBuilder(str)
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader( new String( bytes ) )
     def source = Source.fromBytes( bytes )
@@ -31,10 +36,43 @@ class LargeValueTest extends Specification {
     val crc32ed = "d89a101b"
 
 
-    "For large streams, the static methods for input streams" should {
+    "Large values in Strings" should {
+        "md5 hash" in { Hasher.md5(str).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(str).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(str).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(str).hex must_== sha384ed }
+        "sha512 hash" in { Hasher.sha512(str).hex must_== sha512ed }
+        "crc32 hash" in { Hasher.crc32(str).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(str).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
 
-        import hasher.Hasher
+    "Large values in StringBuilders" should {
+        "md5 hash" in { Hasher.md5(builder).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(builder).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(builder).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(builder).hex must_== sha384ed }
+        "sha512 hash" in { Hasher.sha512(builder).hex must_== sha512ed }
+        "crc32 hash" in { Hasher.crc32(builder).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(builder).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
 
+    "Large values in Byte Arrays" should {
+        "md5 hash" in { Hasher.md5(bytes).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(bytes).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(bytes).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(bytes).hex must_== sha384ed }
+        "sha512 hash" in { Hasher.sha512(bytes).hex must_== sha512ed }
+        "crc32 hash" in { Hasher.crc32(bytes).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(bytes).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "Large values in InputStreams" should {
         "md5 hash" in { Hasher.md5(stream).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1(stream).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256(stream).hex must_== sha256ed }
@@ -44,13 +82,9 @@ class LargeValueTest extends Specification {
         "BCrypt hash" in {
             Hasher.bcrypt(stream).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
-
     }
 
-    "For large values, the static methods for Readers" should {
-
-        import hasher.Hasher
-
+    "Large values in Readers" should {
         "md5 hash" in { Hasher.md5(reader).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1(reader).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256(reader).hex must_== sha256ed }
@@ -60,13 +94,9 @@ class LargeValueTest extends Specification {
         "BCrypt hash" in {
             Hasher.bcrypt(reader).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
-
     }
 
-    "For large values, the static methods for Sources" should {
-
-        import hasher.Hasher
-
+    "Large values in Sources" should {
         "md5 hash" in { Hasher.md5(source).hex must_== md5ed }
         "sha1 hash" in { Hasher.sha1(source).hex must_== sha1ed }
         "sha256 hash" in { Hasher.sha256(source).hex must_== sha256ed }
@@ -76,7 +106,6 @@ class LargeValueTest extends Specification {
         "BCrypt hash" in {
             Hasher.bcrypt(source).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
-
     }
 
 }

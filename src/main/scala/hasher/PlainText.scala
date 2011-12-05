@@ -1,6 +1,7 @@
 package hasher
 
 import scala.annotation.tailrec
+import scala.io.Source
 
 import java.io.InputStream
 import java.io.Reader
@@ -113,6 +114,23 @@ private class PlainTextResource (
         try next
         finally resource.close
 
+        digest
+    }
+
+}
+
+/**
+ * Provides a plain text interface for Source objects
+ */
+private class PlainTextSource ( private val source: Source ) extends PlainText {
+
+    /** {@inheritDoc} */
+    override protected[hasher] def fill ( digest: Digest ): Digest = {
+        val buffer = new Array[Byte](8192)
+        source.grouped(8192).foreach { group =>
+            group.map( _.asInstanceOf[Byte] ).copyToArray(buffer)
+            digest.add( buffer, group.length )
+        }
         digest
     }
 

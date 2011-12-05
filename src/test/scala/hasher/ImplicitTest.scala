@@ -5,6 +5,8 @@ import org.specs2.mutable._
 import java.io.ByteArrayInputStream
 import java.io.StringReader
 
+import scala.io.Source
+
 class ImplicitTest extends Specification {
 
 
@@ -14,6 +16,7 @@ class ImplicitTest extends Specification {
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
+    def source = Source.fromBytes( bytes )
 
 
     // These values represent the string "test" as various hashes
@@ -107,6 +110,20 @@ class ImplicitTest extends Specification {
         }
     }
 
+    "On a Source, the implicit hash methods" should {
+
+        import hasher.Implicits._
+
+        "MD5 hash " in { source.md5.hex must_== md5ed }
+        "SHA-1 hash" in { source.sha1.hex must_== sha1ed }
+        "SHA-256 hash" in { source.sha256.hex must_== sha256ed }
+        "SHA-384 hash" in { source.sha384.hex must_== sha384ed }
+        "SHA-512 hash" in { source.sha512.hex must_== sha512ed }
+        "CRC32 hash" in { source.crc32.hex must_== crc32ed }
+        "BCrypt hash" in {
+            source.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
 
 }
 

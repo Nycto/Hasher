@@ -5,6 +5,8 @@ import org.specs2.mutable._
 import java.io.ByteArrayInputStream
 import java.io.StringReader
 
+import scala.io.Source
+
 class CompareTest extends Specification {
 
     // The data being hashed
@@ -13,6 +15,7 @@ class CompareTest extends Specification {
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
+    def source = Source.fromBytes( bytes )
 
 
     // These values represent the string "test" as various hashes
@@ -178,6 +181,29 @@ class CompareTest extends Specification {
         }
         "compare to a BCrypt Hash" in {
             (reader bcryptsTo bcrypted) must beTrue
+        }
+    }
+
+    "On a Source, the implicit compare methods" should {
+
+        import hasher.Implicits._
+
+        "compare to an MD5 Hash" in { (source md5sTo md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (source sha1sTo sha1ed) must beTrue }
+        "compare to a SHA256 Hash" in {
+            (source sha256sTo sha256ed) must beTrue
+        }
+        "compare to a SHA384 Hash" in {
+            (source sha384sTo sha384ed) must beTrue
+        }
+        "compare to a SHA512 Hash" in {
+            (source sha512sTo sha512ed) must beTrue
+        }
+        "compare to a CRC32 Hash" in {
+            (source crc32sTo crc32ed) must beTrue
+        }
+        "compare to a BCrypt Hash" in {
+            (source bcryptsTo bcrypted) must beTrue
         }
     }
 

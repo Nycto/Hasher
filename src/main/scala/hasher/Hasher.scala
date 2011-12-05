@@ -3,6 +3,8 @@ package hasher
 import java.io.InputStream
 import java.io.Reader
 
+import scala.io.Source
+
 
 /**
  * Helper methods for generating hashes
@@ -70,6 +72,11 @@ object Hasher {
      */
     def apply ( from: Reader ): Hasher = new Hasher(from)
 
+    /**
+     * Builds a hasher from a Source
+     */
+    def apply ( from: Source ): Hasher = new Hasher(from)
+
 }
 
 /**
@@ -101,6 +108,11 @@ case class Hasher private ( private val value: PlainText ) {
      * Constructor for accepting Readers.
      */
     def this ( value: Reader ) = this( new PlainTextResource(value) )
+
+    /**
+     * Constructor for accepting Sources.
+     */
+    def this ( value: Source ) = this( new PlainTextSource(value) )
 
     /**
      * Adds a salt from an array of bytes

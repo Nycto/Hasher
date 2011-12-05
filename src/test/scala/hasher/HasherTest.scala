@@ -5,6 +5,8 @@ import org.specs2.mutable._
 import java.io.ByteArrayInputStream
 import java.io.StringReader
 
+import scala.io.Source
+
 class HasherTest extends Specification {
 
 
@@ -14,6 +16,7 @@ class HasherTest extends Specification {
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
+    def source = Source.fromBytes( bytes )
 
 
     // These values represent the string "test" as various hashes
@@ -106,6 +109,21 @@ class HasherTest extends Specification {
         "crc32 hash" in { Hasher.crc32(reader).hex must_== crc32ed }
         "BCrypt hash" in {
             Hasher.bcrypt(reader).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "The static methods for Sources" should {
+
+        import hasher.Hasher
+
+        "md5 hash" in { Hasher.md5(source).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1(source).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256(source).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384(source).hex must_== sha384ed }
+        "sha512 hash" in { Hasher.sha512(source).hex must_== sha512ed }
+        "crc32 hash" in { Hasher.crc32(source).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(source).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
     }
 

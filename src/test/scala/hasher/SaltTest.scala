@@ -13,7 +13,7 @@ class SaltTest extends Specification {
 
         "change the hash" in {
             str.salt("one").salt("two").md5.hex must_== md5ed
-            (str.salt("one").salt("two") md5sTo md5ed) must beTrue
+            (str.salt("one").salt("two") md5= md5ed) must beTrue
         }
     }
 

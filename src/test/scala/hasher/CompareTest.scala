@@ -43,52 +43,52 @@ class CompareTest extends Specification {
         import hasher.Implicits._
 
         "be comparable to an MD5 Hash" in {
-            (str md5sTo md5ed) must beTrue
-            (str md5sTo "AHashThatIsWrong") must beFalse
-            (str md5sTo "SomeHashThatIsWrong") must beFalse
-            (str md5sTo "") must beFalse
+            (str md5= md5ed) must beTrue
+            (str md5= "AHashThatIsWrong") must beFalse
+            (str md5= "SomeHashThatIsWrong") must beFalse
+            (str md5= "") must beFalse
         }
 
         "be comparable to a SHA1 Hash" in {
-            (str sha1sTo sha1ed) must beTrue
-            (str sha1sTo "AHashThatIsWrong") must beFalse
-            (str sha1sTo "SomeHashThatIsWrong") must beFalse
-            (str sha1sTo "") must beFalse
+            (str sha1= sha1ed) must beTrue
+            (str sha1= "AHashThatIsWrong") must beFalse
+            (str sha1= "SomeHashThatIsWrong") must beFalse
+            (str sha1= "") must beFalse
         }
 
         "be comparable to a SHA256 Hash" in {
-            (str sha256sTo sha256ed) must beTrue
-            (str sha256sTo "AHashThatIsWrong") must beFalse
-            (str sha256sTo "SomeHashThatIsWrong") must beFalse
-            (str sha256sTo "") must beFalse
+            (str sha256= sha256ed) must beTrue
+            (str sha256= "AHashThatIsWrong") must beFalse
+            (str sha256= "SomeHashThatIsWrong") must beFalse
+            (str sha256= "") must beFalse
         }
 
         "be comparable to a SHA384 Hash" in {
-            (str sha384sTo sha384ed) must beTrue
-            (str sha384sTo "AHashThatIsWrong") must beFalse
-            (str sha384sTo "SomeHashThatIsWrong") must beFalse
-            (str sha384sTo "") must beFalse
+            (str sha384= sha384ed) must beTrue
+            (str sha384= "AHashThatIsWrong") must beFalse
+            (str sha384= "SomeHashThatIsWrong") must beFalse
+            (str sha384= "") must beFalse
         }
 
         "be comparable to a SHA512 Hash" in {
-            (str sha512sTo sha512ed) must beTrue
-            (str sha512sTo "AHashThatIsWrong") must beFalse
-            (str sha512sTo "SomeHashThatIsWrong") must beFalse
-            (str sha512sTo "") must beFalse
+            (str sha512= sha512ed) must beTrue
+            (str sha512= "AHashThatIsWrong") must beFalse
+            (str sha512= "SomeHashThatIsWrong") must beFalse
+            (str sha512= "") must beFalse
         }
 
         "be comparable to a CRC32 Hash" in {
-            (str crc32sTo crc32ed) must beTrue
-            (str crc32sTo "AHashThatIsWrong") must beFalse
-            (str crc32sTo "SomeHashThatIsWrong") must beFalse
-            (str crc32sTo "") must beFalse
+            (str crc32= crc32ed) must beTrue
+            (str crc32= "AHashThatIsWrong") must beFalse
+            (str crc32= "SomeHashThatIsWrong") must beFalse
+            (str crc32= "") must beFalse
         }
 
         "be comparable to a BCrypt Hash" in {
-            (str bcryptsTo bcrypted) must beTrue
-            (str bcryptsTo "AHashThatIsWrong") must beFalse
-            (str bcryptsTo "SomeHashThatIsWrong") must beFalse
-            (str bcryptsTo "") must beFalse
+            (str bcrypt= bcrypted) must beTrue
+            (str bcrypt= "AHashThatIsWrong") must beFalse
+            (str bcrypt= "SomeHashThatIsWrong") must beFalse
+            (str bcrypt= "") must beFalse
         }
     }
 
@@ -96,22 +96,22 @@ class CompareTest extends Specification {
 
         import hasher.Implicits._
 
-        "compare to an MD5 Hash" in { (builder md5sTo md5ed) must beTrue }
-        "compare to a SHA1 Hash" in { (builder sha1sTo sha1ed) must beTrue }
+        "compare to an MD5 Hash" in { (builder md5= md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (builder sha1= sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
-            (builder sha256sTo sha256ed) must beTrue
+            (builder sha256= sha256ed) must beTrue
         }
         "compare to a SHA384 Hash" in {
-            (builder sha384sTo sha384ed) must beTrue
+            (builder sha384= sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
-            (builder sha512sTo sha512ed) must beTrue
+            (builder sha512= sha512ed) must beTrue
         }
         "compare to a CRC32 Hash" in {
-            (builder crc32sTo crc32ed) must beTrue
+            (builder crc32= crc32ed) must beTrue
         }
         "compare to a BCrypt Hash" in {
-            (builder bcryptsTo bcrypted) must beTrue
+            (builder bcrypt= bcrypted) must beTrue
         }
     }
 
@@ -119,22 +119,22 @@ class CompareTest extends Specification {
 
         import hasher.Implicits._
 
-        "compare to an MD5 Hash" in { (bytes md5sTo md5ed) must beTrue }
-        "compare to a SHA1 Hash" in { (bytes sha1sTo sha1ed) must beTrue }
+        "compare to an MD5 Hash" in { (bytes md5= md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (bytes sha1= sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
-            (bytes sha256sTo sha256ed) must beTrue
+            (bytes sha256= sha256ed) must beTrue
         }
         "compare to a SHA384 Hash" in {
-            (bytes sha384sTo sha384ed) must beTrue
+            (bytes sha384= sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
-            (bytes sha512sTo sha512ed) must beTrue
+            (bytes sha512= sha512ed) must beTrue
         }
         "compare to a CRC32 Hash" in {
-            (bytes crc32sTo crc32ed) must beTrue
+            (bytes crc32= crc32ed) must beTrue
         }
         "compare to a BCrypt Hash" in {
-            (bytes bcryptsTo bcrypted) must beTrue
+            (bytes bcrypt= bcrypted) must beTrue
         }
     }
 
@@ -142,22 +142,22 @@ class CompareTest extends Specification {
 
         import hasher.Implicits._
 
-        "compare to an MD5 Hash" in { (stream md5sTo md5ed) must beTrue }
-        "compare to a SHA1 Hash" in { (stream sha1sTo sha1ed) must beTrue }
+        "compare to an MD5 Hash" in { (stream md5= md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (stream sha1= sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
-            (stream sha256sTo sha256ed) must beTrue
+            (stream sha256= sha256ed) must beTrue
         }
         "compare to a SHA384 Hash" in {
-            (stream sha384sTo sha384ed) must beTrue
+            (stream sha384= sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
-            (stream sha512sTo sha512ed) must beTrue
+            (stream sha512= sha512ed) must beTrue
         }
         "compare to a CRC32 Hash" in {
-            (stream crc32sTo crc32ed) must beTrue
+            (stream crc32= crc32ed) must beTrue
         }
         "compare to a BCrypt Hash" in {
-            (stream bcryptsTo bcrypted) must beTrue
+            (stream bcrypt= bcrypted) must beTrue
         }
     }
 
@@ -165,22 +165,22 @@ class CompareTest extends Specification {
 
         import hasher.Implicits._
 
-        "compare to an MD5 Hash" in { (reader md5sTo md5ed) must beTrue }
-        "compare to a SHA1 Hash" in { (reader sha1sTo sha1ed) must beTrue }
+        "compare to an MD5 Hash" in { (reader md5= md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (reader sha1= sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
-            (reader sha256sTo sha256ed) must beTrue
+            (reader sha256= sha256ed) must beTrue
         }
         "compare to a SHA384 Hash" in {
-            (reader sha384sTo sha384ed) must beTrue
+            (reader sha384= sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
-            (reader sha512sTo sha512ed) must beTrue
+            (reader sha512= sha512ed) must beTrue
         }
         "compare to a CRC32 Hash" in {
-            (reader crc32sTo crc32ed) must beTrue
+            (reader crc32= crc32ed) must beTrue
         }
         "compare to a BCrypt Hash" in {
-            (reader bcryptsTo bcrypted) must beTrue
+            (reader bcrypt= bcrypted) must beTrue
         }
     }
 
@@ -188,22 +188,22 @@ class CompareTest extends Specification {
 
         import hasher.Implicits._
 
-        "compare to an MD5 Hash" in { (source md5sTo md5ed) must beTrue }
-        "compare to a SHA1 Hash" in { (source sha1sTo sha1ed) must beTrue }
+        "compare to an MD5 Hash" in { (source md5= md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (source sha1= sha1ed) must beTrue }
         "compare to a SHA256 Hash" in {
-            (source sha256sTo sha256ed) must beTrue
+            (source sha256= sha256ed) must beTrue
         }
         "compare to a SHA384 Hash" in {
-            (source sha384sTo sha384ed) must beTrue
+            (source sha384= sha384ed) must beTrue
         }
         "compare to a SHA512 Hash" in {
-            (source sha512sTo sha512ed) must beTrue
+            (source sha512= sha512ed) must beTrue
         }
         "compare to a CRC32 Hash" in {
-            (source crc32sTo crc32ed) must beTrue
+            (source crc32= crc32ed) must beTrue
         }
         "compare to a BCrypt Hash" in {
-            (source bcryptsTo bcrypted) must beTrue
+            (source bcrypt= bcrypted) must beTrue
         }
     }
 

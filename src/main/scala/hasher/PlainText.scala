@@ -48,6 +48,11 @@ private class PlainTextBytes (
      */
     def this ( value: String ) = this( value.getBytes )
 
+    /**
+     * Creates an instance from a StringBuilder
+     */
+    def this ( value: StringBuilder ) = this( value.toString )
+
     /** {@inheritDoc} */
     override protected[hasher] def fill ( digest: Digest ): Digest
         = digest.add( value, value.length )

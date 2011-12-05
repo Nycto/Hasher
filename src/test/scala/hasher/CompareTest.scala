@@ -9,6 +9,7 @@ class CompareTest extends Specification {
 
     // The data being hashed
     val str: String = "test"
+    val builder: StringBuilder = new StringBuilder(str)
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
@@ -85,6 +86,29 @@ class CompareTest extends Specification {
             (str bcryptsTo "AHashThatIsWrong") must beFalse
             (str bcryptsTo "SomeHashThatIsWrong") must beFalse
             (str bcryptsTo "") must beFalse
+        }
+    }
+
+    "On a StringBuilder, the implicit compare methods" should {
+
+        import hasher.Implicits._
+
+        "compare to an MD5 Hash" in { (builder md5sTo md5ed) must beTrue }
+        "compare to a SHA1 Hash" in { (builder sha1sTo sha1ed) must beTrue }
+        "compare to a SHA256 Hash" in {
+            (builder sha256sTo sha256ed) must beTrue
+        }
+        "compare to a SHA384 Hash" in {
+            (builder sha384sTo sha384ed) must beTrue
+        }
+        "compare to a SHA512 Hash" in {
+            (builder sha512sTo sha512ed) must beTrue
+        }
+        "compare to a CRC32 Hash" in {
+            (builder crc32sTo crc32ed) must beTrue
+        }
+        "compare to a BCrypt Hash" in {
+            (builder bcryptsTo bcrypted) must beTrue
         }
     }
 

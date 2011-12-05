@@ -15,6 +15,12 @@ object Implicits {
     implicit def stringToHasher ( from: String ): Hasher = Hasher(from)
 
     /**
+     * Implicitly creates a hasher from a StringBuilder.
+     */
+    implicit def stringBuilderToHasher ( from: StringBuilder ): Hasher
+        = Hasher(from)
+
+    /**
      * Implicitly creates a hasher from a byte array.
      */
     implicit def byteArrayToHasher ( from: Array[Byte] ): Hasher = Hasher(from)

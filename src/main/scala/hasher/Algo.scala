@@ -16,6 +16,12 @@ class Algo ( private val digest: Digest.Builder ) {
         = new PlainTextBytes(value).hash( digest )
 
     /**
+     * Generates a hash of a string
+     */
+    def apply ( value: StringBuilder ): Hash
+        = new PlainTextBytes(value).hash( digest )
+
+    /**
      * Generates a hash of a byte array
      */
     def apply ( value: Array[Byte] ): Hash

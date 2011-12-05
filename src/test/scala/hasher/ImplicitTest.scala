@@ -10,6 +10,7 @@ class ImplicitTest extends Specification {
 
     // The data being hashed
     val str: String = "test"
+    val builder: StringBuilder = new StringBuilder(str)
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
@@ -43,6 +44,21 @@ class ImplicitTest extends Specification {
         "CRC32 hash" in { str.crc32.hex must_== crc32ed }
         "BCrypt hash" in {
             str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "On a StringBuilder, the implicit hash methods" should {
+
+        import hasher.Implicits._
+
+        "MD5 hash" in { builder.md5.hex must_== md5ed }
+        "SHA-1 hash" in { builder.sha1.hex must_== sha1ed }
+        "SHA-256 hash" in { builder.sha256.hex must_== sha256ed }
+        "SHA-384 hash" in { builder.sha384.hex must_== sha384ed }
+        "SHA-512 hash" in { builder.sha512.hex must_== sha512ed }
+        "CRC32 hash" in { builder.crc32.hex must_== crc32ed }
+        "BCrypt hash" in {
+            builder.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
     }
 

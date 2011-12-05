@@ -56,6 +56,11 @@ object Hasher {
     def apply ( from: String ): Hasher = new Hasher(from)
 
     /**
+     * Builds a Hasher from a StringBuilder
+     */
+    def apply ( from: StringBuilder ): Hasher = new Hasher(from)
+
+    /**
      * Builds a Hasher from an InputStream
      */
     def apply ( from: InputStream ): Hasher = new Hasher(from)
@@ -81,6 +86,11 @@ case class Hasher private ( private val value: PlainText ) {
      * Constructor for accepting strings.
      */
     def this ( value: String ) = this( value.getBytes )
+
+    /**
+     * Constructor for accepting StringBuilders.
+     */
+    def this ( value: StringBuilder ) = this( value.toString )
 
     /**
      * Constructor for accepting InputStream.

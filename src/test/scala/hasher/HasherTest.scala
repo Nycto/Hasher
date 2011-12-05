@@ -10,6 +10,7 @@ class HasherTest extends Specification {
 
     // The data being hashed
     val str: String = "test"
+    val builder: StringBuilder = new StringBuilder(str)
     val bytes: Array[Byte] = str.getBytes
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
@@ -44,6 +45,22 @@ class HasherTest extends Specification {
         "crc32 hash" in { Hasher.crc32( str ).hex must_== crc32ed }
         "BCrypt hash" in {
             Hasher.bcrypt(str).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
+    }
+
+    "The static methods for StringBuilders" should {
+
+        import hasher.Hasher
+
+        "md5 hash" in { Hasher.md5( builder ).hex must_== md5ed }
+        "sha1 hash" in { Hasher.sha1( builder ).hex must_== sha1ed }
+        "sha256 hash" in { Hasher.sha256( builder ).hex must_== sha256ed }
+        "sha384 hash" in { Hasher.sha384( builder ).hex must_== sha384ed }
+        "sha256 hash" in { Hasher.sha256( builder ).hex must_== sha256ed }
+        "sha512 hash" in { Hasher.sha512( builder ).hex must_== sha512ed }
+        "crc32 hash" in { Hasher.crc32( builder ).hex must_== crc32ed }
+        "BCrypt hash" in {
+            Hasher.bcrypt(builder).hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
     }
 

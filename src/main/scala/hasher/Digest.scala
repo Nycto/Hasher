@@ -64,6 +64,24 @@ object Digest {
 
     private[hasher] val bcrypt = Builder( (build) => new BCryptDigest )
 
+    /**
+     * A helper method for comparing byte arrays for equality. This method
+     * is safe from timing attacks
+     */
+    private[hasher] def compare ( a: Array[Byte], b: Array[Byte] ) = {
+        // I opted for writing my own instead of using the MessageDigest
+        // function because of this article:
+        // http://codahale.com/a-lesson-in-timing-attacks/
+        // Yes, the bug was fixed, but this means better support for someone
+        // using an old version
+        if ( a.length != b.length ) false
+        else {
+            (0 until a.length).foldLeft(0) {
+                (accum, i) => accum | ( a(i) ^ b(i) )
+            } == 0
+        }
+    }
+
 }
 
 /**
@@ -91,7 +109,7 @@ private class MessageDigest (
 
     /** {@inheritDoc} */
     override def hashesTo ( vs: Hash ): Boolean
-        = jMessageDigest.isEqual( jDigest.digest, vs.bytes )
+        = Digest.compare( jDigest.digest, vs.bytes )
 
 }
 
@@ -101,7 +119,6 @@ private class MessageDigest (
 private class CRC32Digest extends Digest {
 
     import java.util.zip.CRC32
-    import java.security.MessageDigest
 
     /**
      * The digest to collect data into
@@ -133,7 +150,7 @@ private class CRC32Digest extends Digest {
 
     /** {@inheritDoc} */
     override def hashesTo ( vs: Hash ): Boolean
-        = MessageDigest.isEqual( hash.bytes, vs.bytes )
+        = Digest.compare( hash.bytes, vs.bytes )
 
 }
 

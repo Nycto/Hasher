@@ -78,6 +78,7 @@ class ImplicitTest extends Specification {
             (data.str md5= "AHashThatIsWrong") must beFalse
             (data.str md5= "SomeHashThatIsWrong") must beFalse
             (data.str md5= "") must beFalse
+            (data.str md5= ("other".md5)) must beFalse
         }
 
         "be comparable to a SHA1 Hash" in {
@@ -85,6 +86,7 @@ class ImplicitTest extends Specification {
             (data.str sha1= "AHashThatIsWrong") must beFalse
             (data.str sha1= "SomeHashThatIsWrong") must beFalse
             (data.str sha1= "") must beFalse
+            (data.str sha1= ("other".sha1)) must beFalse
         }
 
         "be comparable to a SHA256 Hash" in {
@@ -92,6 +94,7 @@ class ImplicitTest extends Specification {
             (data.str sha256= "AHashThatIsWrong") must beFalse
             (data.str sha256= "SomeHashThatIsWrong") must beFalse
             (data.str sha256= "") must beFalse
+            (data.str sha256= ("other".sha256)) must beFalse
         }
 
         "be comparable to a SHA384 Hash" in {
@@ -99,6 +102,7 @@ class ImplicitTest extends Specification {
             (data.str sha384= "AHashThatIsWrong") must beFalse
             (data.str sha384= "SomeHashThatIsWrong") must beFalse
             (data.str sha384= "") must beFalse
+            (data.str sha384= ("other".sha384)) must beFalse
         }
 
         "be comparable to a SHA512 Hash" in {
@@ -106,6 +110,7 @@ class ImplicitTest extends Specification {
             (data.str sha512= "AHashThatIsWrong") must beFalse
             (data.str sha512= "SomeHashThatIsWrong") must beFalse
             (data.str sha512= "") must beFalse
+            (data.str sha512= ("other".sha512)) must beFalse
         }
 
         "be comparable to a CRC32 Hash" in {
@@ -113,6 +118,7 @@ class ImplicitTest extends Specification {
             (data.str crc32= "AHashThatIsWrong") must beFalse
             (data.str crc32= "SomeHashThatIsWrong") must beFalse
             (data.str crc32= "") must beFalse
+            (data.str crc32= ("other".crc32)) must beFalse
         }
 
         "be comparable to a BCrypt Hash" in {
@@ -120,6 +126,7 @@ class ImplicitTest extends Specification {
             (data.str bcrypt= "AHashThatIsWrong") must beFalse
             (data.str bcrypt= "SomeHashThatIsWrong") must beFalse
             (data.str bcrypt= "") must beFalse
+            (data.str bcrypt= ("other".bcrypt)) must beFalse
         }
     }
 

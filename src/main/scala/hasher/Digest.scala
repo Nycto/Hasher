@@ -142,10 +142,14 @@ private class CRC32Digest extends Digest {
         // Convert the int returned by CRC32 into a byte list
         val bytes = ByteBuffer.allocate(8).putLong( digest.getValue ).array
 
-        // Trim any leading zeroes off of the byte list
-        val trimmed = bytes.dropWhile( _ == 0 ).toArray
+        // Count the number of zero bytes on the left, but leave at
+        // least 4 bytes
+        val toTrim = bytes.indexWhere( _ != 0 ) match {
+            case -1 => 4
+            case zeroes => zeroes.min( bytes.length - 4 )
+        }
 
-        Hash( trimmed )
+        Hash( bytes.drop( toTrim ).toArray )
     }
 
     /** {@inheritDoc} */

@@ -110,6 +110,12 @@ class AlgoTest extends Specification {
         TestData.large.runAgainstAll(compareTest)
     }
 
+    // Test hashing a blank string
+    "Blank string" should {
+        testBCrypt( TestData.blank )
+        TestData.blank.runAgainstUnsalted(hashTest)
+        TestData.blank.runAgainstAll(compareTest)
+    }
 
 }
 

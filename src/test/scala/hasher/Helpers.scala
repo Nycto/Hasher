@@ -83,6 +83,30 @@ object TestData {
             "3333736f64615464477a6b42684857"
     )
 
+    // Empty data
+    val blank = TestData(
+        bytes = "".getBytes,
+        md5ed = "d41d8cd98f00b204e9800998ecf8427e",
+        sha1ed = "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+        sha256ed =
+            "e3b0c44298fc1c149afbf4c8996fb924" +
+            "27ae41e4649b934ca495991b7852b855",
+        sha384ed =
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be0743" +
+            "4c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b",
+        sha512ed =
+            "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc" +
+            "83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f" +
+            "63b931bd47417a81a538327af927da3e",
+        crc32ed = "00000000",
+        bcrypted =
+            "24326124313024646665575364666f" +
+            "72464b75684b61456e746c31567541" +
+            "6c39494c783830722e33537a554438" +
+            "6b315558317956646777614d525347"
+    )
+
+
 }
 
 /**

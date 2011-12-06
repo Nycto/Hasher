@@ -1,12 +1,15 @@
 package hasher
 
-import java.io.InputStream
-
 
 /**
  * The base class for a hashing algorithm
  */
 trait Digest {
+
+    /**
+     * Returns the name of this digest algorithm.
+     */
+    def name: String
 
     /**
      * Adds a list of bytes to this algorithm
@@ -67,7 +70,7 @@ object Digest {
  * The implementation for hashes that use MessageDigest
  */
 private class MessageDigest (
-    private val digest: Digest.Builder, name: String
+    private val digest: Digest.Builder, override val name: String
 ) extends Digest {
 
     import java.security.{MessageDigest => jMessageDigest}
@@ -106,6 +109,9 @@ private class CRC32Digest extends Digest {
     private val digest = new CRC32
 
     /** {@inheritDoc} */
+    override val name = "CRC32"
+
+    /** {@inheritDoc} */
     override def add ( bytes: Array[Byte], length: Int ): Digest = {
         digest.update(bytes, 0, length)
         this
@@ -142,6 +148,9 @@ private class BCryptDigest extends Digest {
      * The collected value to hash
      */
     private val value = new StringBuilder
+
+    /** {@inheritDoc} */
+    override val name = "BCrypt"
 
     /** {@inheritDoc} */
     override def add ( bytes: Array[Byte], length: Int ): Digest = {

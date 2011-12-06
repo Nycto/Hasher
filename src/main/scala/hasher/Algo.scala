@@ -11,6 +11,9 @@ import scala.io.Source
  */
 class Algo ( private val digest: Digest.Builder ) {
 
+    /** {@inheritDoc} */
+    override def toString = digest().name
+
     /**
      * Generates a hash of a PlainText source
      */

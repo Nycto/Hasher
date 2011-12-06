@@ -82,19 +82,20 @@ private class PlainTextResource (
      * Constructor for creating a resource from a Reader
      */
     def this ( reader: Reader ) = this( new {
-        private val buffer = new Array[Char](8129)
+        private val buffer = new Array[Char](1024)
         def read( bytes: Array[Byte] ): Int = buffer.synchronized {
+
             // Readers operate on Chars, but we need bytes. So, we buffer
             // the Char array then convert each value to a byte
             val read = reader.read( buffer )
-            @tailrec def copy ( i: Int ): Unit = {
-                if ( i < read ) {
-                    bytes(i) = buffer(i).asInstanceOf[Byte]
-                    copy ( i + 1 )
+            ( read  <= 0 ) match {
+                case true => -1
+                case false => {
+                    val readBytes = new String( buffer, 0, read ).getBytes
+                    Array.copy( readBytes, 0, bytes, 0, readBytes.length )
+                    readBytes.length
                 }
             }
-            copy(0)
-            read
         }
         def close: Unit = reader.close
     })
@@ -126,10 +127,9 @@ private class PlainTextSource ( private val source: Source ) extends PlainText {
 
     /** {@inheritDoc} */
     override protected[hasher] def fill ( digest: Digest ): Digest = {
-        val buffer = new Array[Byte](8192)
         source.grouped(8192).foreach { group =>
-            group.map( _.asInstanceOf[Byte] ).copyToArray(buffer)
-            digest.add( buffer, group.length )
+            val bytes = new String( group.toArray ).getBytes
+            digest.add( bytes, bytes.length )
         }
         digest
     }

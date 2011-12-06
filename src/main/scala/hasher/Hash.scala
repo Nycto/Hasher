@@ -11,6 +11,16 @@ object Hash {
      */
     def apply ( string: String ) = new Hash(string)
 
+    /**
+     * Implicitly converts from a hash to a string
+     */
+    implicit def hashToString ( from: Hash ): String = from.hex
+
+    /**
+     * Implicitly converts from a hash to a byte array
+     */
+    implicit def hashToByteArray ( from: Hash ): Array[Byte] = from.bytes
+
 }
 
 /**

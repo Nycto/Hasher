@@ -110,7 +110,7 @@ Here is an example app that does salting:
 
 package org.example.hasher
 
-import hasher.Hasher
+import com.roundeights.hasher.Hasher
 
 object Main {
     def main(args: Array[String]) = {
@@ -133,7 +133,7 @@ like this:
 
 package org.example.hasher
 
-import hasher.Implicits._
+import com.roundeights.hasher.Implicits._
 
 object Main {
     def main(args: Array[String]) = {
@@ -158,7 +158,7 @@ application as above, but implemented without implicits:
 
 package org.example.hasher
 
-import hasher.Hasher
+import com.roundeights.hasher.Hasher
 
 object Main {
     def main(args: Array[String]) = {
@@ -240,7 +240,7 @@ hashing algorithm. This can be achieved by using the Algo class:
 
 package org.example.hasher
 
-import hasher.{Hasher, Algo}
+import com.roundeights.hasher.{Hasher, Algo}
 
 object Main {
 

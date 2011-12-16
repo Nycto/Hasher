@@ -1,4 +1,4 @@
-package test.scala.hasher
+package test.roundeights.hasher
 
 import org.specs2.mutable._
 
@@ -8,7 +8,7 @@ class HasherTest extends Specification {
 
     "The static Hasher methods" should {
 
-        import hasher.Hasher
+        import com.roundeights.hasher.Hasher
 
         "md5 hash" in {
             Hasher.md5( data.str ).hex must_== data.md5ed

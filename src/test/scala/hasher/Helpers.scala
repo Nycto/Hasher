@@ -1,8 +1,8 @@
-package test.scala.hasher
+package test.roundeights.hasher
 
 import org.specs2.specification.Example
 
-import hasher.{Algo, Hasher}
+import com.roundeights.hasher.{Algo, Hasher}
 
 import java.io.ByteArrayInputStream
 import java.io.StringReader

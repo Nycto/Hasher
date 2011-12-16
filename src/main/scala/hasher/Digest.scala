@@ -1,4 +1,4 @@
-package hasher
+package com.roundeights.hasher
 
 
 /**

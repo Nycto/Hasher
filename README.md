@@ -33,7 +33,7 @@ Here is a sample app showing how to use these various methods:
 
     package org.example.hasher
 
-    import hasher.Implicits._
+    import com.roundeights.hasher.Implicits._
 
     object Main {
         def main(args: Array[String]) = {

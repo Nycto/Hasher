@@ -1,4 +1,4 @@
-package test.scala.hasher
+package test.roundeights.hasher
 
 import org.specs2.mutable._
 
@@ -12,7 +12,7 @@ class HashTest extends Specification {
 
     "A Hash" should {
 
-        import hasher.Implicits._
+        import com.roundeights.hasher.Implicits._
 
         "convert to a string implicitly" in {
             val hash: String = str.md5

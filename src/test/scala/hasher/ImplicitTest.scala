@@ -1,4 +1,4 @@
-package test.scala.hasher
+package test.roundeights.hasher
 
 import org.specs2.mutable._
 
@@ -13,8 +13,8 @@ class ImplicitTest extends Specification {
 
     "Implicit converstion to a Hasher" should {
 
-        import hasher.Implicits._
-        import hasher.Hasher
+        import com.roundeights.hasher.Implicits._
+        import com.roundeights.hasher.Hasher
 
         "work for Strings" in {
             val value: Hasher = data.str
@@ -44,7 +44,7 @@ class ImplicitTest extends Specification {
 
     "The implicit hashing methods" should {
 
-        import hasher.Implicits._
+        import com.roundeights.hasher.Implicits._
 
         "MD5 hash" in {
             data.str.md5.hex must_== data.md5ed
@@ -71,7 +71,7 @@ class ImplicitTest extends Specification {
 
     "The implicit compare methods" should {
 
-        import hasher.Implicits._
+        import com.roundeights.hasher.Implicits._
 
         "be comparable to an MD5 Hash" in {
             (data.str md5= data.md5ed) must beTrue
@@ -132,7 +132,7 @@ class ImplicitTest extends Specification {
 
     "The implicit salt method" should {
 
-        import hasher.Implicits._
+        import com.roundeights.hasher.Implicits._
 
         val str: String = "test"
         val md5ed = "d615489ad65aad3f6138728a02221e95"

@@ -1,8 +1,8 @@
-package test.scala.hasher
+package test.roundeights.hasher
 
 import org.specs2.mutable._
 
-import hasher.{Algo, Hasher}
+import com.roundeights.hasher.{Algo, Hasher}
 
 class AlgoTest extends Specification {
 

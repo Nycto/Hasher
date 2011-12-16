@@ -1,4 +1,4 @@
-package hasher
+package com.roundeights.hasher
 
 import java.io.InputStream
 import java.io.Reader

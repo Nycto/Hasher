@@ -18,6 +18,22 @@ Supported Hashing Algorithms
 * `CRC32`
 
 
+Adding it to your Project
+-------------------------
+
+Hasher is not currently hosted in any publicly available maven repositories,
+but adding it to your project is still simple. If you are using sbt v0.10,
+all you have to do is add the following to your `build.sbt` file:
+
+```
+
+libraryDependencies ++= Seq(
+    "com.roundeights" % "hasher" % "0.1" from "http://cloud.github.com/downloads/Nycto/Hasher/hasher_2.9.1-0.2.jar"
+)
+
+```
+
+
 Basic Usage
 -----------
 

@@ -31,40 +31,44 @@ supported algorithm, you get:
 
 Here is a sample app showing how to use these various methods:
 
-    package org.example.hasher
+```scala
 
-    import com.roundeights.hasher.Implicits._
+package org.example.hasher
 
-    object Main {
-        def main(args: Array[String]) = {
+import com.roundeights.hasher.Implicits._
 
-            val hashMe = "Some String"
+object Main {
+    def main(args: Array[String]) = {
 
-            // Generate set of hashes using various algorithms
-            val hashes = Map(
-                "MD5" -> hashMe.md5,
-                "SHA1" -> hashMe.sha1,
-                "SHA256" -> hashMe.sha256,
-                "SHA384" -> hashMe.sha384,
-                "SHA512" -> hashMe.sha512,
-                "CRC32" -> hashMe.crc32,
-                "BCrypt" -> hashMe.bcrypt
-            )
+        val hashMe = "Some String"
 
-            // Print each of the calculated hashes
-            hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+        // Generate set of hashes using various algorithms
+        val hashes = Map(
+            "MD5" -> hashMe.md5,
+            "SHA1" -> hashMe.sha1,
+            "SHA256" -> hashMe.sha256,
+            "SHA384" -> hashMe.sha384,
+            "SHA512" -> hashMe.sha512,
+            "CRC32" -> hashMe.crc32,
+            "BCrypt" -> hashMe.bcrypt
+        )
 
-            // Now compare the original value to each hashed value
-            // and print the boolean result
-            println("MD5 Matches: " + (hashMe md5= hashes("MD5")) )
-            println("SHA1 Matches: " + (hashMe sha1= hashes("SHA1")) )
-            println("SHA256 Matches: " + (hashMe sha256= hashes("SHA256")) )
-            println("SHA384 Matches: " + (hashMe sha384= hashes("SHA384")) )
-            println("SHA512 Matches: " + (hashMe sha512= hashes("SHA512")) )
-            println("CRC32 Matches: " + (hashMe crc32= hashes("CRC32")) )
-            println("BCrypt Matches: " + (hashMe bcrypt= hashes("BCrypt")) )
-        }
+        // Print each of the calculated hashes
+        hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+
+        // Now compare the original value to each hashed value
+        // and print the boolean result
+        println("MD5 Matches: " + (hashMe md5= hashes("MD5")) )
+        println("SHA1 Matches: " + (hashMe sha1= hashes("SHA1")) )
+        println("SHA256 Matches: " + (hashMe sha256= hashes("SHA256")) )
+        println("SHA384 Matches: " + (hashMe sha384= hashes("SHA384")) )
+        println("SHA512 Matches: " + (hashMe sha512= hashes("SHA512")) )
+        println("CRC32 Matches: " + (hashMe crc32= hashes("CRC32")) )
+        println("BCrypt Matches: " + (hashMe bcrypt= hashes("BCrypt")) )
     }
+}
+
+```
 
 The implicit methods currently work on the following types:
 
@@ -86,16 +90,20 @@ than being prepended to the plain text value.
 
 Here is an example app that does salting:
 
-    package org.example.hasher
+```scala
 
-    import hasher.Hasher
+package org.example.hasher
 
-    object Main {
-        def main(args: Array[String]) = {
-            val hashMe = "Some String"
-            println( "Salted MD5: " + hashMe.salt("sweet").md5 )
-        }
+import hasher.Hasher
+
+object Main {
+    def main(args: Array[String]) = {
+        val hashMe = "Some String"
+        println( "Salted MD5: " + hashMe.salt("sweet").md5 )
     }
+}
+
+```
 
 
 Getting the bytes of a hash
@@ -105,17 +113,21 @@ If you need direct access to the bytes of a generated Hash instead of a
 hex encoded string, you can implicitly convert them to an Array of Bytes,
 like this:
 
-    package org.example.hasher
+```scala
 
-    import hasher.Implicits._
+package org.example.hasher
 
-    object Main {
-        def main(args: Array[String]) = {
-            val hashMe = "Some String"
-            val hashBytes: Array[Byte] = hashMe.md5
-            println("MD5 Hash Bytes: " + hashBytes.mkString(" "))
-        }
+import hasher.Implicits._
+
+object Main {
+    def main(args: Array[String]) = {
+        val hashMe = "Some String"
+        val hashBytes: Array[Byte] = hashMe.md5
+        println("MD5 Hash Bytes: " + hashBytes.mkString(" "))
     }
+}
+
+```
 
 
 Non-Implicit Usage
@@ -126,59 +138,63 @@ they do is generate a Hasher object, which is what actually has all the methods
 attached to it. You can just do that on your own, if you want. Here is the same
 application as above, but implemented without implicits:
 
-    package org.example.hasher
+```scala
 
-    import hasher.Hasher
+package org.example.hasher
 
-    object Main {
-        def main(args: Array[String]) = {
+import hasher.Hasher
 
-            val hashMe = "Some String"
+object Main {
+    def main(args: Array[String]) = {
 
-            // Generate set of hashes using various algorithms
-            val hashes = Map(
-                "MD5" -> Hasher( hashMe ).md5,
-                "SHA1" -> Hasher( hashMe ).sha1,
-                "SHA256" -> Hasher( hashMe ).sha256,
-                "SHA384" -> Hasher( hashMe ).sha384,
-                "SHA512" -> Hasher( hashMe ).sha512,
-                "CRC32" -> Hasher( hashMe ).crc32,
-                "BCrypt" -> Hasher( hashMe ).bcrypt
-            )
+        val hashMe = "Some String"
 
-            // Print each of the calculated hashes of Hashes
-            hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+        // Generate set of hashes using various algorithms
+        val hashes = Map(
+            "MD5" -> Hasher( hashMe ).md5,
+            "SHA1" -> Hasher( hashMe ).sha1,
+            "SHA256" -> Hasher( hashMe ).sha256,
+            "SHA384" -> Hasher( hashMe ).sha384,
+            "SHA512" -> Hasher( hashMe ).sha512,
+            "CRC32" -> Hasher( hashMe ).crc32,
+            "BCrypt" -> Hasher( hashMe ).bcrypt
+        )
 
-            println(
-                "MD5 Matches: " +
-                (Hasher(hashMe).md5= hashes("MD5"))
-            )
-            println(
-                "SHA1 Matches: " +
-                (Hasher(hashMe).sha1= hashes("SHA1"))
-            )
-            println(
-                "SHA256 Matches: " +
-                (Hasher(hashMe).sha256= hashes("SHA256"))
-            )
-            println(
-                "SHA384 Matches: " +
-                (Hasher(hashMe).sha384= hashes("SHA384"))
-            )
-            println(
-                "SHA512 Matches: " +
-                (Hasher(hashMe).sha512= hashes("SHA512"))
-            )
-            println(
-                "CRC32 Matches: " +
-                (Hasher(hashMe).crc32= hashes("CRC32"))
-            )
-            println(
-                "BCrypt Matches: " +
-                (Hasher(hashMe).bcrypt= hashes("BCrypt"))
-            )
-        }
+        // Print each of the calculated hashes of Hashes
+        hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+
+        println(
+            "MD5 Matches: " +
+            (Hasher(hashMe).md5= hashes("MD5"))
+        )
+        println(
+            "SHA1 Matches: " +
+            (Hasher(hashMe).sha1= hashes("SHA1"))
+        )
+        println(
+            "SHA256 Matches: " +
+            (Hasher(hashMe).sha256= hashes("SHA256"))
+        )
+        println(
+            "SHA384 Matches: " +
+            (Hasher(hashMe).sha384= hashes("SHA384"))
+        )
+        println(
+            "SHA512 Matches: " +
+            (Hasher(hashMe).sha512= hashes("SHA512"))
+        )
+        println(
+            "CRC32 Matches: " +
+            (Hasher(hashMe).crc32= hashes("CRC32"))
+        )
+        println(
+            "BCrypt Matches: " +
+            (Hasher(hashMe).bcrypt= hashes("BCrypt"))
+        )
     }
+}
+
+```
 
 
 Why use the `hash=` methods?
@@ -204,30 +220,34 @@ Swapping out Algorithms
 You might want to build your application so that you can swap out your
 hashing algorithm. This can be achieved by using the Algo class:
 
-    package org.example.hasher
+```scala
 
-    import hasher.{Hasher, Algo}
+package org.example.hasher
 
-    object Main {
+import hasher.{Hasher, Algo}
 
-        val hashMe = "Some String"
+object Main {
 
-        def hashUsing ( algo: Algo ) = {
-            val hash = algo( hashMe )
-            println( "Hashed using " + algo + ": " + hash )
-            println( "Matches: " + algo.compare(hashMe, hash) )
-        }
+    val hashMe = "Some String"
 
-        def main(args: Array[String]) = {
-            hashUsing( Hasher.md5 )
-            hashUsing( Hasher.sha1 )
-            hashUsing( Hasher.sha256 )
-            hashUsing( Hasher.sha384 )
-            hashUsing( Hasher.sha512 )
-            hashUsing( Hasher.crc32 )
-            hashUsing( Hasher.bcrypt )
-        }
+    def hashUsing ( algo: Algo ) = {
+        val hash = algo( hashMe )
+        println( "Hashed using " + algo + ": " + hash )
+        println( "Matches: " + algo.compare(hashMe, hash) )
     }
+
+    def main(args: Array[String]) = {
+        hashUsing( Hasher.md5 )
+        hashUsing( Hasher.sha1 )
+        hashUsing( Hasher.sha256 )
+        hashUsing( Hasher.sha384 )
+        hashUsing( Hasher.sha512 )
+        hashUsing( Hasher.crc32 )
+        hashUsing( Hasher.bcrypt )
+    }
+}
+
+```
 
 
 BCrypt
@@ -238,13 +258,17 @@ hashing passwords, by the way), you will need to add the jBCrypt package as a
 dependency of your project. If you are using SBT (v0.10), just add these lines
 to your `build.sbt` configuration:
 
-    resolvers ++= Seq(
-        "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
-    )
+```
 
-    libraryDependencies ++= Seq(
-        "org.mindrot" % "jbcrypt" % "0.3m"
-    )
+resolvers ++= Seq(
+    "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
+)
+
+libraryDependencies ++= Seq(
+    "org.mindrot" % "jbcrypt" % "0.3m"
+)
+
+```
 
 
 License

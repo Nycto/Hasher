@@ -1,6 +1,7 @@
 package com.roundeights.hasher
 
 import java.io.InputStream
+import java.io.Reader
 
 /**
  * A Tap is a decorator that wraps a stream of some sort, generating
@@ -86,6 +87,75 @@ class InputStreamTap (
     /** {@inheritDoc} */
     override def reset = throw new UnsupportedOperationException
 
+}
+
+/**
+ * A Reader that generates a hash
+ */
+class ReaderTap (
+    private val digest: Digest,
+    private val reader: Reader
+) extends Reader with Tap {
+
+    import scala.annotation.tailrec
+
+    /** {@inheritDoc} */
+    def hash: Hash = digest.hash
+
+    /** {@inheritDoc} */
+    def `hash_=` ( vs: Hash ): Boolean = digest.hashesTo( vs )
+
+    /** {@inheritDoc} */
+    override def read( cbuf: Array[Char], off: Int, len: Int ): Int = {
+        val read = reader.read( cbuf, off, len )
+
+        if ( read > 0 ) {
+            // Readers operate on characters, but we need bytes
+            val bytes = new String( cbuf, off, read ).getBytes
+            digest.add( bytes, bytes.length )
+        }
+
+        read
+    }
+
+    /** {@inheritDoc} */
+    override def ready = reader.ready
+
+    /** {@inheritDoc} */
+    override def close = reader.close
+
+    /** {@inheritDoc} */
+    override def markSupported = false
+
+    /** {@inheritDoc} */
+    override def mark(readlimit: Int) = throw new UnsupportedOperationException
+
+    /** {@inheritDoc} */
+    override def reset = throw new UnsupportedOperationException
+
+    /**
+     * Converts this reader to a string
+     */
+    def mkString: String = {
+
+        val result = new StringBuilder
+        val buffer = new Array[Char](1024)
+
+        @tailrec def build: Unit = {
+            val count = read( buffer, 0, 1024 )
+            if ( count == -1 ) {
+                close
+            }
+            else {
+                result.appendAll( buffer, 0, count )
+                build
+            }
+        }
+
+        build
+
+        result.toString()
+    }
 }
 
 

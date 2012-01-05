@@ -266,6 +266,89 @@ object Main {
 ```
 
 
+Tapping into a data stream
+--------------------------
+
+When you are dealing with a data stream of some sort (Maybe an `InputStream`, a
+`Reader`, or a `Source`), odds are good that you are trying to do something
+with it besides generating a hash. If that's the case, you can use a `Tap` to
+build a hash while you do other stuff.
+
+`Tap`s are just decorators. When you tap into an `InputStream`, you get a new
+`InputStream` that has the ability to return a hash. All you have to do is to
+consume the new `InputStream` as you normally would. Once all the data has been
+read, you can call the `hash` method.
+
+Here is an example:
+
+```scala
+
+package org.example.hasher
+
+import com.roundeights.hasher.Hasher
+
+object Main {
+
+    val hashMe = "Some String"
+
+    def inputStreamTapping = {
+
+        import java.io.ByteArrayInputStream
+
+        val stream = Hasher.sha1.tap(
+            new ByteArrayInputStream( hashMe.getBytes )
+        )
+
+        // Read everything out of the stream
+        while ( stream.read() != -1 ) {}
+
+        val hash = stream.hash
+
+        println( "InputStream Hash: " + hash )
+        println( "InputStream Hash Compare: " + (stream hash= hash) )
+    }
+
+    def readerTapping = {
+
+        import java.io.StringReader
+
+        val reader = Hasher.sha1.tap( new StringReader( hashMe ) )
+
+        // Read everything out of the reader
+        while ( reader.read() != -1 ) {}
+
+        val hash = reader.hash
+
+        println( "Reader Hash: " + hash )
+        println( "Reader Hash Compare: " + (reader hash= hash) )
+    }
+
+    def sourceTapping = {
+
+        import scala.io.Source
+
+        val source = Hasher.sha1.tap( Source.fromString( hashMe ) )
+
+        // Read everything out of the source
+        source.mkString
+
+        val hash = source.hash
+
+        println( "Source Hash: " + hash )
+        println( "Source Hash Compare: " + (source hash= hash) )
+    }
+
+    def main(args: Array[String]) = {
+        inputStreamTapping
+        readerTapping
+        sourceTapping
+    }
+
+}
+
+```
+
+
 BCrypt
 ------
 

@@ -7,6 +7,7 @@ import com.roundeights.hasher.{Algo, Hasher}
 class AlgoTest extends Specification {
 
     def hashTest ( algo: Algo, data: TestData, hash: String ) = {
+
         "Using " + algo + ", the apply methods on the Algo object" in {
             "Hash a String" in {
                 algo( data.str ).hex must_== hash
@@ -27,9 +28,17 @@ class AlgoTest extends Specification {
                 algo( data.source ).hex must_== hash
             }
         }
+
+        "Hashing multiple times with " + algo + " should return the same result" in {
+                algo( data.str ).hex must_== hash
+                algo( data.str ).hex must_== hash
+                algo( data.str ).hex must_== hash
+        }
+
     }
 
     def compareTest ( algo: Algo, data: TestData, hash: String ) = {
+
         "Using " + algo + ", the compare methods on the Algo object" in {
             "match with a String" in {
                 algo.compare( data.str, hash )
@@ -54,6 +63,17 @@ class AlgoTest extends Specification {
             "match with a Source" in {
                 algo.compare( data.source, hash )
                     .aka( "Comparing a Source to " + hash ) must beTrue
+            }
+        }
+
+        "Comparing multiple times with " + algo + " should still match" in {
+            "match with a String" in {
+                algo.compare( data.str, hash )
+                    .aka( "Comparing a String to " + hash ) must beTrue
+                algo.compare( data.str, hash )
+                    .aka( "Comparing a String to " + hash ) must beTrue
+                algo.compare( data.str, hash )
+                    .aka( "Comparing a String to " + hash ) must beTrue
             }
         }
     }

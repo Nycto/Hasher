@@ -105,7 +105,12 @@ private class MessageDigest (
     }
 
     /** {@inheritDoc} */
-    override def hash: Hash = Hash( jDigest.digest )
+    override def hash: Hash = {
+        // Message digests get reset when they're consumed, so we make
+        // a cloen before calculating a digest
+        val clone = jDigest.clone.asInstanceOf[jMessageDigest]
+        Hash( clone.digest )
+    }
 
     /** {@inheritDoc} */
     override def hashesTo ( vs: Hash ): Boolean

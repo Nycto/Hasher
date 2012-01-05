@@ -2,7 +2,7 @@ name := "Hasher"
 
 scalaVersion := "2.9.1"
 
-version := "0.2"
+version := "0.3"
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions += "-deprecation"

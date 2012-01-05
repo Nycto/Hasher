@@ -27,14 +27,16 @@ trait Tap {
 }
 
 /**
- * An InputStream that generates a hash
+ * A tap that buffers the characters before writing to the digest
  */
-class InputStreamTap (
-    private val digest: Digest,
-    private val stream: InputStream
-) extends InputStream with Tap {
+trait BufferedTap extends Tap {
 
     import scala.collection.mutable.ArrayBuffer
+
+    /**
+     * The digest to write to
+     */
+    protected def digest: Digest
 
     /**
      * The buffered data
@@ -52,6 +54,15 @@ class InputStreamTap (
         }
     }
 
+    /**
+     * Adds a byte to the digest
+     */
+    protected def addByteToDigest( byte: Byte ): Byte = {
+        buffer += byte
+        if ( buffer.size >= 1024 ) flush
+        byte
+    }
+
     /** {@inheritDoc} */
     override def hash: Hash = {
         flush
@@ -64,11 +75,20 @@ class InputStreamTap (
         digest.hashesTo( vs )
     }
 
+}
+
+/**
+ * An InputStream that generates a hash
+ */
+class InputStreamTap (
+    protected val digest: Digest,
+    private val stream: InputStream
+) extends InputStream with BufferedTap with Tap {
+
     /** {@inheritDoc} */
     override def read: Int = {
         val byte = stream.read
-        if ( byte >= 0 ) buffer += byte.toByte
-        if ( buffer.size >= 1024 ) flush
+        if ( byte >= 0 ) addByteToDigest( byte.toByte )
         byte
     }
 

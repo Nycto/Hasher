@@ -106,5 +106,11 @@ class Algo ( private val digest: Digest.Builder ) {
      */
     def tap ( value: Reader ): ReaderTap = new ReaderTap( digest(), value )
 
+    /**
+     * Returns a decorated Source that will generate a hash as
+     * data is read
+     */
+    def tap ( value: Source ): SourceTap = new SourceTap( digest(), value )
+
 }
 

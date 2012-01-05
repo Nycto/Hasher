@@ -22,6 +22,12 @@ class TapTest extends Specification {
                 string must_== data.str
                 tap.hash.hex must_== hash
             }
+            "Hash a Source" in {
+                val tap = algo.tap( data.source )
+                val string = tap.mkString
+                string must_== data.str
+                tap.hash.hex must_== hash
+            }
         }
     }
 
@@ -35,6 +41,12 @@ class TapTest extends Specification {
             }
             "match a Reader" in {
                 val tap = algo.tap( data.reader )
+                val string = tap.mkString
+                string must_== data.str
+                ( tap hash= hash ) must_== true
+            }
+            "match a Source" in {
+                val tap = algo.tap( data.source )
                 val string = tap.mkString
                 string must_== data.str
                 ( tap hash= hash ) must_== true
@@ -57,6 +69,13 @@ class TapTest extends Specification {
                 val string = tap.mkString
                 string must_== data.str
                 tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")
+            }
+            "Hash a Source" in {
+                val tap = Hasher.bcrypt.tap( data.source )
+                val string = tap.mkString
+                string must_== data.str
+                tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")
+
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.roundeights.hasher
 
+import scala.io.Source
+
 import java.io.InputStream
 import java.io.Reader
 
@@ -176,6 +178,31 @@ class ReaderTap (
 
         result.toString()
     }
+}
+
+/**
+ * Wraps a source and generates a Source as data flows through it
+ */
+class SourceTap (
+    protected val digest: Digest,
+    private val source: Source
+) extends Source with BufferedTap with Tap {
+
+    /** {@inheritDoc} */
+    override protected val iter = new Iterator[Char] {
+
+        /** {@inheritDoc} */
+        override def hasNext = source.hasNext
+
+        /** {@inheritDoc} */
+        override def next: Char = {
+            val next = source.next
+            Character.toString(next).getBytes.foreach( addByteToDigest )
+            next
+        }
+
+    }
+
 }
 
 

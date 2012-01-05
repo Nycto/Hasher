@@ -129,6 +129,8 @@ case class TestData (
     def reader = new StringReader(str)
     def source = Source.fromBytes( bytes )
 
+    def length = str.length
+
     def runAgainstUnsalted (run: (Algo, TestData, String) => Example) = {
         run( Hasher.md5, this, md5ed )
         run( Hasher.sha1, this, sha1ed )

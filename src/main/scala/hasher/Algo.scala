@@ -92,5 +92,13 @@ class Algo ( private val digest: Digest.Builder ) {
     def compare ( value: Source, hash: String ): Boolean
         = compare( new PlainTextSource(value), hash )
 
+
+    /**
+     * Returns a decorated input stream that will generate a hash as
+     * data is read
+     */
+    def tap ( value: InputStream ): InputStreamTap
+        = new InputStreamTap( digest(), value )
+
 }
 

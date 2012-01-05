@@ -28,7 +28,7 @@ all you have to do is add the following to your `build.sbt` file:
 ```
 
 libraryDependencies ++= Seq(
-    "com.roundeights" % "hasher" % "0.2" from "http://cloud.github.com/downloads/Nycto/Hasher/hasher_2.9.1-0.2.jar"
+    "com.roundeights" % "hasher" % "0.3" from "http://cloud.github.com/downloads/Nycto/Hasher/hasher_2.9.1-0.3.jar"
 )
 
 ```

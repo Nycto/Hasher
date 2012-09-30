@@ -131,7 +131,7 @@ case class TestData (
 
     def length = str.length
 
-    def runAgainstUnsalted (run: (Algo, TestData, String) => Example) = {
+    def runAgainstUnsalted (run: (Algo, TestData, String) => Unit) = {
         run( Hasher.md5, this, md5ed )
         run( Hasher.sha1, this, sha1ed )
         run( Hasher.sha256, this, sha256ed )
@@ -140,7 +140,7 @@ case class TestData (
         run( Hasher.crc32, this, crc32ed )
     }
 
-    def runAgainstAll (run: (Algo, TestData, String) => Example) = {
+    def runAgainstAll (run: (Algo, TestData, String) => Unit) = {
         runAgainstUnsalted( run )
         run( Hasher.bcrypt, this, bcrypted )
     }

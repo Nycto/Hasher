@@ -1,11 +1,13 @@
 name := "Hasher"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.0"
 
 version := "0.3"
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions += "-deprecation"
+
+scalacOptions += "-feature"
 
 // Repositories in which to find dependencies
 resolvers ++= Seq(
@@ -16,5 +18,5 @@ resolvers ++= Seq(
 // Application dependencies
 libraryDependencies ++= Seq(
     "org.mindrot" % "jbcrypt" % "0.3m" % "optional",
-    "org.specs2" %% "specs2" % "1.12.1" % "test"
+    "org.specs2" %% "specs2" % "1.13" % "test"
 )

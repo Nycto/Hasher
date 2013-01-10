@@ -1,5 +1,7 @@
 package com.roundeights.hasher
 
+import scala.language.implicitConversions
+
 
 /**
  * Companion for the Hash class

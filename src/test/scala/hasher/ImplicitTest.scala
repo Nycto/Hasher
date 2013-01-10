@@ -2,9 +2,10 @@ package test.roundeights.hasher
 
 import org.specs2.mutable._
 
+import scala.language.postfixOps
+
 import java.io.ByteArrayInputStream
 import java.io.StringReader
-
 import scala.io.Source
 
 class ImplicitTest extends Specification {

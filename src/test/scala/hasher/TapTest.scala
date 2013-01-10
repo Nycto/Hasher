@@ -3,7 +3,7 @@ package test.roundeights.hasher
 import org.specs2.mutable._
 
 import com.roundeights.hasher.{Algo, Hasher}
-
+import scala.language.postfixOps
 import scala.io.Source
 
 class TapTest extends Specification {

@@ -2,9 +2,8 @@ package com.roundeights.hasher
 
 import java.io.InputStream
 import java.io.Reader
-
 import scala.io.Source
-
+import scala.language.implicitConversions
 
 /**
  * A list of implicit conversion methods

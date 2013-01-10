@@ -1,8 +1,9 @@
 package com.roundeights.hasher
 
+import scala.language.reflectiveCalls
 import scala.annotation.tailrec
-import scala.io.Source
 
+import scala.io.Source
 import java.io.InputStream
 import java.io.Reader
 

@@ -20,6 +20,30 @@ Supported Hashing Algorithms
 * `CRC32`
 
 
+Adding it to your Project
+-------------------------
+
+Hasher is not currently hosted in any publicly available maven repositories.
+However, you can still add it to your project by publishing it to your local 
+repository.
+
+Run the following commands:
+
+```
+git clone https://github.com/Nycto/Hasher.git /tmp/Hasher;
+cd /tmp/Hasher;
+sbt publish-local;
+```
+
+Then, just add this to your `build.sbt` file and recompile:
+
+```
+libraryDependencies ++= Seq(
+    "com.roundeights" %% "hasher" % "0.3" 
+)
+```
+
+
 Basic Usage
 -----------
 
@@ -34,7 +58,6 @@ supported algorithm, you get:
 Here is a sample app showing how to use these various methods:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.Implicits._
@@ -69,7 +92,6 @@ object Main {
         println("BCrypt Matches: " + (hashMe bcrypt= hashes("BCrypt")) )
     }
 }
-
 ```
 
 The implicit methods currently work on the following types:
@@ -93,7 +115,6 @@ than being prepended to the plain text value.
 Here is an example app that does salting:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.Hasher
@@ -104,7 +125,6 @@ object Main {
         println( "Salted MD5: " + hashMe.salt("sweet").md5 )
     }
 }
-
 ```
 
 
@@ -116,7 +136,6 @@ hex encoded string, you can implicitly convert them to an Array of Bytes,
 like this:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.Implicits._
@@ -128,7 +147,6 @@ object Main {
         println("MD5 Hash Bytes: " + hashBytes.mkString(" "))
     }
 }
-
 ```
 
 
@@ -141,7 +159,6 @@ attached to it. You can just do that on your own, if you want. Here is the same
 application as above, but implemented without implicits:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.Hasher
@@ -195,7 +212,6 @@ object Main {
         )
     }
 }
-
 ```
 
 
@@ -223,7 +239,6 @@ You might want to build your application so that you can swap out your
 hashing algorithm. This can be achieved by using the Algo class:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.{Hasher, Algo}
@@ -248,7 +263,6 @@ object Main {
         hashUsing( Hasher.bcrypt )
     }
 }
-
 ```
 
 
@@ -268,7 +282,6 @@ read, you can call the `hash` method.
 Here is an example:
 
 ```scala
-
 package org.example.hasher
 
 import com.roundeights.hasher.Hasher
@@ -331,7 +344,6 @@ object Main {
     }
 
 }
-
 ```
 
 
@@ -344,7 +356,6 @@ dependency of your project. If you are using SBT (v0.10), just add these lines
 to your `build.sbt` configuration:
 
 ```
-
 resolvers ++= Seq(
     "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 )
@@ -352,7 +363,6 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
     "org.mindrot" % "jbcrypt" % "0.3m"
 )
-
 ```
 
 

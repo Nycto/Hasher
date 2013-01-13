@@ -24,7 +24,7 @@ Adding it to your Project
 -------------------------
 
 Hasher is not currently hosted in any publicly available maven repositories.
-However, you can still add it to your project by publishing it to your local 
+However, you can still add it to your project by publishing it to your local
 repository.
 
 Run the following commands:
@@ -39,7 +39,7 @@ Then, just add this to your `build.sbt` file and recompile:
 
 ```
 libraryDependencies ++= Seq(
-    "com.roundeights" %% "hasher" % "0.3" 
+    "com.roundeights" %% "hasher" % "0.3"
 )
 ```
 

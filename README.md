@@ -1,11 +1,9 @@
-Hasher
+Hasher [![Build Status](https://secure.travis-ci.org/Nycto/Hasher.png?branch=master)](http://travis-ci.org/Nycto/Hasher)
 ======
 
 Creating a hash should be a simple function call. But it always somehow seems
 to be more complicated than that. Hasher is a small Scala library to make
 generating hashes a breeze.
-
-[![Build Status](https://secure.travis-ci.org/Nycto/Hasher.png?branch=master)](http://travis-ci.org/Nycto/Hasher)
 
 
 Supported Hashing Algorithms

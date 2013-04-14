@@ -29,6 +29,11 @@ object TestData {
         sha512ed =
             "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db2" +
             "7ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff",
+        hmacMd5ed = "63d6baf65df6bdee8f32b332e0930669",
+        hmacSha1ed = "1aa349585ed7ecbd3b9c486a30067e395ca4b356",
+        hmacSha256ed =
+            "0329a06b62cd16b33eb6792be8c60b15" +
+            "8d89a2ee3a876fce9a881ebb488c0914",
         crc32ed = "d87f7e0c",
         bcrypted =
             "24326124313024755658345747674b" +
@@ -52,6 +57,11 @@ object TestData {
             "c107c730231b39a54c16256a6d88511703bf2866bd32f945" +
             "ff8d13590fee60d2924e45a820f052900d7a86ca1951495d" +
             "20fd0d48fa9539b4c72fbd0fc4cd51d8",
+        hmacMd5ed = "28ea3cc0afc317bc391a2fae1d4a83e9",
+        hmacSha1ed = "d73ba311a36f9b9697ed3099ac40733748d57107",
+        hmacSha256ed =
+            "73b9f218b093078018a79922ef73054b" +
+            "13fb363a424c4fb66d0a695bddfe7889",
         crc32ed = "d89a101b",
         bcrypted =
             "2432612431302432776f7a74417658" +
@@ -75,6 +85,11 @@ object TestData {
             "0c1d542db80b28e48451417181cedbc98419f029dfbaac68" +
             "6b19b47449208c4e0e6038e159f316ef6cd33c1142cd5012" +
             "eea4004ebf45631544ea7bcf5046543a",
+        hmacMd5ed = "6bca4a37218091bf0b0e12925ae02e27",
+        hmacSha1ed = "4555fa5b1a9d42305e59e168a14ae4fc23435444",
+        hmacSha256ed =
+            "49e926020a71960a3c02a0db62c103a0" +
+            "0359dad83cd850687cae344e1004a697",
         crc32ed = "07b5088e",
         bcrypted =
             "2432612431302469307035536d6549" +
@@ -98,6 +113,11 @@ object TestData {
             "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc" +
             "83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f" +
             "63b931bd47417a81a538327af927da3e",
+        hmacMd5ed = "5c8db03f04cec0f43bcb060023914190",
+        hmacSha1ed = "25af6174a0fcecc4d346680a72b7ce644b9a88e8",
+        hmacSha256ed =
+            "f9e66e179b6747ae54108f82f8ade8b3" +
+            "c25d76fd30afde6c395822c530196169",
         crc32ed = "00000000",
         bcrypted =
             "24326124313024646665575364666f" +
@@ -119,6 +139,9 @@ case class TestData (
     val sha256ed: String,
     val sha384ed: String,
     val sha512ed: String,
+    val hmacMd5ed: String,
+    val hmacSha1ed: String,
+    val hmacSha256ed: String,
     val crc32ed: String,
     val bcrypted: String
 ) {
@@ -137,6 +160,9 @@ case class TestData (
         run( Hasher.sha256, this, sha256ed )
         run( Hasher.sha384, this, sha384ed )
         run( Hasher.sha512, this, sha512ed )
+        run( Hasher.hmacMd5("secret"), this, hmacMd5ed )
+        run( Hasher.hmacSha1("secret"), this, hmacSha1ed )
+        run( Hasher.hmacSha256("secret"), this, hmacSha256ed )
         run( Hasher.crc32, this, crc32ed )
     }
 

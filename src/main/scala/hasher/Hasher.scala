@@ -37,6 +37,21 @@ object Hasher {
     def sha512 = new Algo( Digest.sha512 )
 
     /**
+     * Generates an HMAC-MD5 hash of a string
+     */
+    def hmacMd5( key: String ) = new Algo( Digest.hmacMd5(key) )
+
+    /**
+     * Generates an HMAC-SHA1 hash of a string
+     */
+    def hmacSha1( key: String ) = new Algo( Digest.hmacSha1(key) )
+
+    /**
+     * Generates an HMAC-SHA256 hash of a string
+     */
+    def hmacSha256( key: String ) = new Algo( Digest.hmacSha256(key) )
+
+    /**
      * Generates a crc32 hash of a string
      */
     def crc32 = new Algo( Digest.crc32 )
@@ -179,6 +194,21 @@ case class Hasher private ( private val value: PlainText ) {
      */
     def `sha512_=` ( hash: String ): Boolean
         = Hasher.sha512.compare( value, hash )
+
+    /**
+     * Generates an HMAC-MD5 hash of this string
+     */
+    def hmacMd5( key: String ): Hash = Hasher.hmacMd5( key )( value )
+
+    /**
+     * Generates an HMAC-SHA1 hash of this string
+     */
+    def hmacSha1( key: String ): Hash = Hasher.hmacSha1( key )( value )
+
+    /**
+     * Generates an HMAC-SHA256 hash of this string
+     */
+    def hmacSha256( key: String ): Hash = Hasher.hmacSha256( key )( value )
 
     /**
      * Generates a crc32 hash of this string

@@ -28,6 +28,16 @@ class HasherTest extends Specification {
         "sha512 hash" in {
             Hasher.sha512( data.str ).hex must_== data.sha512ed
         }
+        "hmacMd5 hash" in {
+            Hasher.hmacMd5("secret")( data.str ).hex must_== data.hmacMd5ed
+        }
+        "hmacSha1 hash" in {
+            Hasher.hmacSha1("secret")( data.str ).hex must_== data.hmacSha1ed
+        }
+        "hmacSha256 hash" in {
+            Hasher.hmacSha256("secret")( data.str ).hex must_==
+                data.hmacSha256ed
+        }
         "crc32 hash" in {
             Hasher.crc32( data.str ).hex must_== data.crc32ed
         }

@@ -60,6 +60,15 @@ class ImplicitTest extends Specification {
         "SHA-512 hash" in {
             data.str.sha512.hex must_== data.sha512ed
         }
+        "HMAC-MD5 hash" in {
+            data.str.hmacMd5("secret").hex must_== data.hmacMd5ed
+        }
+        "HMAC-SHA1 hash" in {
+            data.str.hmacSha1("secret").hex must_== data.hmacSha1ed
+        }
+        "HMAC-SHA256 hash" in {
+            data.str.hmacSha256("secret").hex must_== data.hmacSha256ed
+        }
         "CRC32 hash" in {
             data.str.crc32.hex must_== data.crc32ed
         }

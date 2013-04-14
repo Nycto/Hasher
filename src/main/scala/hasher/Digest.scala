@@ -60,6 +60,15 @@ object Digest {
     private[hasher] val sha512
         = Builder( (build) => new MessageDigest(build, "SHA-512") )
 
+    private[hasher] def hmacMd5 ( key: String )
+        = Builder( (build) => new HMAC(build, "HmacMD5", key) )
+
+    private[hasher] def hmacSha1 ( key: String )
+        = Builder( (build) => new HMAC(build, "HmacSHA1", key) )
+
+    private[hasher] def hmacSha256 ( key: String )
+        = Builder( (build) => new HMAC(build, "HmacSHA256", key) )
+
     private[hasher] val crc32 = Builder( (build) => new CRC32Digest )
 
     private[hasher] val bcrypt = Builder( (build) => new BCryptDigest )
@@ -115,6 +124,45 @@ private class MessageDigest (
     /** {@inheritDoc} */
     override def hashesTo ( vs: Hash ): Boolean
         = Digest.compare( jDigest.digest, vs.bytes )
+
+}
+
+/**
+ * The implementation for hashes that use javax.crypto.Mac
+ */
+private class HMAC (
+    private val digest: Digest.Builder,
+    override val name: String,
+    key: String
+) extends Digest {
+
+    import javax.crypto.Mac
+    import javax.crypto.spec.SecretKeySpec
+
+    /**
+     * The digest to collect data into
+     */
+    private val mac = Mac.getInstance( name )
+
+    // initialize the mac with the secret key
+    mac.init( new SecretKeySpec(key.getBytes, name) )
+
+    /** {@inheritDoc} */
+    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+        mac.update(bytes, 0, length)
+        this
+    }
+
+    /** {@inheritDoc} */
+    override def hash: Hash = {
+        // Macs get reset when they're consumed, so we make
+        // a clone before calculating a digest
+        Hash( mac.clone.asInstanceOf[Mac].doFinal )
+    }
+
+    /** {@inheritDoc} */
+    override def hashesTo ( vs: Hash ): Boolean
+        = Digest.compare( mac.clone.asInstanceOf[Mac].doFinal, vs.bytes )
 
 }
 

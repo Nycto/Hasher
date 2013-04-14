@@ -37,7 +37,7 @@ Then, just add this to your `build.sbt` file and recompile:
 
 ```
 libraryDependencies ++= Seq(
-    "com.roundeights" %% "hasher" % "0.3"
+    "com.roundeights" %% "hasher" % "1.0.0"
 )
 ```
 

@@ -82,59 +82,59 @@ class ImplicitTest extends Specification {
         import com.roundeights.hasher.Implicits._
 
         "be comparable to an MD5 Hash" in {
-            (data.str md5= data.md5ed) must beTrue
-            (data.str md5= "AHashThatIsWrong") must beFalse
-            (data.str md5= "SomeHashThatIsWrong") must beFalse
-            (data.str md5= "") must beFalse
-            (data.str md5= ("other".md5)) must beFalse
+            (data.str.md5 hash= data.md5ed) must beTrue
+            (data.str.md5 hash= "AHashThatIsWrong") must beFalse
+            (data.str.md5 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.md5 hash= "") must beFalse
+            (data.str.md5 hash= ("other".md5)) must beFalse
         }
 
         "be comparable to a SHA1 Hash" in {
-            (data.str sha1= data.sha1ed) must beTrue
-            (data.str sha1= "AHashThatIsWrong") must beFalse
-            (data.str sha1= "SomeHashThatIsWrong") must beFalse
-            (data.str sha1= "") must beFalse
-            (data.str sha1= ("other".sha1)) must beFalse
+            (data.str.sha1 hash= data.sha1ed) must beTrue
+            (data.str.sha1 hash= "AHashThatIsWrong") must beFalse
+            (data.str.sha1 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.sha1 hash= "") must beFalse
+            (data.str.sha1 hash= ("other".sha1)) must beFalse
         }
 
         "be comparable to a SHA256 Hash" in {
-            (data.str sha256= data.sha256ed) must beTrue
-            (data.str sha256= "AHashThatIsWrong") must beFalse
-            (data.str sha256= "SomeHashThatIsWrong") must beFalse
-            (data.str sha256= "") must beFalse
-            (data.str sha256= ("other".sha256)) must beFalse
+            (data.str.sha256 hash= data.sha256ed) must beTrue
+            (data.str.sha256 hash= "AHashThatIsWrong") must beFalse
+            (data.str.sha256 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.sha256 hash= "") must beFalse
+            (data.str.sha256 hash= ("other".sha256)) must beFalse
         }
 
         "be comparable to a SHA384 Hash" in {
-            (data.str sha384= data.sha384ed) must beTrue
-            (data.str sha384= "AHashThatIsWrong") must beFalse
-            (data.str sha384= "SomeHashThatIsWrong") must beFalse
-            (data.str sha384= "") must beFalse
-            (data.str sha384= ("other".sha384)) must beFalse
+            (data.str.sha384 hash= data.sha384ed) must beTrue
+            (data.str.sha384 hash= "AHashThatIsWrong") must beFalse
+            (data.str.sha384 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.sha384 hash= "") must beFalse
+            (data.str.sha384 hash= ("other".sha384)) must beFalse
         }
 
         "be comparable to a SHA512 Hash" in {
-            (data.str sha512= data.sha512ed) must beTrue
-            (data.str sha512= "AHashThatIsWrong") must beFalse
-            (data.str sha512= "SomeHashThatIsWrong") must beFalse
-            (data.str sha512= "") must beFalse
-            (data.str sha512= ("other".sha512)) must beFalse
+            (data.str.sha512 hash= data.sha512ed) must beTrue
+            (data.str.sha512 hash= "AHashThatIsWrong") must beFalse
+            (data.str.sha512 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.sha512 hash= "") must beFalse
+            (data.str.sha512 hash= ("other".sha512)) must beFalse
         }
 
         "be comparable to a CRC32 Hash" in {
-            (data.str crc32= data.crc32ed) must beTrue
-            (data.str crc32= "AHashThatIsWrong") must beFalse
-            (data.str crc32= "SomeHashThatIsWrong") must beFalse
-            (data.str crc32= "") must beFalse
-            (data.str crc32= ("other".crc32)) must beFalse
+            (data.str.crc32 hash= data.crc32ed) must beTrue
+            (data.str.crc32 hash= "AHashThatIsWrong") must beFalse
+            (data.str.crc32 hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.crc32 hash= "") must beFalse
+            (data.str.crc32 hash= ("other".crc32)) must beFalse
         }
 
         "be comparable to a BCrypt Hash" in {
-            (data.str bcrypt= data.bcrypted) must beTrue
-            (data.str bcrypt= "AHashThatIsWrong") must beFalse
-            (data.str bcrypt= "SomeHashThatIsWrong") must beFalse
-            (data.str bcrypt= "") must beFalse
-            (data.str bcrypt= ("other".bcrypt)) must beFalse
+            (data.str.bcrypt hash= data.bcrypted) must beTrue
+            (data.str.bcrypt hash= "AHashThatIsWrong") must beFalse
+            (data.str.bcrypt hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.bcrypt hash= "") must beFalse
+            (data.str.bcrypt hash= ("other".bcrypt)) must beFalse
         }
     }
 
@@ -147,7 +147,7 @@ class ImplicitTest extends Specification {
 
         "change the hash" in {
             str.salt("one").salt("two").md5.hex must_== md5ed
-            (str.salt("one").salt("two") md5= md5ed) must beTrue
+            (str.salt("one").salt("two").md5 hash= md5ed) must beTrue
         }
     }
 

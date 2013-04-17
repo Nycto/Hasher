@@ -58,19 +58,19 @@ class TapTest extends Specification {
     def testBCrypt( data: TestData ) {
         "Using BCrypt, the Tap.hash method" in {
             "Hash a Stream" in {
-                val tap = Hasher.bcrypt.tap( data.stream )
+                val tap = Algo.bcrypt.tap( data.stream )
                 val string = Source.fromInputStream(tap).mkString
                 string must_== data.str
                 tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Reader" in {
-                val tap = Hasher.bcrypt.tap( data.reader )
+                val tap = Algo.bcrypt.tap( data.reader )
                 val string = tap.mkString
                 string must_== data.str
                 tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Source" in {
-                val tap = Hasher.bcrypt.tap( data.source )
+                val tap = Algo.bcrypt.tap( data.source )
                 val string = tap.mkString
                 string must_== data.str
                 tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")

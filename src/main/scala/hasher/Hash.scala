@@ -42,11 +42,8 @@ case class Hash ( val bytes: Array[Byte] ) {
      */
     lazy val hex: String = bytes.map( "%02x".format(_) ).mkString("")
 
-    /**
-     * Converts this hash to a hex encoded string
-     */
+    /** {@inheritDoc} */
     override def toString: String = hex
-
 }
 
 

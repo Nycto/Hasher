@@ -6,27 +6,9 @@ import java.io.InputStream
 import java.io.Reader
 
 /**
- * A Tap is a decorator that wraps a stream of some sort, generating
- * a hash as the data passes through it
+ * A tap is a specialized digest that decorates streams
  */
-trait Tap {
-
-    /**
-     * Calculates the hash of the collected bytes so far
-     */
-    def hash: Hash
-
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
-    def `hash_=` ( vs: Hash ): Boolean
-
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
-    def `hash_=` ( vs: String ): Boolean = hash_=( Hash(vs) )
-
-}
+trait Tap extends Digest
 
 /**
  * A tap that buffers the characters before writing to the digest
@@ -38,12 +20,15 @@ trait BufferedTap extends Tap {
     /**
      * The digest to write to
      */
-    protected def digest: Digest
+    protected def digest: MutableDigest
 
     /**
      * The buffered data
      */
     private val buffer = new ArrayBuffer[Byte]
+
+    /** {@inheritDoc} */
+    override def name: String = digest.name
 
     /**
      * Flushes the buffer to the digest
@@ -74,18 +59,17 @@ trait BufferedTap extends Tap {
     /** {@inheritDoc} */
     override def `hash_=` ( vs: Hash ): Boolean = {
         flush
-        digest.hashesTo( vs )
+        digest.hash_=( vs )
     }
-
 }
 
 /**
  * An InputStream that generates a hash
  */
 class InputStreamTap (
-    protected val digest: Digest,
+    override protected val digest: MutableDigest,
     private val stream: InputStream
-) extends InputStream with BufferedTap with Tap {
+) extends InputStream with BufferedTap {
 
     /** {@inheritDoc} */
     override def read: Int = {
@@ -108,24 +92,26 @@ class InputStreamTap (
 
     /** {@inheritDoc} */
     override def reset = throw new UnsupportedOperationException
-
 }
 
 /**
  * A Reader that generates a hash
  */
 class ReaderTap (
-    private val digest: Digest,
+    protected val digest: MutableDigest,
     private val reader: Reader
 ) extends Reader with Tap {
 
     import scala.annotation.tailrec
 
     /** {@inheritDoc} */
-    def hash: Hash = digest.hash
+    override def name: String = digest.name
 
     /** {@inheritDoc} */
-    def `hash_=` ( vs: Hash ): Boolean = digest.hashesTo( vs )
+    override def hash: Hash = digest.hash
+
+    /** {@inheritDoc} */
+    override def `hash_=` ( vs: Hash ): Boolean = digest.hash_=( vs )
 
     /** {@inheritDoc} */
     override def read( cbuf: Array[Char], off: Int, len: Int ): Int = {
@@ -184,9 +170,9 @@ class ReaderTap (
  * Wraps a source and generates a Source as data flows through it
  */
 class SourceTap (
-    protected val digest: Digest,
+    override protected val digest: MutableDigest,
     private val source: Source
-) extends Source with BufferedTap with Tap {
+) extends Source with BufferedTap {
 
     /** {@inheritDoc} */
     override protected val iter = new Iterator[Char] {
@@ -202,7 +188,6 @@ class SourceTap (
         }
 
     }
-
 }
 
 

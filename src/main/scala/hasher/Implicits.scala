@@ -40,6 +40,5 @@ object Implicits {
      * Implicitly creates a hasher from a Source
      */
     implicit def sourceToHasher ( from: Source ): Hasher = Hasher(from)
-
 }
 

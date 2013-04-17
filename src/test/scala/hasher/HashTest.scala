@@ -15,12 +15,12 @@ class HashTest extends Specification {
         import com.roundeights.hasher.Implicits._
 
         "convert to a string implicitly" in {
-            val hash: String = str.md5
+            val hash: String = str.md5.hash
             hash must_== md5ed
         }
 
         "convert to a byte array implicitly" in {
-            val hash: Array[Byte] = str.sha1
+            val hash: Array[Byte] = str.sha1.hash
             ok
         }
     }

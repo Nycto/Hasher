@@ -8,6 +8,45 @@ import java.io.InputStream
 import java.io.Reader
 
 /**
+ * Performs some operation using a plain text value
+ */
+trait WithPlainText[A] {
+
+    /** Executes an operation with the plain text value */
+    def apply ( value: PlainText ): A
+
+    /**
+     * Constructor for accepting Byte arrays.
+     */
+    def apply ( value: Array[Byte] ): A = apply( new PlainTextBytes( value ) )
+
+    /**
+     * Constructor for accepting strings.
+     */
+    def apply ( value: String ): A = apply( value.getBytes )
+
+    /**
+     * Constructor for accepting StringBuilders.
+     */
+    def apply ( value: StringBuilder ): A = apply( value.toString )
+
+    /**
+     * Constructor for accepting InputStream.
+     */
+    def apply ( value: InputStream ): A = apply( new PlainTextResource(value) )
+
+    /**
+     * Constructor for accepting Readers.
+     */
+    def apply ( value: Reader ): A = apply( new PlainTextResource(value) )
+
+    /**
+     * Constructor for accepting Sources.
+     */
+    def apply ( value: Source ): A = apply( new PlainTextSource(value) )
+}
+
+/**
  * The base class for plain text representations
  */
 trait PlainText {
@@ -15,27 +54,12 @@ trait PlainText {
     /**
      * Populates the digest
      */
-    protected[hasher] def fill ( digest: Digest ): Digest
+    protected[hasher] def fill ( digest: MutableDigest ): MutableDigest
 
     /**
      * Hashes an InputStream according to this algorithm.
      */
-    def hash ( digest: Digest.Builder ): Hash = fill( digest() ).hash
-
-    /**
-     * Determines whether this value computes to a given hash
-     */
-    def hashesTo ( digest: Digest.Builder, vs: Hash ): Boolean
-        = fill( digest() ).hashesTo( vs )
-
-    /**
-     * Determines whether this value computes to a given hash string
-     */
-    def hashesTo ( digest: Digest.Builder, vs: String ): Boolean = {
-        try { hashesTo( digest, Hash(vs) ) }
-        catch { case _:IllegalArgumentException => false }
-    }
-
+    def hash ( digest: MutableDigest ): Hash = fill( digest ).hash
 }
 
 /**
@@ -56,9 +80,11 @@ private class PlainTextBytes (
     def this ( value: StringBuilder ) = this( value.toString )
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( digest: Digest ): Digest
-        = digest.add( value, value.length )
-
+    override protected[hasher] def fill (
+        digest: MutableDigest
+    ): MutableDigest = {
+        digest.add( value, value.length )
+    }
 }
 
 /**
@@ -102,7 +128,9 @@ private class PlainTextResource (
     })
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( digest: Digest ): Digest = {
+    override protected[hasher] def fill (
+        digest: MutableDigest
+    ): MutableDigest = {
         val buffer = new Array[Byte](8192)
 
         @tailrec def next: Unit = {
@@ -118,7 +146,6 @@ private class PlainTextResource (
 
         digest
     }
-
 }
 
 /**
@@ -127,14 +154,15 @@ private class PlainTextResource (
 private class PlainTextSource ( private val source: Source ) extends PlainText {
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( digest: Digest ): Digest = {
+    override protected[hasher] def fill (
+        digest: MutableDigest
+    ): MutableDigest = {
         source.grouped(8192).foreach { group =>
             val bytes = new String( group.toArray ).getBytes
             digest.add( bytes, bytes.length )
         }
         digest
     }
-
 }
 
 /**
@@ -145,10 +173,11 @@ private class PlainTextSalt (
 ) extends PlainText {
 
     /** {@inheritDoc} */
-    override protected[hasher] def fill ( digest: Digest ): Digest = {
+    override protected[hasher] def fill (
+        digest: MutableDigest
+    ): MutableDigest = {
         digest.add( salt, salt.length )
         inner.fill( digest )
     }
-
 }
 

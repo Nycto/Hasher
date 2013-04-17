@@ -1,77 +1,11 @@
 package com.roundeights.hasher
 
-
-/**
- * The base class for a hashing algorithm
- */
-trait Digest {
-
-    /**
-     * Returns the name of this digest algorithm.
-     */
-    def name: String
-
-    /**
-     * Adds a list of bytes to this algorithm
-     */
-    def add ( bytes: Array[Byte], length: Int ): Digest
-
-    /**
-     * Calculates the hash of the collected bytes so far
-     */
-    def hash: Hash
-
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
-    def hashesTo ( vs: Hash ): Boolean
-
-}
+import scala.language.implicitConversions
 
 /**
  * Companion
  */
 object Digest {
-
-    /**
-     * Builds a new algorithm
-     */
-    private[hasher] case class Builder (
-        private val callback: (Builder) => Digest
-    ) {
-        /**
-         * Builds a new digest object
-         */
-        def apply (): Digest = callback(this)
-    }
-
-    private[hasher] val md5
-        = Builder( (build) => new MessageDigest(build, "MD5") )
-
-    private[hasher] val sha1
-        = Builder( (build) => new MessageDigest(build, "SHA-1") )
-
-    private[hasher] val sha256
-        = Builder( (build) => new MessageDigest(build, "SHA-256") )
-
-    private[hasher] val sha384
-        = Builder( (build) => new MessageDigest(build, "SHA-384") )
-
-    private[hasher] val sha512
-        = Builder( (build) => new MessageDigest(build, "SHA-512") )
-
-    private[hasher] def hmacMd5 ( key: String )
-        = Builder( (build) => new HMAC(build, "HmacMD5", key) )
-
-    private[hasher] def hmacSha1 ( key: String )
-        = Builder( (build) => new HMAC(build, "HmacSHA1", key) )
-
-    private[hasher] def hmacSha256 ( key: String )
-        = Builder( (build) => new HMAC(build, "HmacSHA256", key) )
-
-    private[hasher] val crc32 = Builder( (build) => new CRC32Digest )
-
-    private[hasher] val bcrypt = Builder( (build) => new BCryptDigest )
 
     /**
      * A helper method for comparing byte arrays for equality. This method
@@ -91,14 +25,88 @@ object Digest {
         }
     }
 
+    /** Converts a digest to a hash */
+    implicit def digest2hash ( in: Digest ): Hash = in.hash
+
+    /** Converts a digest to a string */
+    implicit def digest2string ( in: Digest ): String = in.hex
+
+    /** Converts a digest to a string */
+    implicit def digest2byteArray ( in: Digest ): Array[Byte] = in.bytes
+}
+
+/**
+ * The base class for a hashing algorithm
+ */
+trait Digest {
+
+    /**
+     * Returns the name of this algorithm
+     */
+    def name: String
+
+    /**
+     * Calculates the hash of the collected bytes so far
+     */
+    def hash: Hash
+
+    /**
+     * Determines whether the collected bytes compute to a given hash
+     */
+    def `hash_=` ( vs: Hash ): Boolean
+
+    /**
+     * Determines whether the collected bytes compute to a given hash
+     */
+    def `hash_=` ( vs: String ): Boolean = {
+        try {
+            hash_=( Hash(vs) )
+        } catch {
+            case _: NumberFormatException => false
+        }
+    }
+
+    /**
+     * Determines whether the collected bytes compute to a given hash
+     */
+    def `hash_=` ( vs: Array[Byte] ): Boolean = hash_=( Hash(vs) )
+
+    /**
+     * Determines whether the collected bytes compute to a given hash
+     */
+    def `hash_=` ( vs: Digest ): Boolean = hash_=( vs.hash )
+
+    /**
+     * Returns this digest as a hex encoded string
+     */
+    def hex: String = hash.hex
+
+    /**
+     * Returns the raw bytes from the hash this digest generates
+     */
+    def bytes: Array[Byte] = hash.bytes
+
+    /** {@inheritDoc} */
+    override def toString = "Digest(%s, %s)".format( name, hash.hex )
+}
+
+/**
+ * A digest that allows additional data to be added to it
+ */
+trait MutableDigest extends Digest {
+
+    /**
+     * Adds a list of bytes to this algorithm
+     */
+    def add ( bytes: Array[Byte], length: Int ): MutableDigest
 }
 
 /**
  * The implementation for hashes that use MessageDigest
  */
 private class MessageDigest (
-    private val digest: Digest.Builder, override val name: String
-) extends Digest {
+    override val name: String
+) extends MutableDigest {
 
     import java.security.{MessageDigest => jMessageDigest}
 
@@ -108,7 +116,7 @@ private class MessageDigest (
     private val jDigest = jMessageDigest.getInstance( name )
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
         jDigest.update(bytes, 0, length)
         this
     }
@@ -122,19 +130,17 @@ private class MessageDigest (
     }
 
     /** {@inheritDoc} */
-    override def hashesTo ( vs: Hash ): Boolean
+    override def `hash_=` ( vs: Hash ): Boolean
         = Digest.compare( jDigest.digest, vs.bytes )
-
 }
 
 /**
  * The implementation for hashes that use javax.crypto.Mac
  */
 private class HMAC (
-    private val digest: Digest.Builder,
     override val name: String,
     key: String
-) extends Digest {
+) extends MutableDigest {
 
     import javax.crypto.Mac
     import javax.crypto.spec.SecretKeySpec
@@ -148,7 +154,7 @@ private class HMAC (
     mac.init( new SecretKeySpec(key.getBytes, name) )
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
         mac.update(bytes, 0, length)
         this
     }
@@ -161,15 +167,14 @@ private class HMAC (
     }
 
     /** {@inheritDoc} */
-    override def hashesTo ( vs: Hash ): Boolean
+    override def `hash_=` ( vs: Hash ): Boolean
         = Digest.compare( mac.clone.asInstanceOf[Mac].doFinal, vs.bytes )
-
 }
 
 /**
  * The CRC32 hash implementation
  */
-private class CRC32Digest extends Digest {
+private class CRC32Digest extends MutableDigest {
 
     import java.util.zip.CRC32
 
@@ -182,7 +187,7 @@ private class CRC32Digest extends Digest {
     override val name = "CRC32"
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
         digest.update(bytes, 0, length)
         this
     }
@@ -206,15 +211,14 @@ private class CRC32Digest extends Digest {
     }
 
     /** {@inheritDoc} */
-    override def hashesTo ( vs: Hash ): Boolean
+    override def `hash_=` ( vs: Hash ): Boolean
         = Digest.compare( hash.bytes, vs.bytes )
-
 }
 
 /**
  * The BCrypt hash implementation
  */
-private class BCryptDigest extends Digest {
+private class BCryptDigest extends MutableDigest {
 
     import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
 
@@ -227,7 +231,7 @@ private class BCryptDigest extends Digest {
     override val name = "BCrypt"
 
     /** {@inheritDoc} */
-    override def add ( bytes: Array[Byte], length: Int ): Digest = {
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
         value.append( new String(bytes, 0, length) )
         this
     }
@@ -241,14 +245,13 @@ private class BCryptDigest extends Digest {
     }
 
     /** {@inheritDoc} */
-    override def hashesTo ( vs: Hash ): Boolean = {
+    override def `hash_=` ( vs: Hash ): Boolean = {
         // jBCrypt chokes on empty hashes, so we compensate
         new String(vs.bytes) match {
             case "" => false
             case str => jBCrypt.checkpw( value.toString, str )
         }
     }
-
 }
 
 

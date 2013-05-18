@@ -29,13 +29,13 @@ class HasherTest extends Specification {
             Hasher( data.str ).sha512.hex must_== data.sha512ed
         }
         "hmacMd5 hash" in {
-            Hasher( data.str ).hmacMd5("secret").hex must_== data.hmacMd5ed
+            Hasher( data.str ).hmac("secret").md5.hex must_== data.hmacMd5ed
         }
         "hmacSha1 hash" in {
-            Hasher( data.str ).hmacSha1("secret").hex must_== data.hmacSha1ed
+            Hasher( data.str ).hmac("secret").sha1.hex must_== data.hmacSha1ed
         }
         "hmacSha256 hash" in {
-            Hasher( data.str ).hmacSha256("secret").hex must_==
+            Hasher( data.str ).hmac("secret").sha256.hex must_==
                 data.hmacSha256ed
         }
         "crc32 hash" in {

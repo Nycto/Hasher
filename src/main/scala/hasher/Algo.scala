@@ -11,7 +11,6 @@ trait WithAlgo[A] {
     /** The actual operation to perform with an algorithm */
     protected def withAlgo ( algo: Algo ): A
 
-
     /** MD5 hashing algorithm */
     def md5 = withAlgo( new Algo( () => new MessageDigest("MD5") ) )
 
@@ -27,23 +26,27 @@ trait WithAlgo[A] {
     /** sha512 hashing algorithm */
     def sha512 = withAlgo( new Algo( () => new MessageDigest("SHA-512") ) )
 
-    /** HMAC-MD5 hashing algorithm */
-    def hmacMd5 ( key: String )
-        = withAlgo( new Algo( () => new HMAC("HmacMD5", key) ) )
-
-    /** HMAC-SHA1 hashing algorithm */
-    def hmacSha1 ( key: String )
-        = withAlgo( new Algo( () => new HMAC("HmacSHA1", key) ) )
-
-    /** HMAC-SHA256 hashing algorithm */
-    def hmacSha256 ( key: String )
-        = withAlgo( new Algo( () => new HMAC("HmacSHA256", key) ) )
-
     /** CRC32 algorithm */
     def crc32 = withAlgo( new Algo( () => new CRC32Digest ) )
 
     /** BCrypt hashing */
     def bcrypt = withAlgo( new Algo( () => new BCryptDigest ) )
+
+    /** A fluent interface for generating HMACs */
+    class HmacBuilder ( val key: String ) {
+
+        /** HMAC-MD5 hashing algorithm */
+        def md5 = withAlgo( new Algo( () => new HMAC("HmacMD5", key) ) )
+
+        /** HMAC-SHA1 hashing algorithm */
+        def sha1 = withAlgo( new Algo( () => new HMAC("HmacSHA1", key) ) )
+
+        /** HMAC-SHA256 hashing algorithm */
+        def sha256 = withAlgo( new Algo( () => new HMAC("HmacSHA256", key) ) )
+    }
+
+    /** Generates an hmac builder */
+    def hmac ( key: String ) = new HmacBuilder( key )
 }
 
 

@@ -160,9 +160,9 @@ case class TestData (
         run( Algo.sha256, this, sha256ed )
         run( Algo.sha384, this, sha384ed )
         run( Algo.sha512, this, sha512ed )
-        run( Algo.hmacMd5("secret"), this, hmacMd5ed )
-        run( Algo.hmacSha1("secret"), this, hmacSha1ed )
-        run( Algo.hmacSha256("secret"), this, hmacSha256ed )
+        run( Algo.hmac("secret").md5, this, hmacMd5ed )
+        run( Algo.hmac("secret").sha1, this, hmacSha1ed )
+        run( Algo.hmac("secret").sha256, this, hmacSha256ed )
         run( Algo.crc32, this, crc32ed )
     }
 

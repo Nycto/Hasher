@@ -75,6 +75,9 @@ class ImplicitTest extends Specification {
         "BCrypt hash" in {
             data.str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+        "BCrypt hash with a round count" in {
+            data.str.bcrypt(12).hex must beMatching("^[a-zA-Z0-9]{120}$")
+        }
     }
 
     "The implicit compare methods" should {
@@ -135,6 +138,14 @@ class ImplicitTest extends Specification {
             (data.str.bcrypt hash= "SomeHashThatIsWrong") must beFalse
             (data.str.bcrypt hash= "") must beFalse
             (data.str.bcrypt hash= ("other".bcrypt)) must beFalse
+        }
+
+        "be comparable to a BCrypt Hash with a round count" in {
+            (data.str.bcrypt(12) hash= data.bcrypted12) must beTrue
+            (data.str.bcrypt(12) hash= "AHashThatIsWrong") must beFalse
+            (data.str.bcrypt(12) hash= "SomeHashThatIsWrong") must beFalse
+            (data.str.bcrypt(12) hash= "") must beFalse
+            (data.str.bcrypt(12) hash= ("other".bcrypt(12))) must beFalse
         }
     }
 

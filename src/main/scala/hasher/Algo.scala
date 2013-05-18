@@ -29,8 +29,12 @@ trait WithAlgo[A] {
     /** CRC32 algorithm */
     def crc32 = withAlgo( new Algo( () => new CRC32Digest ) )
 
-    /** BCrypt hashing */
-    def bcrypt = withAlgo( new Algo( () => new BCryptDigest ) )
+    /** BCrypt hashing, using 10 rounds */
+    def bcrypt = withAlgo( new Algo( () => new BCryptDigest(10) ) )
+
+    /** BCrypt hashing, with a specific number of rounds */
+    def bcrypt( rounds: Int = 10 )
+        = withAlgo( new Algo( () => new BCryptDigest(rounds) ) )
 
     /** A fluent interface for generating HMACs */
     class HmacBuilder ( val key: String ) {

@@ -44,6 +44,10 @@ class HasherTest extends Specification {
         "BCrypt hash" in {
             Hasher(data.str).bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
+        "BCrypt hash with round count" in {
+            Hasher(data.str).bcrypt(12).hex must
+                beMatching("^[a-zA-Z0-9]{120}$")
+        }
     }
 
 }

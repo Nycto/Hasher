@@ -218,7 +218,9 @@ private class CRC32Digest extends MutableDigest {
 /**
  * The BCrypt hash implementation
  */
-private class BCryptDigest extends MutableDigest {
+private class BCryptDigest (
+    private val rounds: Int
+) extends MutableDigest {
 
     import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
 
@@ -240,7 +242,7 @@ private class BCryptDigest extends MutableDigest {
     override def hash: Hash = {
         Hash( jBCrypt.hashpw(
             value.toString,
-            jBCrypt.gensalt()
+            jBCrypt.gensalt( rounds )
         ).getBytes )
     }
 

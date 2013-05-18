@@ -83,27 +83,27 @@ class AlgoTest extends Specification {
     def testBCrypt( data: TestData ) {
         "Using BCrypt, the apply methods on the Algo object" in {
             "Hash a String" in {
-                Algo.bcrypt(data.str).hex must
+                Algo.bcrypt()(data.str).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a StringBuilder" in {
-                Algo.bcrypt(data.builder).hex must
+                Algo.bcrypt()(data.builder).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash an Array of Bytes" in {
-                Algo.bcrypt(data.bytes).hex must
+                Algo.bcrypt()(data.bytes).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Stream" in {
-                Algo.bcrypt(data.stream).hex must
+                Algo.bcrypt()(data.stream).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Reader" in {
-                Algo.bcrypt(data.reader).hex must
+                Algo.bcrypt()(data.reader).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Source" in {
-                Algo.bcrypt(data.source).hex must
+                Algo.bcrypt()(data.source).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
         }

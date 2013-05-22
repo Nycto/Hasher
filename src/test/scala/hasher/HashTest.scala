@@ -2,6 +2,9 @@ package test.roundeights.hasher
 
 import org.specs2.mutable._
 
+import com.roundeights.hasher.Implicits._
+import com.roundeights.hasher.Hash
+
 class HashTest extends Specification {
 
     // The data being hashed
@@ -12,8 +15,6 @@ class HashTest extends Specification {
 
     "A Hash" should {
 
-        import com.roundeights.hasher.Implicits._
-
         "convert to a string implicitly" in {
             val hash: String = str.md5.hash
             hash must_== md5ed
@@ -22,6 +23,17 @@ class HashTest extends Specification {
         "convert to a byte array implicitly" in {
             val hash: Array[Byte] = str.sha1.hash
             ok
+        }
+
+        "Support equality" in {
+            Hash(md5ed).equals(md5ed) must beTrue
+            Hash(md5ed).equals("ABC123") must beFalse
+
+            Hash(md5ed).equals( Hash(md5ed) ) must beTrue
+            Hash(md5ed).equals( Hash("ABC123") ) must beFalse
+
+            Hash(md5ed).equals( Hash(md5ed).bytes ) must beTrue
+            Hash(md5ed).equals( Hash("ABC123").bytes ) must beFalse
         }
     }
 

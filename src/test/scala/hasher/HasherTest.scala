@@ -41,6 +41,10 @@ class HasherTest extends Specification {
         "crc32 hash" in {
             Hasher( data.str ).crc32.hex must_== data.crc32ed
         }
+        "pbkdf2 hash" in {
+            Hasher( data.str ).pbkdf2("secret", 1000, 128).hex must_==
+                data.pbkdf2ed.get
+        }
         "BCrypt hash" in {
             Hasher(data.str).bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }

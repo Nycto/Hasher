@@ -72,6 +72,9 @@ class ImplicitTest extends Specification {
         "CRC32 hash" in {
             data.str.crc32.hex must_== data.crc32ed
         }
+        "PBKDF2 hash" in {
+            data.str.pbkdf2("secret", 1000, 128).hex must_== data.pbkdf2ed.get
+        }
         "BCrypt hash" in {
             data.str.bcrypt.hex must beMatching("^[a-zA-Z0-9]{120}$")
         }
@@ -122,6 +125,18 @@ class ImplicitTest extends Specification {
             (data.str.sha512 hash= "SomeHashThatIsWrong") must beFalse
             (data.str.sha512 hash= "") must beFalse
             (data.str.sha512 hash= ("other".sha512)) must beFalse
+        }
+
+        "be comparable to a PBKDF2 Hash" in {
+            (data.str.pbkdf2("secret", 1000, 128) hash=
+                data.pbkdf2ed.get) must beTrue
+            (data.str.pbkdf2("secret", 1000, 128) hash=
+                "AHashThatIsWrong") must beFalse
+            (data.str.pbkdf2("secret", 1000, 128) hash=
+                "SomeHashThatIsWrong") must beFalse
+            (data.str.pbkdf2("secret", 1000, 128) hash= "") must beFalse
+            (data.str.pbkdf2("secret", 1000, 128) hash=
+                ("other".pbkdf2("secret", 1000, 128))) must beFalse
         }
 
         "be comparable to a CRC32 Hash" in {

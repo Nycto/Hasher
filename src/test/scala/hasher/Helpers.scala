@@ -35,6 +35,7 @@ object TestData {
             "0329a06b62cd16b33eb6792be8c60b15" +
             "8d89a2ee3a876fce9a881ebb488c0914",
         crc32ed = "d87f7e0c",
+        pbkdf2ed = Some("d5cb945138eb682d7338e091158da0b2"),
         bcrypted =
             "24326124313024755658345747674b" +
             "524749445643414b5941655a494f41" +
@@ -68,6 +69,7 @@ object TestData {
             "73b9f218b093078018a79922ef73054b" +
             "13fb363a424c4fb66d0a695bddfe7889",
         crc32ed = "d89a101b",
+        pbkdf2ed = Some("869aa2d16c33421e579a8a34f5c69691"),
         bcrypted =
             "2432612431302432776f7a74417658" +
             "5066554b36737655724e556d537534" +
@@ -101,6 +103,7 @@ object TestData {
             "49e926020a71960a3c02a0db62c103a0" +
             "0359dad83cd850687cae344e1004a697",
         crc32ed = "07b5088e",
+        pbkdf2ed = Some("a435799d4542e1a7e0138223bfc2cf15"),
         bcrypted =
             "2432612431302469307035536d6549" +
             "6c622f6c336b43777541556a486541" +
@@ -134,6 +137,7 @@ object TestData {
             "f9e66e179b6747ae54108f82f8ade8b3" +
             "c25d76fd30afde6c395822c530196169",
         crc32ed = "00000000",
+        pbkdf2ed = None,
         bcrypted =
             "24326124313024646665575364666f" +
             "72464b75684b61456e746c31567541" +
@@ -145,7 +149,6 @@ object TestData {
             "467a79553338467a796b4550497966" +
             "7451694f4a4b6b3434784c3752456d"
     )
-
 
 }
 
@@ -163,6 +166,7 @@ case class TestData (
     val hmacSha1ed: String,
     val hmacSha256ed: String,
     val crc32ed: String,
+    val pbkdf2ed: Option[String],
     val bcrypted: String,
     val bcrypted12: String
 ) {
@@ -185,6 +189,7 @@ case class TestData (
         run( Algo.hmac("secret").sha1, this, hmacSha1ed )
         run( Algo.hmac("secret").sha256, this, hmacSha256ed )
         run( Algo.crc32, this, crc32ed )
+        pbkdf2ed.map( run(Algo.pbkdf2("secret", 1000, 128), this, _) )
     }
 
     def runAgainstAll (run: (Algo, TestData, String) => Unit) = {

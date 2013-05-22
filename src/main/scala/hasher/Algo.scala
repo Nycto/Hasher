@@ -51,6 +51,12 @@ trait WithAlgo[A] {
 
     /** Generates an hmac builder */
     def hmac ( key: String ) = new HmacBuilder( key )
+
+    /** Generates a SHA1 based PBKDF2 hash */
+    def pbkdf2 ( salt: String, iterations: Int, keyLength: Int )
+        = withAlgo( new Algo( () => new Pbkdf2Digest(
+            "PBKDF2WithHmacSHA1", salt.getBytes, iterations, keyLength
+        ) ) )
 }
 
 

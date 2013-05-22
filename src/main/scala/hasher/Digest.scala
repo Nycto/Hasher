@@ -256,4 +256,47 @@ private class BCryptDigest (
     }
 }
 
+/**
+ * PBKDF2 digest
+ */
+private class Pbkdf2Digest (
+    override val name: String,
+    private val salt: Array[Byte],
+    private val iterations: Int,
+    private val length: Int
+) extends MutableDigest {
+
+    import javax.crypto.spec.PBEKeySpec
+    import javax.crypto.SecretKeyFactory
+
+    /**
+     * The collected value to hash
+     */
+    private val value = new StringBuilder
+
+    /**
+     * The key factory
+     */
+    private val factory = SecretKeyFactory.getInstance( name );
+
+    /** {@inheritDoc} */
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
+        value.append( new String(bytes, 0, length) )
+        this
+    }
+
+    /** {@inheritDoc} */
+    override def hash: Hash = {
+        val keyspec = new PBEKeySpec(
+            value.toString.toCharArray,
+            salt, iterations, length
+        );
+        Hash( factory.generateSecret( keyspec ).getEncoded )
+    }
+
+    /** {@inheritDoc} */
+    override def `hash_=` ( vs: Hash ): Boolean
+        = Digest.compare( hash.bytes, vs.bytes )
+}
+
 

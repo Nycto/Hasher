@@ -19,6 +19,7 @@ Supported Hashing Algorithms
 * `HMAC-SHA256`
 * `BCrypt`
 * `CRC32`
+* `PBKDF2`
 
 
 Adding it to your Project

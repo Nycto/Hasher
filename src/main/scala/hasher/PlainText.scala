@@ -1,6 +1,5 @@
 package com.roundeights.hasher
 
-import scala.language.reflectiveCalls
 import scala.annotation.tailrec
 
 import scala.io.Source
@@ -88,28 +87,41 @@ private class PlainTextBytes (
 }
 
 /**
- * A plain text representation of a Reader
+ * An Adapter for standardizing InputStreams and Readers
  */
-private class PlainTextResource (
-    private val resource: {
-        def read( bytes: Array[Byte] ): Int
-        def close: Unit
-    }
-) extends PlainText {
+private trait ByteReader {
 
-    /**
-     * Constructor for creating a resource from an InputStream
-     */
-    def this ( stream: InputStream ) = this( new {
+    /** Reads into an array, returning the number of bytes written */
+    def read( bytes: Array[Byte] ): Int
+
+    /** Closes this resource */
+    def close: Unit
+}
+
+/**
+ * ByteReader companion
+ */
+private object ByteReader {
+
+    /** Adapts an input stream */
+    class InputStreamAdapter(
+        private val stream: InputStream
+    ) extends ByteReader {
+
+        /** {@inheritDoc} */
         def read( bytes: Array[Byte] ): Int = stream.read(bytes)
-        def close: Unit = stream.close
-    })
 
-    /**
-     * Constructor for creating a resource from a Reader
-     */
-    def this ( reader: Reader ) = this( new {
+        /** {@inheritDoc} */
+        def close: Unit = stream.close
+    }
+
+    /** Adapts a reader */
+    class ReaderAdapter ( private val reader: Reader ) extends ByteReader {
+
+        /** A buffer to which content is temporarily written */
         private val buffer = new Array[Char](1024)
+
+        /** {@inheritDoc} */
         def read( bytes: Array[Byte] ): Int = buffer.synchronized {
 
             // Readers operate on Chars, but we need bytes. So, we buffer
@@ -124,8 +136,30 @@ private class PlainTextResource (
                 }
             }
         }
+
+        /** {@inheritDoc} */
         def close: Unit = reader.close
-    })
+    }
+}
+
+/**
+ * A plain text representation of a Reader
+ */
+private class PlainTextResource (
+    private val resource: ByteReader
+) extends PlainText {
+
+    /**
+     * Constructor for creating a resource from an InputStream
+     */
+    def this ( stream: InputStream )
+        = this( new ByteReader.InputStreamAdapter(stream) )
+
+    /**
+     * Constructor for creating a resource from a Reader
+     */
+    def this ( reader: Reader )
+        = this( new ByteReader.ReaderAdapter(reader) )
 
     /** {@inheritDoc} */
     override protected[hasher] def fill (

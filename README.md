@@ -220,10 +220,11 @@ object Main extends App {
     hashUsing( Algo.sha256 )
     hashUsing( Algo.sha384 )
     hashUsing( Algo.sha512 )
-    hashUsing( Algo.hmacMd5("secret") )
-    hashUsing( Algo.hmacSha1("secret") )
-    hashUsing( Algo.hmacSha256("secret") )
+    hashUsing( Algo.hmac("secret").md5 )
+    hashUsing( Algo.hmac("secret").sha1 )
+    hashUsing( Algo.hmac("secret").sha256 )
     hashUsing( Algo.crc32 )
+    hashUsing( Algo.pbkdf2("secret", 1000, 128) )
     hashUsing( Algo.bcrypt )
 }
 ```
@@ -306,6 +307,18 @@ object Main extends App {
 
 }
 ```
+
+
+What about character encoding?
+------------------------------
+
+Any time a string is passed into Hasher, it is internally converted to to a
+UTF-8 byte array. Any method that accepts a string will also accept a byte
+array. Thus, if UTF-8 isn't your style, you can manually convert your
+string to a byte array before passing it in.
+
+For methods that can't accept a byte array, but are character encoding
+sensitive (for example, the `tap` methods), you can pass in a Codec instance.
 
 
 BCrypt

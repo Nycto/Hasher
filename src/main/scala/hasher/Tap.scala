@@ -1,6 +1,6 @@
 package com.roundeights.hasher
 
-import scala.io.Source
+import scala.io.{Source, Codec}
 
 import java.io.InputStream
 import java.io.Reader
@@ -99,7 +99,8 @@ class InputStreamTap (
  */
 class ReaderTap (
     protected val digest: MutableDigest,
-    private val reader: Reader
+    private val reader: Reader,
+    private val codec: Codec
 ) extends Reader with Tap {
 
     import scala.annotation.tailrec
@@ -119,7 +120,8 @@ class ReaderTap (
 
         if ( read > 0 ) {
             // Readers operate on characters, but we need bytes
-            val bytes = new String( cbuf, off, read ).getBytes
+            val str = new String( cbuf, off, read )
+            val bytes = str.getBytes( codec.charSet )
             digest.add( bytes, bytes.length )
         }
 
@@ -171,7 +173,8 @@ class ReaderTap (
  */
 class SourceTap (
     override protected val digest: MutableDigest,
-    private val source: Source
+    private val source: Source,
+    private val codec: Codec
 ) extends Source with BufferedTap {
 
     /** {@inheritDoc} */
@@ -183,7 +186,8 @@ class SourceTap (
         /** {@inheritDoc} */
         override def next: Char = {
             val next = source.next
-            Character.toString(next).getBytes.foreach( addByteToDigest )
+            val str = Character.toString(next)
+            str.getBytes( codec.charSet ).foreach(addByteToDigest)
             next
         }
 

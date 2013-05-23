@@ -139,7 +139,7 @@ private class MessageDigest (
  */
 private class HMAC (
     override val name: String,
-    key: String
+    key: Array[Byte]
 ) extends MutableDigest {
 
     import javax.crypto.Mac
@@ -151,7 +151,7 @@ private class HMAC (
     private val mac = Mac.getInstance( name )
 
     // initialize the mac with the secret key
-    mac.init( new SecretKeySpec(key.getBytes, name) )
+    mac.init( new SecretKeySpec(key, name) )
 
     /** {@inheritDoc} */
     override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
@@ -243,7 +243,7 @@ private class BCryptDigest (
         Hash( jBCrypt.hashpw(
             value.toString,
             jBCrypt.gensalt( rounds )
-        ).getBytes )
+        ).getBytes("UTF8") )
     }
 
     /** {@inheritDoc} */

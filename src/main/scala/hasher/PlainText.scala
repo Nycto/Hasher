@@ -2,7 +2,7 @@ package com.roundeights.hasher
 
 import scala.annotation.tailrec
 
-import scala.io.Source
+import scala.io.{Source, Codec}
 import java.io.InputStream
 import java.io.Reader
 
@@ -22,7 +22,7 @@ trait WithPlainText[A] {
     /**
      * Constructor for accepting strings.
      */
-    def apply ( value: String ): A = apply( value.getBytes )
+    def apply ( value: String ): A = apply( value.getBytes("UTF8") )
 
     /**
      * Constructor for accepting StringBuilders.
@@ -42,7 +42,13 @@ trait WithPlainText[A] {
     /**
      * Constructor for accepting Sources.
      */
-    def apply ( value: Source ): A = apply( new PlainTextSource(value) )
+    def apply ( value: Source, encoding: Codec ): A
+        = apply( new PlainTextSource(value, encoding) )
+
+    /**
+     * Constructor for accepting Sources.
+     */
+    def apply ( value: Source ): A = apply(value, Codec.UTF8)
 }
 
 /**
@@ -71,7 +77,7 @@ private class PlainTextBytes (
     /**
      * Creates an instance from a string
      */
-    def this ( value: String ) = this( value.getBytes )
+    def this ( value: String ) = this( value.getBytes("UTF8") )
 
     /**
      * Creates an instance from a StringBuilder
@@ -116,7 +122,10 @@ private object ByteReader {
     }
 
     /** Adapts a reader */
-    class ReaderAdapter ( private val reader: Reader ) extends ByteReader {
+    class ReaderAdapter (
+        private val reader: Reader,
+        private val codec: Codec
+    ) extends ByteReader {
 
         /** A buffer to which content is temporarily written */
         private val buffer = new Array[Char](1024)
@@ -130,7 +139,8 @@ private object ByteReader {
             ( read  <= 0 ) match {
                 case true => -1
                 case false => {
-                    val readBytes = new String( buffer, 0, read ).getBytes
+                    val str = new String( buffer, 0, read )
+                    val readBytes = str.getBytes( codec.charSet )
                     Array.copy( readBytes, 0, bytes, 0, readBytes.length )
                     readBytes.length
                 }
@@ -158,8 +168,13 @@ private class PlainTextResource (
     /**
      * Constructor for creating a resource from a Reader
      */
-    def this ( reader: Reader )
-        = this( new ByteReader.ReaderAdapter(reader) )
+    def this ( reader: Reader, encoding: Codec )
+        = this( new ByteReader.ReaderAdapter(reader, encoding) )
+
+    /**
+     * Constructor for creating a resource from a Reader
+     */
+    def this ( reader: Reader ) = this( reader, Codec.UTF8 )
 
     /** {@inheritDoc} */
     override protected[hasher] def fill (
@@ -185,14 +200,17 @@ private class PlainTextResource (
 /**
  * Provides a plain text interface for Source objects
  */
-private class PlainTextSource ( private val source: Source ) extends PlainText {
+private class PlainTextSource (
+    private val source: Source,
+    private val codec: Codec
+) extends PlainText {
 
     /** {@inheritDoc} */
     override protected[hasher] def fill (
         digest: MutableDigest
     ): MutableDigest = {
-        source.grouped(8192).foreach { group =>
-            val bytes = new String( group.toArray ).getBytes
+        source.grouped(8192).foreach { group: Seq[Char] =>
+            val bytes = new String(group.toArray).getBytes(codec.charSet)
             digest.add( bytes, bytes.length )
         }
         digest

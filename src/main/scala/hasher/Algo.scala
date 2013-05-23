@@ -2,7 +2,7 @@ package com.roundeights.hasher
 
 import java.io.InputStream
 import java.io.Reader
-import scala.io.Source
+import scala.io.{Source, Codec}
 
 
 /** A helper class for performing some operation with various algorithms */
@@ -37,7 +37,7 @@ trait WithAlgo[A] {
         = withAlgo( new Algo( () => new BCryptDigest(rounds) ) )
 
     /** A fluent interface for generating HMACs */
-    class HmacBuilder ( val key: String ) {
+    class HmacBuilder ( val key: Array[Byte] ) {
 
         /** HMAC-MD5 hashing algorithm */
         def md5 = withAlgo( new Algo( () => new HMAC("HmacMD5", key) ) )
@@ -50,13 +50,20 @@ trait WithAlgo[A] {
     }
 
     /** Generates an hmac builder */
-    def hmac ( key: String ) = new HmacBuilder( key )
+    def hmac ( key: Array[Byte] ) = new HmacBuilder( key )
+
+    /** Generates an hmac builder */
+    def hmac ( key: String ) = new HmacBuilder( key.getBytes("UTF8") )
 
     /** Generates a SHA1 based PBKDF2 hash */
-    def pbkdf2 ( salt: String, iterations: Int, keyLength: Int )
+    def pbkdf2 ( salt: Array[Byte], iterations: Int, keyLength: Int ): A
         = withAlgo( new Algo( () => new Pbkdf2Digest(
-            "PBKDF2WithHmacSHA1", salt.getBytes, iterations, keyLength
+            "PBKDF2WithHmacSHA1", salt, iterations, keyLength
         ) ) )
+
+    /** Generates a SHA1 based PBKDF2 hash */
+    def pbkdf2 ( salt: String, iterations: Int, keyLength: Int ): A
+        = pbkdf2( salt.getBytes("UTF8"), iterations, keyLength )
 }
 
 
@@ -99,22 +106,36 @@ class Algo private[hasher] (
 
 
     /**
-     * Returns a decorated input stream that will generate a hash as
-     * data is read
+     * Decorates an input stream to generate a hash as data is read
      */
-    def tap ( value: InputStream ): InputStreamTap
+    def tap ( value: InputStream, codec: Codec ): InputStreamTap
         = new InputStreamTap( digest, value )
 
     /**
-     * Returns a decorated Reader that will generate a hash as
-     * data is read
+     * Decorates an input stream to generate a hash as data is read
      */
-    def tap ( value: Reader ): ReaderTap = new ReaderTap( digest, value )
+    def tap ( value: InputStream ): InputStreamTap = tap(value, Codec.UTF8)
 
     /**
-     * Returns a decorated Source that will generate a hash as
-     * data is read
+     * Decorates a Reader to generate a hash as data is read
      */
-    def tap ( value: Source ): SourceTap = new SourceTap( digest, value )
+    def tap ( value: Reader, encoding: Codec ): ReaderTap
+        = new ReaderTap( digest, value, encoding )
+
+    /**
+     * Decorates a Reader to generate a hash as data is read
+     */
+    def tap ( value: Reader ): ReaderTap = tap(value, Codec.UTF8)
+
+    /**
+     * Decorates a Source to generate a hash as data is read
+     */
+    def tap ( value: Source, encoding: Codec ): SourceTap
+        = new SourceTap( digest, value, encoding )
+
+    /**
+     * Decorates a Source to generate a hash as data is read
+     */
+    def tap ( value: Source ): SourceTap = tap(value, Codec.UTF8)
 }
 

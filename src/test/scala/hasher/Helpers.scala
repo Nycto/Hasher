@@ -16,7 +16,7 @@ object TestData {
 
     // Simple test data
     val test = TestData(
-        bytes = "test".getBytes,
+        bytes = "test".getBytes("UTF8"),
         md5ed = "098f6bcd4621d373cade4e832627b4f6",
         sha1ed = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
         sha256ed =
@@ -84,7 +84,7 @@ object TestData {
 
     // Multi-byte test data
     val international = TestData(
-        bytes = "Iñtërnâtiônàlizætiøn".getBytes,
+        bytes = "Iñtërnâtiônàlizætiøn".getBytes("UTF8"),
         md5ed = "e5e628206e73b1ae69b37fc69762a1e1",
         sha1ed = "4b9c5d2fa4c83f7561787eb4e5f7f06a2cd47425",
         sha256ed =
@@ -118,7 +118,7 @@ object TestData {
 
     // Empty data
     val blank = TestData(
-        bytes = "".getBytes,
+        bytes = "".getBytes("UTF8"),
         md5ed = "d41d8cd98f00b204e9800998ecf8427e",
         sha1ed = "da39a3ee5e6b4b0d3255bfef95601890afd80709",
         sha256ed =

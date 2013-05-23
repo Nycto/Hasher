@@ -31,7 +31,7 @@ class Hasher private (
     /**
      * Adds a salt from a string
      */
-    def salt ( saltValue: String ): Hasher = salt( saltValue.getBytes )
+    def salt ( saltValue: String ): Hasher = salt( saltValue.getBytes("UTF8") )
 
     /** {@inheritDoc} */
     override protected def withAlgo ( algo: Algo ): Digest

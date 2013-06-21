@@ -3,8 +3,8 @@ package com.roundeights.hasher
 import scala.annotation.tailrec
 
 import scala.io.{Source, Codec}
-import java.io.InputStream
-import java.io.Reader
+import java.io.{InputStream, Reader}
+import java.io.{Reader, File, FileInputStream}
 
 /**
  * Performs some operation using a plain text value
@@ -30,9 +30,14 @@ trait WithPlainText[A] {
     def apply ( value: StringBuilder ): A = apply( value.toString )
 
     /**
-     * Constructor for accepting InputStream.
+     * Constructor for accepting an InputStream.
      */
     def apply ( value: InputStream ): A = apply( new PlainTextResource(value) )
+
+    /**
+     * Constructor for accepting a File
+     */
+    def apply ( value: File ): A = apply( new FileInputStream(value) )
 
     /**
      * Constructor for accepting Readers.

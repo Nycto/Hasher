@@ -34,6 +34,9 @@ object TestData {
         hmacSha256ed =
             "0329a06b62cd16b33eb6792be8c60b15" +
             "8d89a2ee3a876fce9a881ebb488c0914",
+        hmacSha512ed =
+            "f8a4f0a209167bc192a1bffaa01ecdb09e06c57f96530d92ec9ccea0090d290e" +
+            "55071306d6b654f26ae0c8721f7e48a2d7130b881151f2cec8d61d941a6be88a",
         crc32ed = "d87f7e0c",
         pbkdf2ed = Some("d5cb945138eb682d7338e091158da0b2"),
         bcrypted =
@@ -68,6 +71,9 @@ object TestData {
         hmacSha256ed =
             "73b9f218b093078018a79922ef73054b" +
             "13fb363a424c4fb66d0a695bddfe7889",
+        hmacSha512ed =
+            "5ee8db40889ed97f3564f86819abf2a5b44fda87b97e8bac447658d9ecbe75f1" +
+            "4f39345ed179213cfda12f542e951830b6b5857d5438e424181483b430cfbf96",
         crc32ed = "d89a101b",
         pbkdf2ed = Some("869aa2d16c33421e579a8a34f5c69691"),
         bcrypted =
@@ -102,6 +108,9 @@ object TestData {
         hmacSha256ed =
             "49e926020a71960a3c02a0db62c103a0" +
             "0359dad83cd850687cae344e1004a697",
+        hmacSha512ed =
+            "820d2e8f6d75b03e78ee5bf2331ebdb33d1a50b19c0db8ca4aae9102832bf34e" +
+            "8d9710c68cf7dfae730f5b986584dc758cf4b62ae081c174b8f59a78d4e5f5c8",
         crc32ed = "07b5088e",
         pbkdf2ed = Some("a435799d4542e1a7e0138223bfc2cf15"),
         bcrypted =
@@ -136,6 +145,9 @@ object TestData {
         hmacSha256ed =
             "f9e66e179b6747ae54108f82f8ade8b3" +
             "c25d76fd30afde6c395822c530196169",
+        hmacSha512ed =
+            "b0e9650c5faf9cd8ae02276671545424104589b3656731ec193b25d01b07561c" +
+            "27637c2d4d68389d6cf5007a8632c26ec89ba80a01c77a6cdd389ec28db43901",
         crc32ed = "00000000",
         pbkdf2ed = None,
         bcrypted =
@@ -165,6 +177,7 @@ case class TestData (
     val hmacMd5ed: String,
     val hmacSha1ed: String,
     val hmacSha256ed: String,
+    val hmacSha512ed: String,
     val crc32ed: String,
     val pbkdf2ed: Option[String],
     val bcrypted: String,
@@ -188,6 +201,7 @@ case class TestData (
         run( Algo.hmac("secret").md5, this, hmacMd5ed )
         run( Algo.hmac("secret").sha1, this, hmacSha1ed )
         run( Algo.hmac("secret").sha256, this, hmacSha256ed )
+        run( Algo.hmac("secret").sha512, this, hmacSha512ed )
         run( Algo.crc32, this, crc32ed )
         pbkdf2ed.map( run(Algo.pbkdf2("secret", 1000, 128), this, _) )
     }

@@ -47,6 +47,9 @@ trait WithAlgo[A] {
 
         /** HMAC-SHA256 hashing algorithm */
         def sha256 = withAlgo( new Algo( () => new HMAC("HmacSHA256", key) ) )
+
+        /** HMAC-SHA512 hashing algorithm */
+        def sha512 = withAlgo( new Algo( () => new HMAC("HmacSHA512", key) ) )
     }
 
     /** Generates an hmac builder */

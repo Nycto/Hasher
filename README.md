@@ -17,6 +17,7 @@ Supported Hashing Algorithms
 * `HMAC-MD5`
 * `HMAC-SHA1`
 * `HMAC-SHA256`
+* `HMAC-SHA512`
 * `BCrypt`
 * `CRC32`
 * `PBKDF2`
@@ -223,6 +224,7 @@ object Main extends App {
     hashUsing( Algo.hmac("secret").md5 )
     hashUsing( Algo.hmac("secret").sha1 )
     hashUsing( Algo.hmac("secret").sha256 )
+    hashUsing( Algo.hmac("secret").sha512 )
     hashUsing( Algo.crc32 )
     hashUsing( Algo.pbkdf2("secret", 1000, 128) )
     hashUsing( Algo.bcrypt )

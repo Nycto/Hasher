@@ -15,6 +15,10 @@ resolvers ++= Seq(
     "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 )
 
+publishTo := Some("Spikemark" at "https://spikemark.herokuapp.com/maven/roundeights")
+
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
+
 // Application dependencies
 libraryDependencies ++= Seq(
     "org.mindrot" % "jbcrypt" % "0.3m" % "optional",

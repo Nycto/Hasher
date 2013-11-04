@@ -1,7 +1,6 @@
 package com.roundeights.hasher
 
-import java.io.InputStream
-import java.io.Reader
+import java.io.{InputStream, Reader, File}
 import scala.io.Source
 import scala.language.implicitConversions
 
@@ -32,6 +31,11 @@ object Implicits {
     implicit def streamToHasher ( from: InputStream ): Hasher = Hasher(from)
 
     /**
+     * Implicitly creates a hasher from a File
+     */
+    implicit def fileToHasher ( from: File ): Hasher = Hasher(from)
+
+    /**
      * Implicitly creates a hasher from a Reader
      */
     implicit def readerToHasher ( from: Reader ): Hasher = Hasher(from)
@@ -40,6 +44,5 @@ object Implicits {
      * Implicitly creates a hasher from a Source
      */
     implicit def sourceToHasher ( from: Source ): Hasher = Hasher(from)
-
 }
 

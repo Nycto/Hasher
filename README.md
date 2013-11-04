@@ -14,8 +14,13 @@ Supported Hashing Algorithms
 * `SHA256`
 * `SHA384`
 * `SHA512`
+* `HMAC-MD5`
+* `HMAC-SHA1`
+* `HMAC-SHA256`
+* `HMAC-SHA512`
 * `BCrypt`
 * `CRC32`
+* `PBKDF2`
 
 
 Adding it to your Project
@@ -37,7 +42,7 @@ Then, just add this to your `build.sbt` file and recompile:
 
 ```
 libraryDependencies ++= Seq(
-    "com.roundeights" %% "hasher" % "0.3"
+    "com.roundeights" %% "hasher" % "1.0.0"
 )
 ```
 
@@ -59,36 +64,27 @@ Here is a sample app showing how to use these various methods:
 package org.example.hasher
 
 import com.roundeights.hasher.Implicits._
+import scala.language.postfixOps
 
-object Main {
-    def main(args: Array[String]) = {
+object Main extends App {
 
-        val hashMe = "Some String"
+    val hashMe = "Some String"
 
-        // Generate set of hashes using various algorithms
-        val hashes = Map(
-            "MD5" -> hashMe.md5,
-            "SHA1" -> hashMe.sha1,
-            "SHA256" -> hashMe.sha256,
-            "SHA384" -> hashMe.sha384,
-            "SHA512" -> hashMe.sha512,
-            "CRC32" -> hashMe.crc32,
-            "BCrypt" -> hashMe.bcrypt
-        )
+    // Generate a few hashes
+    val md5 = hashMe.md5
+    val sha1 = hashMe.sha1
+    val bcrypt = hashMe.bcrypt
 
-        // Print each of the calculated hashes
-        hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+    // Print each hex encoded hash
+    println( "MD5: " + md5.hex )
+    println( "SHA1: " + sha1.hex )
+    println( "BCrypt: " + bcrypt.hex )
 
-        // Now compare the original value to each hashed value
-        // and print the boolean result
-        println("MD5 Matches: " + (hashMe md5= hashes("MD5")) )
-        println("SHA1 Matches: " + (hashMe sha1= hashes("SHA1")) )
-        println("SHA256 Matches: " + (hashMe sha256= hashes("SHA256")) )
-        println("SHA384 Matches: " + (hashMe sha384= hashes("SHA384")) )
-        println("SHA512 Matches: " + (hashMe sha512= hashes("SHA512")) )
-        println("CRC32 Matches: " + (hashMe crc32= hashes("CRC32")) )
-        println("BCrypt Matches: " + (hashMe bcrypt= hashes("BCrypt")) )
-    }
+    // Compare the original value to each hashed value
+    // and print the boolean result
+    println("MD5 Matches: " + (hashMe.md5 hash= md5) )
+    println("SHA1 Matches: " + (hashMe.sha1 hash= sha1) )
+    println("BCrypt Matches: " + (hashMe.bcrypt hash= bcrypt) )
 }
 ```
 
@@ -115,13 +111,11 @@ Here is an example app that does salting:
 ```scala
 package org.example.hasher
 
-import com.roundeights.hasher.Hasher
+import com.roundeights.hasher.Implicits._
 
-object Main {
-    def main(args: Array[String]) = {
-        val hashMe = "Some String"
-        println( "Salted MD5: " + hashMe.salt("sweet").md5 )
-    }
+object Main extends App {
+    val hashMe = "Some String"
+    println( "Salted MD5: " + hashMe.salt("sweet").md5.hex )
 }
 ```
 
@@ -138,12 +132,10 @@ package org.example.hasher
 
 import com.roundeights.hasher.Implicits._
 
-object Main {
-    def main(args: Array[String]) = {
-        val hashMe = "Some String"
-        val hashBytes: Array[Byte] = hashMe.md5
-        println("MD5 Hash Bytes: " + hashBytes.mkString(" "))
-    }
+object Main extends App {
+    val hashMe = "Some String"
+    val hashBytes = hashMe.md5.bytes
+    println("MD5 Hash Bytes: " + hashBytes.mkString(" "))
 }
 ```
 
@@ -160,64 +152,36 @@ application as above, but implemented without implicits:
 package org.example.hasher
 
 import com.roundeights.hasher.Hasher
+import scala.language.postfixOps
 
-object Main {
-    def main(args: Array[String]) = {
+object Main extends App{
 
-        val hashMe = "Some String"
+    val hashMe = "Some String"
 
-        // Generate set of hashes using various algorithms
-        val hashes = Map(
-            "MD5" -> Hasher( hashMe ).md5,
-            "SHA1" -> Hasher( hashMe ).sha1,
-            "SHA256" -> Hasher( hashMe ).sha256,
-            "SHA384" -> Hasher( hashMe ).sha384,
-            "SHA512" -> Hasher( hashMe ).sha512,
-            "CRC32" -> Hasher( hashMe ).crc32,
-            "BCrypt" -> Hasher( hashMe ).bcrypt
-        )
+    // Generate a few hashes
+    val md5 = Hasher(hashMe).md5
+    val sha1 = Hasher(hashMe).sha1
+    val bcrypt = Hasher(hashMe).bcrypt
 
-        // Print each of the calculated hashes of Hashes
-        hashes.foreach( pair => println( pair._1 + ": " + pair._2 ) )
+    // Print each hex encoded hash
+    println( "MD5: " + md5.hex )
+    println( "SHA1: " + sha1.hex )
+    println( "BCrypt: " + bcrypt.hex )
 
-        println(
-            "MD5 Matches: " +
-            (Hasher(hashMe).md5= hashes("MD5"))
-        )
-        println(
-            "SHA1 Matches: " +
-            (Hasher(hashMe).sha1= hashes("SHA1"))
-        )
-        println(
-            "SHA256 Matches: " +
-            (Hasher(hashMe).sha256= hashes("SHA256"))
-        )
-        println(
-            "SHA384 Matches: " +
-            (Hasher(hashMe).sha384= hashes("SHA384"))
-        )
-        println(
-            "SHA512 Matches: " +
-            (Hasher(hashMe).sha512= hashes("SHA512"))
-        )
-        println(
-            "CRC32 Matches: " +
-            (Hasher(hashMe).crc32= hashes("CRC32"))
-        )
-        println(
-            "BCrypt Matches: " +
-            (Hasher(hashMe).bcrypt= hashes("BCrypt"))
-        )
-    }
+    // Compare the original value to each hashed value
+    // and print the boolean result
+    println("MD5 Matches: " + (Hasher(hashMe).md5 hash= md5) )
+    println("SHA1 Matches: " + (Hasher(hashMe).sha1 hash= sha1) )
+    println("BCrypt Matches: " + (Hasher(hashMe).bcrypt hash= bcrypt) )
 }
 ```
 
 
-Why use the `hash=` methods?
---------------------------
+Why use the `hash=` method?
+---------------------------
 
-The `hash=` methods compare a plain text value to a pre-computed hash. You
-should be using them instead of re-generating the hash and doing a string
+The `hash=` method compares a plain text value to a pre-computed hash. You
+should be using it instead of re-generating the hash and doing a string
 comparison for two reasons:
 
 1. To prevent timing attacks. These methods don't short circuit when they find
@@ -240,26 +204,30 @@ hashing algorithm. This can be achieved by using the Algo class:
 package org.example.hasher
 
 import com.roundeights.hasher.{Hasher, Algo}
+import scala.language.postfixOps
 
-object Main {
+object Main extends App {
 
     val hashMe = "Some String"
 
     def hashUsing ( algo: Algo ) = {
         val hash = algo( hashMe )
-        println( "Hashed using " + algo + ": " + hash )
-        println( "Matches: " + algo.compare(hashMe, hash) )
+        println( "Hashed using " + algo.name + ": " + hash.hex )
+        println( "Matches: " + (algo(hashMe) hash= hash) )
     }
 
-    def main(args: Array[String]) = {
-        hashUsing( Hasher.md5 )
-        hashUsing( Hasher.sha1 )
-        hashUsing( Hasher.sha256 )
-        hashUsing( Hasher.sha384 )
-        hashUsing( Hasher.sha512 )
-        hashUsing( Hasher.crc32 )
-        hashUsing( Hasher.bcrypt )
-    }
+    hashUsing( Algo.md5 )
+    hashUsing( Algo.sha1 )
+    hashUsing( Algo.sha256 )
+    hashUsing( Algo.sha384 )
+    hashUsing( Algo.sha512 )
+    hashUsing( Algo.hmac("secret").md5 )
+    hashUsing( Algo.hmac("secret").sha1 )
+    hashUsing( Algo.hmac("secret").sha256 )
+    hashUsing( Algo.hmac("secret").sha512 )
+    hashUsing( Algo.crc32 )
+    hashUsing( Algo.pbkdf2("secret", 1000, 128) )
+    hashUsing( Algo.bcrypt )
 }
 ```
 
@@ -282,17 +250,19 @@ Here is an example:
 ```scala
 package org.example.hasher
 
-import com.roundeights.hasher.Hasher
+import com.roundeights.hasher.Algo
+import scala.language.postfixOps
 
-object Main {
+object Main extends App {
 
     val hashMe = "Some String"
 
-    def inputStreamTapping = {
+    // Tapping an InputStream
+    {
 
         import java.io.ByteArrayInputStream
 
-        val stream = Hasher.sha1.tap(
+        val stream = Algo.sha1.tap(
             new ByteArrayInputStream( hashMe.getBytes )
         )
 
@@ -305,11 +275,12 @@ object Main {
         println( "InputStream Hash Compare: " + (stream hash= hash) )
     }
 
-    def readerTapping = {
+    // Tapping a Reader
+    {
 
         import java.io.StringReader
 
-        val reader = Hasher.sha1.tap( new StringReader( hashMe ) )
+        val reader = Algo.sha1.tap( new StringReader( hashMe ) )
 
         // Read everything out of the reader
         while ( reader.read() != -1 ) {}
@@ -320,11 +291,12 @@ object Main {
         println( "Reader Hash Compare: " + (reader hash= hash) )
     }
 
-    def sourceTapping = {
+    // Tapping a source
+    {
 
         import scala.io.Source
 
-        val source = Hasher.sha1.tap( Source.fromString( hashMe ) )
+        val source = Algo.sha1.tap( Source.fromString( hashMe ) )
 
         // Read everything out of the source
         source.mkString
@@ -335,14 +307,20 @@ object Main {
         println( "Source Hash Compare: " + (source hash= hash) )
     }
 
-    def main(args: Array[String]) = {
-        inputStreamTapping
-        readerTapping
-        sourceTapping
-    }
-
 }
 ```
+
+
+What about character encoding?
+------------------------------
+
+Any time a string is passed into Hasher, it is internally converted to to a
+UTF-8 byte array. Any method that accepts a string will also accept a byte
+array. Thus, if UTF-8 isn't your style, you can manually convert your
+string to a byte array before passing it in.
+
+For methods that can't accept a byte array, but are character encoding
+sensitive (for example, the `tap` methods), you can pass in a Codec instance.
 
 
 BCrypt

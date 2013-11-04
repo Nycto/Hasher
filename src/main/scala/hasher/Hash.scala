@@ -28,7 +28,7 @@ object Hash {
 /**
  * Represents a hash
  */
-case class Hash ( val bytes: Array[Byte] ) {
+case class Hash ( val bytes: Array[Byte] ) extends Equals {
 
     /**
      * Constructs a hash from a hex string
@@ -42,11 +42,25 @@ case class Hash ( val bytes: Array[Byte] ) {
      */
     lazy val hex: String = bytes.map( "%02x".format(_) ).mkString("")
 
-    /**
-     * Converts this hash to a hex encoded string
-     */
+    /** {@inheritDoc} */
     override def toString: String = hex
 
+    /** {@inheritDoc} */
+    override def hashCode: Int = hex.hashCode
+
+    /** {@inheritDoc} */
+    override def equals ( other: Any ) = other match {
+        case str: String
+            => equals( Hash(str) )
+        case hash: Hash if hash.canEqual(this)
+            => Digest.compare( bytes, hash.bytes )
+        case ary: Array[Byte]
+            => Digest.compare( bytes, ary )
+        case _ => false
+    }
+
+    /** {@inheritDoc} */
+    override def canEqual ( other: Any ) = other.isInstanceOf[Hash]
 }
 
 

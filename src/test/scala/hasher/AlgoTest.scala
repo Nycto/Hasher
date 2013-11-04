@@ -41,38 +41,38 @@ class AlgoTest extends Specification {
 
         "Using " + algo + ", the compare methods on the Algo object" in {
             "match with a String" in {
-                algo.compare( data.str, hash )
+                (algo( data.str ) hash= hash)
                     .aka( "Comparing a String to " + hash ) must beTrue
             }
             "match with a StringBuilder" in {
-                algo.compare( data.builder, hash )
+                (algo( data.builder ) hash= hash)
                     .aka( "Comparing a StringBuilder to " + hash ) must beTrue
             }
             "match with an Array of Bytes" in {
-                algo.compare( data.bytes, hash )
+                (algo( data.bytes ) hash= hash)
                     .aka( "Comparing a Byte Array to " + hash ) must beTrue
             }
             "match with a Stream" in {
-                algo.compare( data.stream, hash )
+                (algo( data.stream ) hash= hash )
                     .aka( "Comparing a Stream to " + hash ) must beTrue
             }
             "match with a Reader" in {
-                algo.compare( data.reader, hash )
+                (algo( data.reader ) hash= hash )
                     .aka( "Comparing a Reader to " + hash ) must beTrue
             }
             "match with a Source" in {
-                algo.compare( data.source, hash )
+                (algo( data.source ) hash= hash )
                     .aka( "Comparing a Source to " + hash ) must beTrue
             }
         }
 
         "Comparing multiple times with " + algo + " should still match" in {
             "match with a String" in {
-                algo.compare( data.str, hash )
+                (algo( data.str ) hash= hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
-                algo.compare( data.str, hash )
+                (algo( data.str ) hash= hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
-                algo.compare( data.str, hash )
+                (algo( data.str ) hash= hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
             }
         }
@@ -83,27 +83,27 @@ class AlgoTest extends Specification {
     def testBCrypt( data: TestData ) {
         "Using BCrypt, the apply methods on the Algo object" in {
             "Hash a String" in {
-                Hasher.bcrypt(data.str).hex must
+                Algo.bcrypt()(data.str).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a StringBuilder" in {
-                Hasher.bcrypt(data.builder).hex must
+                Algo.bcrypt()(data.builder).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash an Array of Bytes" in {
-                Hasher.bcrypt(data.bytes).hex must
+                Algo.bcrypt()(data.bytes).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Stream" in {
-                Hasher.bcrypt(data.stream).hex must
+                Algo.bcrypt()(data.stream).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Reader" in {
-                Hasher.bcrypt(data.reader).hex must
+                Algo.bcrypt()(data.reader).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
             "Hash a Source" in {
-                Hasher.bcrypt(data.source).hex must
+                Algo.bcrypt()(data.source).hex must
                     beMatching("^[a-zA-Z0-9]{120}$")
             }
         }

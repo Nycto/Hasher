@@ -16,7 +16,7 @@ object TestData {
 
     // Simple test data
     val test = TestData(
-        bytes = "test".getBytes,
+        bytes = "test".getBytes("UTF8"),
         md5ed = "098f6bcd4621d373cade4e832627b4f6",
         sha1ed = "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
         sha256ed =
@@ -34,12 +34,21 @@ object TestData {
         hmacSha256ed =
             "0329a06b62cd16b33eb6792be8c60b15" +
             "8d89a2ee3a876fce9a881ebb488c0914",
+        hmacSha512ed =
+            "f8a4f0a209167bc192a1bffaa01ecdb09e06c57f96530d92ec9ccea0090d290e" +
+            "55071306d6b654f26ae0c8721f7e48a2d7130b881151f2cec8d61d941a6be88a",
         crc32ed = "d87f7e0c",
+        pbkdf2ed = Some("d5cb945138eb682d7338e091158da0b2"),
         bcrypted =
             "24326124313024755658345747674b" +
             "524749445643414b5941655a494f41" +
             "4b4f3468543759437053796167356a" +
-            "2f5a365261377253334b636b796c32"
+            "2f5a365261377253334b636b796c32",
+        bcrypted12 =
+            "243261243132246138486731305057" +
+            "4d6d35592f325044743631466d4f52" +
+            "384b36616975594f46383179676430" +
+            "44574c356a6634616844424648344b"
     )
 
     // Buffer busting test data
@@ -62,17 +71,26 @@ object TestData {
         hmacSha256ed =
             "73b9f218b093078018a79922ef73054b" +
             "13fb363a424c4fb66d0a695bddfe7889",
+        hmacSha512ed =
+            "5ee8db40889ed97f3564f86819abf2a5b44fda87b97e8bac447658d9ecbe75f1" +
+            "4f39345ed179213cfda12f542e951830b6b5857d5438e424181483b430cfbf96",
         crc32ed = "d89a101b",
+        pbkdf2ed = Some("869aa2d16c33421e579a8a34f5c69691"),
         bcrypted =
             "2432612431302432776f7a74417658" +
             "5066554b36737655724e556d537534" +
             "7a784d5045474148526835726c5352" +
-            "624f6e346f44682f506c704e446f75"
+            "624f6e346f44682f506c704e446f75",
+        bcrypted12 =
+            "24326124313224376e562f2e566373" +
+            "346e62472e5074556c6c4f4e554f38" +
+            "446371734b4f515442447a59486c76" +
+            "32346636574767455a555a7062586d"
     )
 
     // Multi-byte test data
     val international = TestData(
-        bytes = "Iñtërnâtiônàlizætiøn".getBytes,
+        bytes = "Iñtërnâtiônàlizætiøn".getBytes("UTF8"),
         md5ed = "e5e628206e73b1ae69b37fc69762a1e1",
         sha1ed = "4b9c5d2fa4c83f7561787eb4e5f7f06a2cd47425",
         sha256ed =
@@ -90,17 +108,26 @@ object TestData {
         hmacSha256ed =
             "49e926020a71960a3c02a0db62c103a0" +
             "0359dad83cd850687cae344e1004a697",
+        hmacSha512ed =
+            "820d2e8f6d75b03e78ee5bf2331ebdb33d1a50b19c0db8ca4aae9102832bf34e" +
+            "8d9710c68cf7dfae730f5b986584dc758cf4b62ae081c174b8f59a78d4e5f5c8",
         crc32ed = "07b5088e",
+        pbkdf2ed = Some("a435799d4542e1a7e0138223bfc2cf15"),
         bcrypted =
             "2432612431302469307035536d6549" +
             "6c622f6c336b43777541556a486541" +
             "766439686e6f336753463634546650" +
-            "3333736f64615464477a6b42684857"
+            "3333736f64615464477a6b42684857",
+        bcrypted12 =
+            "243261243132245a4433437158694f" +
+            "6734474a506a664959537977474f4d" +
+            "3744575932455245554f73706c7543" +
+            "427870616b4d4a45334e62544a4e69"
     )
 
     // Empty data
     val blank = TestData(
-        bytes = "".getBytes,
+        bytes = "".getBytes("UTF8"),
         md5ed = "d41d8cd98f00b204e9800998ecf8427e",
         sha1ed = "da39a3ee5e6b4b0d3255bfef95601890afd80709",
         sha256ed =
@@ -118,14 +145,22 @@ object TestData {
         hmacSha256ed =
             "f9e66e179b6747ae54108f82f8ade8b3" +
             "c25d76fd30afde6c395822c530196169",
+        hmacSha512ed =
+            "b0e9650c5faf9cd8ae02276671545424104589b3656731ec193b25d01b07561c" +
+            "27637c2d4d68389d6cf5007a8632c26ec89ba80a01c77a6cdd389ec28db43901",
         crc32ed = "00000000",
+        pbkdf2ed = None,
         bcrypted =
             "24326124313024646665575364666f" +
             "72464b75684b61456e746c31567541" +
             "6c39494c783830722e33537a554438" +
-            "6b315558317956646777614d525347"
+            "6b315558317956646777614d525347",
+        bcrypted12 =
+            "243261243132244172674374753475" +
+            "366d547676497276414b6e32687557" +
+            "467a79553338467a796b4550497966" +
+            "7451694f4a4b6b3434784c3752456d"
     )
-
 
 }
 
@@ -142,8 +177,11 @@ case class TestData (
     val hmacMd5ed: String,
     val hmacSha1ed: String,
     val hmacSha256ed: String,
+    val hmacSha512ed: String,
     val crc32ed: String,
-    val bcrypted: String
+    val pbkdf2ed: Option[String],
+    val bcrypted: String,
+    val bcrypted12: String
 ) {
 
     def str: String = new String( bytes )
@@ -155,20 +193,23 @@ case class TestData (
     def length = str.length
 
     def runAgainstUnsalted (run: (Algo, TestData, String) => Unit) = {
-        run( Hasher.md5, this, md5ed )
-        run( Hasher.sha1, this, sha1ed )
-        run( Hasher.sha256, this, sha256ed )
-        run( Hasher.sha384, this, sha384ed )
-        run( Hasher.sha512, this, sha512ed )
-        run( Hasher.hmacMd5("secret"), this, hmacMd5ed )
-        run( Hasher.hmacSha1("secret"), this, hmacSha1ed )
-        run( Hasher.hmacSha256("secret"), this, hmacSha256ed )
-        run( Hasher.crc32, this, crc32ed )
+        run( Algo.md5, this, md5ed )
+        run( Algo.sha1, this, sha1ed )
+        run( Algo.sha256, this, sha256ed )
+        run( Algo.sha384, this, sha384ed )
+        run( Algo.sha512, this, sha512ed )
+        run( Algo.hmac("secret").md5, this, hmacMd5ed )
+        run( Algo.hmac("secret").sha1, this, hmacSha1ed )
+        run( Algo.hmac("secret").sha256, this, hmacSha256ed )
+        run( Algo.hmac("secret").sha512, this, hmacSha512ed )
+        run( Algo.crc32, this, crc32ed )
+        pbkdf2ed.map( run(Algo.pbkdf2("secret", 1000, 128), this, _) )
     }
 
     def runAgainstAll (run: (Algo, TestData, String) => Unit) = {
         runAgainstUnsalted( run )
-        run( Hasher.bcrypt, this, bcrypted )
+        run( Algo.bcrypt, this, bcrypted )
+        run( Algo.bcrypt(12), this, bcrypted12 )
     }
 
 }

@@ -26,21 +26,14 @@ Supported Hashing Algorithms
 Adding it to your Project
 -------------------------
 
-Hasher is not currently hosted in any publicly available maven repositories.
-However, you can still add it to your project by publishing it to your local
-repository.
-
-Run the following commands:
+To import Hasher into your project, you just need to add the following
+directives to your `build.sbt` file:
 
 ```
-git clone https://github.com/Nycto/Hasher.git /tmp/Hasher;
-cd /tmp/Hasher;
-sbt publish-local;
-```
+resolvers ++= Seq(
+    "RoundEights" at "http://maven.spikemark.net/roundeights"
+)
 
-Then, just add this to your `build.sbt` file and recompile:
-
-```
 libraryDependencies ++= Seq(
     "com.roundeights" %% "hasher" % "1.0.0"
 )

@@ -91,6 +91,36 @@ The implicit methods currently work on the following types:
 * `Source`
 
 
+A Note About Resources
+----------------------
+
+Some of the data types you can use to generate hashes are consumable. In
+other words, once these resources are read, they are spent. Specifically,
+this applies if you are hashing an `InputStream`, a `Reader`, or a
+`Source`.
+
+There are two implications to this:
+
+1. Make sure you don't read from the resource before generating the hash.
+   Your resource will not be automatically reset before it is read, so
+   the resulting digest will be based on the initial offset. That's
+   probably not what you wanted as it means the hash will only reflect
+   part of the data.
+2. Your resource will be consumed after generating the hash.
+   Unfortunately, there is no way out of this. The hash is based on the
+   content of the resource, so the resource has to be read to generate
+   the hash.
+
+You do have options, though:
+
+1. Depending on the type of resource, you may be able to reset it after
+   generating your hash.
+2. Use a `Tap` instead of directly building the hash. This allows the
+   digest to be constructed passively as some other piece of code reads
+   the resource. Details and examples are available further down in
+   this document.
+
+
 Salting
 -------
 

@@ -2,9 +2,9 @@ name := "Hasher"
 
 organization := "com.roundeights"
 
-version := "1.0.0"
+version := "1.1.0"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.7"
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions ++= Seq("-deprecation", "-feature")

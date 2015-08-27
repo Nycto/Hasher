@@ -119,5 +119,13 @@ class Algo private[hasher] (
 
     /** Decorates a Source to generate a hash as data is read */
     def tap ( value: Source ): SourceTap = tap(value, Codec.UTF8)
+
+    /**
+     * Creates a foldable object. These are useful for accumulating the content
+     * of a hash by iterating over another value. Foldables enforce thread
+     * safety by only being usable once. Each call to add a value to a foldable
+     * returns a new instance that can then itself only be called once.
+     */
+    def foldable = new Foldable( digest )
 }
 

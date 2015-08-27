@@ -9,40 +9,26 @@ import scala.language.implicitConversions
  */
 object Implicits {
 
-    /**
-     * Implicitly creates a hasher from a string.
-     */
+    /** Implicitly creates a hasher from a string.  */
     implicit def stringToHasher ( from: String ): Hasher = Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from a StringBuilder.
-     */
-    implicit def stringBuilderToHasher ( from: StringBuilder ): Hasher
-        = Hasher(from)
+    /** Implicitly creates a hasher from a StringBuilder.  */
+    implicit def stringBuilderToHasher ( from: StringBuilder ): Hasher =
+        Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from a byte array.
-     */
+    /** Implicitly creates a hasher from a byte array.  */
     implicit def byteArrayToHasher ( from: Array[Byte] ): Hasher = Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from an Input Stream
-     */
+    /** Implicitly creates a hasher from an Input Stream */
     implicit def streamToHasher ( from: InputStream ): Hasher = Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from a File
-     */
+    /** Implicitly creates a hasher from a File */
     implicit def fileToHasher ( from: File ): Hasher = Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from a Reader
-     */
+    /** Implicitly creates a hasher from a Reader */
     implicit def readerToHasher ( from: Reader ): Hasher = Hasher(from)
 
-    /**
-     * Implicitly creates a hasher from a Source
-     */
+    /** Implicitly creates a hasher from a Source */
     implicit def sourceToHasher ( from: Source ): Hasher = Hasher(from)
 }
 

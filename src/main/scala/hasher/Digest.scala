@@ -40,24 +40,16 @@ object Digest {
  */
 trait Digest {
 
-    /**
-     * Returns the name of this algorithm
-     */
+    /** Returns the name of this algorithm */
     def name: String
 
-    /**
-     * Calculates the hash of the collected bytes so far
-     */
+    /** Calculates the hash of the collected bytes so far */
     def hash: Hash
 
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
+    /** Determines whether the collected bytes compute to a given hash */
     def `hash_=` ( vs: Hash ): Boolean
 
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
+    /** Determines whether the collected bytes compute to a given hash */
     def `hash_=` ( vs: String ): Boolean = {
         try {
             hash_=( Hash(vs) )
@@ -66,24 +58,16 @@ trait Digest {
         }
     }
 
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
+    /** Determines whether the collected bytes compute to a given hash */
     def `hash_=` ( vs: Array[Byte] ): Boolean = hash_=( Hash(vs) )
 
-    /**
-     * Determines whether the collected bytes compute to a given hash
-     */
+    /** Determines whether the collected bytes compute to a given hash */
     def `hash_=` ( vs: Digest ): Boolean = hash_=( vs.hash )
 
-    /**
-     * Returns this digest as a hex encoded string
-     */
+    /** Returns this digest as a hex encoded string */
     def hex: String = hash.hex
 
-    /**
-     * Returns the raw bytes from the hash this digest generates
-     */
+    /** Returns the raw bytes from the hash this digest generates */
     def bytes: Array[Byte] = hash.bytes
 
     /** {@inheritDoc} */
@@ -95,9 +79,7 @@ trait Digest {
  */
 trait MutableDigest extends Digest {
 
-    /**
-     * Adds a list of bytes to this algorithm
-     */
+    /** Adds a list of bytes to this algorithm */
     def add ( bytes: Array[Byte], length: Int ): MutableDigest
 }
 
@@ -110,9 +92,7 @@ private class MessageDigest (
 
     import java.security.{MessageDigest => jMessageDigest}
 
-    /**
-     * The digest to collect data into
-     */
+    /** The digest to collect data into */
     private val jDigest = jMessageDigest.getInstance( name )
 
     /** {@inheritDoc} */
@@ -130,8 +110,8 @@ private class MessageDigest (
     }
 
     /** {@inheritDoc} */
-    override def `hash_=` ( vs: Hash ): Boolean
-        = Digest.compare( jDigest.digest, vs.bytes )
+    override def `hash_=` ( vs: Hash ): Boolean =
+        Digest.compare( jDigest.digest, vs.bytes )
 }
 
 /**
@@ -145,9 +125,7 @@ private class HMAC (
     import javax.crypto.Mac
     import javax.crypto.spec.SecretKeySpec
 
-    /**
-     * The digest to collect data into
-     */
+    /** The digest to collect data into */
     private val mac = Mac.getInstance( name )
 
     // initialize the mac with the secret key
@@ -167,8 +145,8 @@ private class HMAC (
     }
 
     /** {@inheritDoc} */
-    override def `hash_=` ( vs: Hash ): Boolean
-        = Digest.compare( mac.clone.asInstanceOf[Mac].doFinal, vs.bytes )
+    override def `hash_=` ( vs: Hash ): Boolean =
+        Digest.compare( mac.clone.asInstanceOf[Mac].doFinal, vs.bytes )
 }
 
 /**
@@ -178,9 +156,7 @@ private class CRC32Digest extends MutableDigest {
 
     import java.util.zip.CRC32
 
-    /**
-     * The digest to collect data into
-     */
+    /** The digest to collect data into */
     private val digest = new CRC32
 
     /** {@inheritDoc} */
@@ -211,8 +187,8 @@ private class CRC32Digest extends MutableDigest {
     }
 
     /** {@inheritDoc} */
-    override def `hash_=` ( vs: Hash ): Boolean
-        = Digest.compare( hash.bytes, vs.bytes )
+    override def `hash_=` ( vs: Hash ): Boolean =
+        Digest.compare( hash.bytes, vs.bytes )
 }
 
 /**
@@ -224,9 +200,7 @@ private class BCryptDigest (
 
     import org.mindrot.jbcrypt.{BCrypt => jBCrypt}
 
-    /**
-     * The collected value to hash
-     */
+    /** The collected value to hash */
     private val value = new StringBuilder
 
     /** {@inheritDoc} */
@@ -269,14 +243,10 @@ private class Pbkdf2Digest (
     import javax.crypto.spec.PBEKeySpec
     import javax.crypto.SecretKeyFactory
 
-    /**
-     * The collected value to hash
-     */
+    /** The collected value to hash */
     private val value = new StringBuilder
 
-    /**
-     * The key factory
-     */
+    /** The key factory */
     private val factory = SecretKeyFactory.getInstance( name );
 
     /** {@inheritDoc} */
@@ -295,8 +265,8 @@ private class Pbkdf2Digest (
     }
 
     /** {@inheritDoc} */
-    override def `hash_=` ( vs: Hash ): Boolean
-        = Digest.compare( hash.bytes, vs.bytes )
+    override def `hash_=` ( vs: Hash ): Boolean =
+        Digest.compare( hash.bytes, vs.bytes )
 }
 
 

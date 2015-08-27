@@ -14,45 +14,29 @@ trait WithPlainText[A] {
     /** Executes an operation with the plain text value */
     def apply ( value: PlainText ): A
 
-    /**
-     * Constructor for accepting Byte arrays.
-     */
+    /** Constructor for accepting Byte arrays. */
     def apply ( value: Array[Byte] ): A = apply( new PlainTextBytes( value ) )
 
-    /**
-     * Constructor for accepting strings.
-     */
+    /** Constructor for accepting strings.  */
     def apply ( value: String ): A = apply( value.getBytes("UTF8") )
 
-    /**
-     * Constructor for accepting StringBuilders.
-     */
+    /** Constructor for accepting StringBuilders.  */
     def apply ( value: StringBuilder ): A = apply( value.toString )
 
-    /**
-     * Constructor for accepting an InputStream.
-     */
+    /** Constructor for accepting an InputStream. */
     def apply ( value: InputStream ): A = apply( new PlainTextResource(value) )
 
-    /**
-     * Constructor for accepting a File
-     */
+    /** Constructor for accepting a File */
     def apply ( value: File ): A = apply( new FileInputStream(value) )
 
-    /**
-     * Constructor for accepting Readers.
-     */
+    /** Constructor for accepting Readers. */
     def apply ( value: Reader ): A = apply( new PlainTextResource(value) )
 
-    /**
-     * Constructor for accepting Sources.
-     */
-    def apply ( value: Source, encoding: Codec ): A
-        = apply( new PlainTextSource(value, encoding) )
+    /** Constructor for accepting Sources.  */
+    def apply ( value: Source, encoding: Codec ): A =
+        apply( new PlainTextSource(value, encoding) )
 
-    /**
-     * Constructor for accepting Sources.
-     */
+    /** Constructor for accepting Sources. */
     def apply ( value: Source ): A = apply(value, Codec.UTF8)
 }
 
@@ -61,14 +45,10 @@ trait WithPlainText[A] {
  */
 trait PlainText {
 
-    /**
-     * Populates the digest
-     */
+    /** Populates the digest */
     protected[hasher] def fill ( digest: MutableDigest ): MutableDigest
 
-    /**
-     * Hashes an InputStream according to this algorithm.
-     */
+    /** Hashes an InputStream according to this algorithm.  */
     def hash ( digest: MutableDigest ): Hash = fill( digest ).hash
 }
 
@@ -79,14 +59,10 @@ private class PlainTextBytes (
     private val value: Array[Byte]
 ) extends PlainText {
 
-    /**
-     * Creates an instance from a string
-     */
+    /** Creates an instance from a string */
     def this ( value: String ) = this( value.getBytes("UTF8") )
 
-    /**
-     * Creates an instance from a StringBuilder
-     */
+    /** Creates an instance from a StringBuilder */
     def this ( value: StringBuilder ) = this( value.toString )
 
     /** {@inheritDoc} */
@@ -164,21 +140,15 @@ private class PlainTextResource (
     private val resource: ByteReader
 ) extends PlainText {
 
-    /**
-     * Constructor for creating a resource from an InputStream
-     */
-    def this ( stream: InputStream )
-        = this( new ByteReader.InputStreamAdapter(stream) )
+    /** Constructor for creating a resource from an InputStream */
+    def this ( stream: InputStream ) =
+        this( new ByteReader.InputStreamAdapter(stream) )
 
-    /**
-     * Constructor for creating a resource from a Reader
-     */
-    def this ( reader: Reader, encoding: Codec )
-        = this( new ByteReader.ReaderAdapter(reader, encoding) )
+    /** Constructor for creating a resource from a Reader */
+    def this ( reader: Reader, encoding: Codec ) =
+        this( new ByteReader.ReaderAdapter(reader, encoding) )
 
-    /**
-     * Constructor for creating a resource from a Reader
-     */
+    /** Constructor for creating a resource from a Reader */
     def this ( reader: Reader ) = this( reader, Codec.UTF8 )
 
     /** {@inheritDoc} */

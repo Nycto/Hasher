@@ -17,22 +17,16 @@ trait BufferedTap extends Tap {
 
     import scala.collection.mutable.ArrayBuffer
 
-    /**
-     * The digest to write to
-     */
+    /** The digest to write to */
     protected def digest: MutableDigest
 
-    /**
-     * The buffered data
-     */
+    /** The buffered data */
     private val buffer = new ArrayBuffer[Byte]
 
     /** {@inheritDoc} */
     override def name: String = digest.name
 
-    /**
-     * Flushes the buffer to the digest
-     */
+    /** Flushes the buffer to the digest */
     private def flush: Unit = {
         if ( buffer.size > 0 ) {
             val data = buffer.clone.toArray
@@ -41,9 +35,7 @@ trait BufferedTap extends Tap {
         }
     }
 
-    /**
-     * Adds a byte to the digest
-     */
+    /** Adds a byte to the digest */
     protected def addByteToDigest( byte: Byte ): Byte = {
         buffer += byte
         if ( buffer.size >= 1024 ) flush
@@ -143,9 +135,7 @@ class ReaderTap (
     /** {@inheritDoc} */
     override def reset = throw new UnsupportedOperationException
 
-    /**
-     * Converts this reader to a string
-     */
+    /** Converts this reader to a string */
     def mkString: String = {
 
         val result = new StringBuilder

@@ -22,20 +22,16 @@ class Hasher private (
     private val value: PlainText
 ) extends WithAlgo[Digest] {
 
-    /**
-     * Adds a salt from an array of bytes
-     */
-    def salt ( saltValue: Array[Byte] ): Hasher
-        = Hasher( new PlainTextSalt(value, saltValue) )
+    /** Adds a salt from an array of bytes */
+    def salt ( saltValue: Array[Byte] ): Hasher =
+        Hasher( new PlainTextSalt(value, saltValue) )
 
-    /**
-     * Adds a salt from a string
-     */
+    /** Adds a salt from a string */
     def salt ( saltValue: String ): Hasher = salt( saltValue.getBytes("UTF8") )
 
     /** {@inheritDoc} */
-    override protected def withAlgo ( algo: Algo ): Digest
-        = value.fill( algo.digest )
+    override protected def withAlgo ( algo: Algo ): Digest =
+        value.fill( algo.digest )
 }
 
 

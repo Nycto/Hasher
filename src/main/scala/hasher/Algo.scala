@@ -87,58 +87,37 @@ class Algo private[hasher] (
     private val digestBuilder: () => MutableDigest
 ) extends WithPlainText[Digest] {
 
-    /**
-     * Generates a new digest for this algorithm
-     */
+    /** Generates a new digest for this algorithm */
     def digest: MutableDigest = digestBuilder()
 
-
-    /**
-     * Returns the name of this algorithm
-     */
+    /** Returns the name of this algorithm */
     def name: String = digest.name
 
     /** {@inheritDoc} */
     override def toString = "Algo(%s)".format( name )
 
-
-    /**
-     * Generates a hash of a PlainText source
-     */
+    /** Generates a hash of a PlainText source */
     override def apply ( value: PlainText ): Digest = value.fill( digest )
 
+    /** Decorates an input stream to generate a hash as data is read */
+    def tap ( value: InputStream, codec: Codec ): InputStreamTap =
+        new InputStreamTap( digest, value )
 
-    /**
-     * Decorates an input stream to generate a hash as data is read
-     */
-    def tap ( value: InputStream, codec: Codec ): InputStreamTap
-        = new InputStreamTap( digest, value )
-
-    /**
-     * Decorates an input stream to generate a hash as data is read
-     */
+    /** Decorates an input stream to generate a hash as data is read */
     def tap ( value: InputStream ): InputStreamTap = tap(value, Codec.UTF8)
 
-    /**
-     * Decorates a Reader to generate a hash as data is read
-     */
-    def tap ( value: Reader, encoding: Codec ): ReaderTap
-        = new ReaderTap( digest, value, encoding )
+    /** Decorates a Reader to generate a hash as data is read */
+    def tap ( value: Reader, encoding: Codec ): ReaderTap =
+        new ReaderTap( digest, value, encoding )
 
-    /**
-     * Decorates a Reader to generate a hash as data is read
-     */
+    /** Decorates a Reader to generate a hash as data is read */
     def tap ( value: Reader ): ReaderTap = tap(value, Codec.UTF8)
 
-    /**
-     * Decorates a Source to generate a hash as data is read
-     */
-    def tap ( value: Source, encoding: Codec ): SourceTap
-        = new SourceTap( digest, value, encoding )
+    /** Decorates a Source to generate a hash as data is read */
+    def tap ( value: Source, encoding: Codec ): SourceTap =
+        new SourceTap( digest, value, encoding )
 
-    /**
-     * Decorates a Source to generate a hash as data is read
-     */
+    /** Decorates a Source to generate a hash as data is read */
     def tap ( value: Source ): SourceTap = tap(value, Codec.UTF8)
 }
 

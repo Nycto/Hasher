@@ -12,7 +12,8 @@ scalacOptions ++= Seq("-deprecation", "-feature")
 // Repositories in which to find dependencies
 resolvers ++= Seq(
     "Specs Repository" at "http://oss.sonatype.org/content/repositories/releases",
-    "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
+    "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/",
+    Resolver.typesafeRepo("releases")
 )
 
 publishTo := Some("Spikemark" at "https://spikemark.herokuapp.com/maven/roundeights")

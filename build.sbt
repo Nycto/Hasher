@@ -22,5 +22,6 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 // Application dependencies
 libraryDependencies ++= Seq(
     "org.mindrot" % "jbcrypt" % "0.3m" % "optional",
-    "org.specs2" %% "specs2" % "2.3.11" % "test"
+    "org.specs2" %% "specs2" % "2.3.11" % "test",
+    "com.typesafe.play" %% "play" % "2.3.9" % "test"
 )

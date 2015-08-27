@@ -1,7 +1,6 @@
 package test.roundeights.hasher
 
-import _root_.play.api.libs.iteratee.Enumerator
-import _root_.play.api.libs.iteratee.Iteratee
+import play.api.libs.iteratee.Enumerator
 import org.specs2.mutable._
 
 import com.roundeights.hasher.{Foldable, Algo}

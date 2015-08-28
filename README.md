@@ -35,7 +35,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-    "com.roundeights" %% "hasher" % "1.0.0"
+    "com.roundeights" %% "hasher" % "1.2.0"
 )
 ```
 

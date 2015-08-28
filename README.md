@@ -1,9 +1,7 @@
 Hasher [![Build Status](https://secure.travis-ci.org/Nycto/Hasher.png?branch=master)](http://travis-ci.org/Nycto/Hasher)
 ======
 
-Creating a hash should be a simple function call. But it always somehow seems
-to be more complicated than that. Hasher is a small Scala library to make
-generating hashes a breeze.
+Hasher is a small Scala library to make generating hashes a breeze.
 
 
 Supported Hashing Algorithms
@@ -30,13 +28,9 @@ To import Hasher into your project, you just need to add the following
 directives to your `build.sbt` file:
 
 ```
-resolvers ++= Seq(
-    "RoundEights" at "http://maven.spikemark.net/roundeights"
-)
+resolvers ++= Seq("RoundEights" at "http://maven.spikemark.net/roundeights")
 
-libraryDependencies ++= Seq(
-    "com.roundeights" %% "hasher" % "1.2.0"
-)
+libraryDependencies ++= Seq("com.roundeights" %% "hasher" % "1.2.0")
 ```
 
 
@@ -48,7 +42,7 @@ use it is by importing the implicit conversion methods. Once you have them
 in scope, you get a bunch of new methods attached to existing types. For each
 supported algorithm, you get:
 
-* A method to generate a hash
+* Methods to generate a hash
 * A method to compare a plain text value to an existing hash
 
 Here is a sample app showing how to use these various methods:
@@ -255,6 +249,44 @@ object Main extends App {
 ```
 
 
+Accumulating a Hash
+-------------------
+
+There will be times where you will want to generate a hash based on the data
+stored in a list. Instead of joining the content into a single string and
+passing it in all at once, you might want to use a `Foldable` instead. It allows
+you to progressively generate a hash by folding over a data structure. For
+example:
+
+```scala
+def hash( list: List[String] ): String = {
+    list.foldLeft( Algo.sha1.foldable ){ (accum, str) => accum(str) }.done.hex
+}
+```
+
+Foldables enforce ordered digest creation by disabling each instance after you
+add data. But when you add data, a new instance is returned that can be used
+to add more data. When you're done, you just need to call 'done' and you
+get a fully formed digest.
+
+Presenting an API like this allows for a few benefites:
+
+1. Your code will be more efficient as you don't need to allocate large chunks
+   of memory to, for example, join a string together
+2. It presents an externally immutable API
+3. It helps prevent race conditions by ensuring continued forward motion
+
+One trick to be aware of: You can fold over a list of futures and accumulate
+a hash from them. For example:
+
+```scala
+def hash( list: List[Future[String]] ): Future[String] = {
+    Future.fold(list)( Algo.sha1.foldable ) {
+        (accum, str) => accum(str)
+    }.maps(_.done.hex)
+}
+```
+
 Tapping into a data stream
 --------------------------
 
@@ -268,69 +300,53 @@ build a hash while you do other stuff.
 consume the new `InputStream` as you normally would. Once all the data has been
 read, you can call the `hash` method.
 
-Here is an example:
+Here are a few examples using different types of streams:
 
 ```scala
-package org.example.hasher
+// Tapping an InputStream
+import java.io.ByteArrayInputStream
 
-import com.roundeights.hasher.Algo
-import scala.language.postfixOps
+val stream = Algo.sha1.tap(
+    new ByteArrayInputStream( "Some String".getBytes )
+)
 
-object Main extends App {
+// Read everything out of the stream
+while ( stream.read() != -1 ) {}
 
-    val hashMe = "Some String"
+val hash = stream.hash
 
-    // Tapping an InputStream
-    {
+println( "InputStream Hash: " + hash )
+println( "InputStream Hash Compare: " + (stream hash= hash) )
+```
 
-        import java.io.ByteArrayInputStream
+```scala
+// Tapping a Reader
+import java.io.StringReader
 
-        val stream = Algo.sha1.tap(
-            new ByteArrayInputStream( hashMe.getBytes )
-        )
+val reader = Algo.sha1.tap( new StringReader( "Some String" ) )
 
-        // Read everything out of the stream
-        while ( stream.read() != -1 ) {}
+// Read everything out of the reader
+while ( reader.read() != -1 ) {}
 
-        val hash = stream.hash
+val hash = reader.hash
 
-        println( "InputStream Hash: " + hash )
-        println( "InputStream Hash Compare: " + (stream hash= hash) )
-    }
+println( "Reader Hash: " + hash )
+println( "Reader Hash Compare: " + (reader hash= hash) )
+```
 
-    // Tapping a Reader
-    {
+```scala
+// Tapping a source
+import scala.io.Source
 
-        import java.io.StringReader
+val source = Algo.sha1.tap( Source.fromString( hashMe ) )
 
-        val reader = Algo.sha1.tap( new StringReader( hashMe ) )
+// Read everything out of the source
+source.mkString
 
-        // Read everything out of the reader
-        while ( reader.read() != -1 ) {}
+val hash = source.hash
 
-        val hash = reader.hash
-
-        println( "Reader Hash: " + hash )
-        println( "Reader Hash Compare: " + (reader hash= hash) )
-    }
-
-    // Tapping a source
-    {
-
-        import scala.io.Source
-
-        val source = Algo.sha1.tap( Source.fromString( hashMe ) )
-
-        // Read everything out of the source
-        source.mkString
-
-        val hash = source.hash
-
-        println( "Source Hash: " + hash )
-        println( "Source Hash Compare: " + (source hash= hash) )
-    }
-
-}
+println( "Source Hash: " + hash )
+println( "Source Hash Compare: " + (source hash= hash) )
 ```
 
 
@@ -355,13 +371,9 @@ dependency of your project. If you are using SBT (v0.10), just add these lines
 to your `build.sbt` configuration:
 
 ```
-resolvers ++= Seq(
-    "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
-)
+resolvers ++= Seq("jBCrypt Repository" at "http://repo1.maven.org/maven2/org/")
 
-libraryDependencies ++= Seq(
-    "org.mindrot" % "jbcrypt" % "0.3m"
-)
+libraryDependencies ++= Seq("org.mindrot" % "jbcrypt" % "0.3m")
 ```
 
 

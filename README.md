@@ -252,10 +252,10 @@ object Main extends App {
 Accumulating a Hash
 -------------------
 
-There will be times where you will want to generate a hash based on the data
-stored in a list. Instead of joining the content into a single string and
-passing it in all at once, you might want to use a `Foldable` instead. It allows
-you to progressively generate a hash by folding over a data structure. For
+There will be times when you will want to generate a hash based on the data
+stored in a traversable object. Instead of joining the content into a giant
+string and passing it in all at once, you might want to use a `Foldable`
+instead. It allows you to progressively generate a hash using a fold. For
 example:
 
 ```scala
@@ -266,18 +266,18 @@ def hash( list: List[String] ): String = {
 
 Foldables enforce ordered digest creation by disabling each instance after you
 add data. But when you add data, a new instance is returned that can be used
-to add more data. When you're done, you just need to call 'done' and you
-get a fully formed digest.
+to add more data. When everything has been added, you just need to call `done`
+and you get a fully formed digest.
 
-Presenting an API like this allows for a few benefites:
+Presenting an API like this provides a few benefits:
 
 1. Your code will be more efficient as you don't need to allocate large chunks
    of memory to, for example, join a string together
 2. It presents an externally immutable API
 3. It helps prevent race conditions by ensuring continued forward motion
 
-One trick to be aware of: You can fold over a list of futures and accumulate
-a hash from them. For example:
+One trick that might come in handy is asynchronously folding over a list of
+futures. For example:
 
 ```scala
 def hash( list: List[Future[String]] ): Future[String] = {
@@ -319,6 +319,8 @@ println( "InputStream Hash: " + hash )
 println( "InputStream Hash Compare: " + (stream hash= hash) )
 ```
 
+- - -
+
 ```scala
 // Tapping a Reader
 import java.io.StringReader
@@ -333,6 +335,8 @@ val hash = reader.hash
 println( "Reader Hash: " + hash )
 println( "Reader Hash Compare: " + (reader hash= hash) )
 ```
+
+- - -
 
 ```scala
 // Tapping a source

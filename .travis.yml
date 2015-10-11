@@ -8,3 +8,4 @@ jdk:
 cache:
     directories:
         - '$HOME/.ivy2/cache'
+sudo: false

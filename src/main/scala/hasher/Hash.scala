@@ -27,8 +27,17 @@ case class Hash ( val bytes: Array[Byte] ) extends Equals {
     def this ( hex: String ) =
         this( hex.grouped(2).map( Integer.parseInt(_, 16).byteValue ).toArray )
 
+    private[this] val HexChars = "0123456789abcdef".toCharArray
+
     /** Converts this hash to a hex encoded string */
-    lazy val hex: String = bytes.map( "%02x".format(_) ).mkString("")
+    lazy val hex: String = {
+      val buffer = new StringBuilder
+      bytes.foreach { byte =>
+        buffer.append(HexChars((byte & 0xF0) >> 4))
+        buffer.append(HexChars(byte & 0x0F))
+      }
+      buffer.toString
+    }
 
     /** {@inheritDoc} */
     override def toString: String = hex

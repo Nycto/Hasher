@@ -1,6 +1,7 @@
 package com.roundeights.hasher
 
 import scala.language.implicitConversions
+import java.security._
 
 /**
  * Companion
@@ -267,6 +268,28 @@ private class Pbkdf2Digest (
     /** {@inheritDoc} */
     override def `hash_=` ( vs: Hash ): Boolean =
         Digest.compare( hash.bytes, vs.bytes )
+}
+
+/**
+ * A Signature based digest
+ */
+private class SignatureDigest(
+    override val name: String,
+    init: (Signature) => Unit
+) extends MutableDigest {
+
+    /** The signatures to collect data into */
+    private val dsa = Signature.getInstance(name)
+    init(dsa)
+
+    override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
+        dsa.update(bytes)
+        this
+    }
+
+    override def hash: Hash = Hash(dsa.sign)
+
+    override def `hash_=` ( vs: Hash ): Boolean = dsa.verify(vs.bytes)
 }
 
 

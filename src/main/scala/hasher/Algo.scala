@@ -3,6 +3,7 @@ package com.roundeights.hasher
 import java.io.InputStream
 import java.io.Reader
 import scala.io.{Source, Codec}
+import java.security._
 
 
 /** A helper class for performing some operation with various algorithms */
@@ -67,6 +68,34 @@ trait WithAlgo[A] {
     /** Generates a SHA1 based PBKDF2 hash */
     def pbkdf2 ( salt: String, iterations: Int, keyLength: Int ): A
         = pbkdf2( salt.getBytes("UTF8"), iterations, keyLength )
+
+    /** A fluent interface for generate signatures. */
+    class SignatureBuilder(private val init: (Signature) => Unit) {
+
+        /** Generates a SHA1withDSA signature */
+        def sha1WithDsa = withAlgo(new Algo(() => new SignatureDigest("SHA1withDSA", init)))
+
+        /** Generates a SHA1withECDSA signature */
+        def sha1WithEcdsa = withAlgo(new Algo(() => new SignatureDigest("SHA1withECDSA", init)))
+
+        /** Generates a SHA1withRSA signature */
+        def sha1WithRsa = withAlgo(new Algo(() => new SignatureDigest("SHA1withRSA", init)))
+
+        /** Generates a SHA256withRSA signature */
+        def sha256WithRsa = withAlgo(new Algo(() => new SignatureDigest("SHA256withRSA", init)))
+    }
+
+    /** Generates signatures. */
+    def sign(key: PrivateKey): SignatureBuilder = new SignatureBuilder(_.initSign(key))
+
+    /** Generates signatures. */
+    def sign(pair: KeyPair): SignatureBuilder = new SignatureBuilder(_.initSign(pair.getPrivate))
+
+    /** Verify signatures. */
+    def viery(key: PublicKey): SignatureBuilder = new SignatureBuilder(_.initVerify(key))
+
+    /** Verify signatures. */
+    def verify(pair: KeyPair): SignatureBuilder = new SignatureBuilder(_.initVerify(pair.getPublic))
 }
 
 

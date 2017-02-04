@@ -19,9 +19,40 @@ resolvers ++= Seq(
     "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 )
 
-publishTo := Some("Spikemark" at "https://spikemark.herokuapp.com/maven/roundeights")
+publishMavenStyle := true
 
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
+publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+    else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+pomExtra := (
+    <url>https://github.com/Nycto/Hasher</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>git@github.com:Nycto/Hasher.git</url>
+        <connection>scm:git:git@github.com:Nycto/Hasher.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>Nycto</id>
+            <name>James Frasca</name>
+            <url>http://roundeigths.com</url>
+        </developer>
+    </developers>)
 
 // Application dependencies
 libraryDependencies ++= Seq(

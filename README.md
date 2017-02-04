@@ -28,8 +28,6 @@ To import Hasher into your project, you just need to add the following
 directives to your `build.sbt` file:
 
 ```
-resolvers ++= Seq("RoundEights" at "http://maven.spikemark.net/roundeights")
-
 libraryDependencies ++= Seq("com.roundeights" %% "hasher" % "1.2.0")
 ```
 

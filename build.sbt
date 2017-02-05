@@ -50,7 +50,7 @@ pomExtra := (
         <developer>
             <id>Nycto</id>
             <name>James Frasca</name>
-            <url>http://roundeigths.com</url>
+            <url>http://roundeights.com</url>
         </developer>
     </developers>)
 

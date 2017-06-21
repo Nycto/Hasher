@@ -3,7 +3,7 @@ package test.roundeights.hasher
 import org.specs2.mutable._
 
 import com.roundeights.hasher.{Algo, Hasher}
-import scala.io.Source
+import scala.io.{Codec, Source}
 
 class TapTest extends Specification {
 
@@ -11,7 +11,7 @@ class TapTest extends Specification {
         "Using " + algo + ", the Tap.hash method" in {
             "Hash a Stream" in {
                 val tap = algo.tap( data.stream )
-                val string = Source.fromInputStream(tap).mkString
+                val string = Source.fromInputStream(tap)(Codec.UTF8).mkString
                 string must_== data.str
                 tap.hash.hex must_== hash
             }
@@ -34,7 +34,7 @@ class TapTest extends Specification {
         "Using " + algo + ", the Tap.hash= method" in {
             "match a Stream" in {
                 val tap = algo.tap( data.stream )
-                val string = Source.fromInputStream(tap).mkString
+                val string = Source.fromInputStream(tap)(Codec.UTF8).mkString
                 string must_== data.str
                 ( tap hash= hash ) must_== true
             }
@@ -59,7 +59,7 @@ class TapTest extends Specification {
         "Using BCrypt, the Tap.hash method" in {
             "Hash a Stream" in {
                 val tap = Algo.bcrypt.tap( data.stream )
-                val string = Source.fromInputStream(tap).mkString
+                val string = Source.fromInputStream(tap)(Codec.UTF8).mkString
                 string must_== data.str
                 tap.hash.hex must beMatching("^[a-zA-Z0-9]{120}$")
             }

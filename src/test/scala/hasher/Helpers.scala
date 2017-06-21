@@ -7,7 +7,7 @@ import com.roundeights.hasher.{Algo, Hasher}
 import java.io.ByteArrayInputStream
 import java.io.StringReader
 
-import scala.io.Source
+import scala.io.{Codec, Source}
 
 /**
  * Basic test data
@@ -184,11 +184,11 @@ case class TestData (
     val bcrypted12: String
 ) {
 
-    def str: String = new String( bytes )
+    def str: String = new String(bytes, "UTF8")
     def builder: StringBuilder = new StringBuilder(str)
     def stream = new ByteArrayInputStream( bytes )
     def reader = new StringReader(str)
-    def source = Source.fromBytes( bytes )
+    def source = Source.fromBytes( bytes )(Codec.UTF8)
 
     def length = str.length
 

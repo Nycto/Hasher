@@ -208,7 +208,7 @@ private class BCryptDigest (
 
     /** {@inheritDoc} */
     override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
-        value.append( new String(bytes, 0, length) )
+        value.append( new String(bytes, 0, length, "UTF8") )
         this
     }
 
@@ -251,7 +251,7 @@ private class Pbkdf2Digest (
 
     /** {@inheritDoc} */
     override def add ( bytes: Array[Byte], length: Int ): MutableDigest = {
-        value.append( new String(bytes, 0, length) )
+        value.append( new String(bytes, 0, length, "UTF8") )
         this
     }
 

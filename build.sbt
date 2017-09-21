@@ -56,6 +56,6 @@ pomExtra := (
 
 // Application dependencies
 libraryDependencies ++= Seq(
-    "org.mindrot" % "jbcrypt" % "0.3m" % "optional",
+    "org.mindrot" % "jbcrypt" % "0.4" % "optional",
     "org.specs2" %% "specs2" % "2.4.+" % "test"
 )

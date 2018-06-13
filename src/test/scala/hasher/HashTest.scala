@@ -35,6 +35,10 @@ class HashTest extends Specification {
             Hash(md5ed).equals( Hash(md5ed).bytes ) must beTrue
             Hash(md5ed).equals( Hash("ABC123").bytes ) must beFalse
         }
+
+        "initialize from a hex string of even length" in {
+            Hash("98f6bcd4621d373cade4e832627b4f6").bytes mustEqual Hash(md5ed).bytes
+        }
     }
 
 }

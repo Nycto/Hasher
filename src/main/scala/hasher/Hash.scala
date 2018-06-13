@@ -9,7 +9,12 @@ import scala.language.implicitConversions
 object Hash {
 
     /** Constructor...  */
-    def apply ( string: String ) = new Hash(string)
+    def apply ( string: String ): Hash = {
+        // ensure even number of digits
+        val hex = if (string.length % 2 != 0) "0" + string else string
+
+        new Hash(hex.grouped(2).map(Integer.parseInt(_, 16).byteValue).toArray)
+    }
 
     /** Implicitly converts from a hash to a string */
     implicit def hashToString ( from: Hash ): String = from.hex
@@ -26,10 +31,6 @@ object Hash {
  * Represents a hash
  */
 case class Hash ( val bytes: Array[Byte] ) extends Equals {
-
-    /** Constructs a hash from a hex string */
-    def this ( hex: String ) =
-        this( hex.grouped(2).map( Integer.parseInt(_, 16).byteValue ).toArray )
 
     /** Converts this hash to a hex encoded string */
     lazy val hex: String = {

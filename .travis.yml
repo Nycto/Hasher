@@ -1,11 +1,10 @@
 sudo: false
 language: scala
 scala:
-    - 2.10.6
-    - 2.11.8
-    - 2.12.1
+    - 2.11.12
+    - 2.12.8
+    - 2.13.0
 env:
-    - JDK=oraclejdk7
     - JDK=oraclejdk8
 cache:
     directories:
@@ -16,5 +15,5 @@ before_script:
 matrix:
     # scala 2.12 requires java 8
     exclude:
-        - scala: 2.12.1
-          env: JDK=oraclejdk7
+        - scala: 2.12.8
+          env: JDK=oraclejdk8

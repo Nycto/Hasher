@@ -1,8 +1,9 @@
 package test.roundeights.hasher
 
 import org.specs2.mutable._
-
 import com.roundeights.hasher.{Algo, Hasher}
+
+import scala.language.postfixOps
 
 class AlgoTest extends Specification {
 
@@ -41,38 +42,38 @@ class AlgoTest extends Specification {
 
         "Using " + algo + ", the compare methods on the Algo object" in {
             "match with a String" in {
-                (algo( data.str ) hash= hash)
+                (algo( data.str ) `hash_=` hash)
                     .aka( "Comparing a String to " + hash ) must beTrue
             }
             "match with a StringBuilder" in {
-                (algo( data.builder ) hash= hash)
+                (algo( data.builder ) `hash_=` hash)
                     .aka( "Comparing a StringBuilder to " + hash ) must beTrue
             }
             "match with an Array of Bytes" in {
-                (algo( data.bytes ) hash= hash)
+                (algo( data.bytes ) `hash_=` hash)
                     .aka( "Comparing a Byte Array to " + hash ) must beTrue
             }
             "match with a Stream" in {
-                (algo( data.stream ) hash= hash )
+                (algo( data.stream ) `hash_=` hash )
                     .aka( "Comparing a Stream to " + hash ) must beTrue
             }
             "match with a Reader" in {
-                (algo( data.reader ) hash= hash )
+                (algo( data.reader ) `hash_=` hash )
                     .aka( "Comparing a Reader to " + hash ) must beTrue
             }
             "match with a Source" in {
-                (algo( data.source ) hash= hash )
+                (algo( data.source ) `hash_=` hash )
                     .aka( "Comparing a Source to " + hash ) must beTrue
             }
         }
 
         "Comparing multiple times with " + algo + " should still match" in {
             "match with a String" in {
-                (algo( data.str ) hash= hash )
+                (algo( data.str ) `hash_=` hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
-                (algo( data.str ) hash= hash )
+                (algo( data.str ) `hash_=` hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
-                (algo( data.str ) hash= hash )
+                (algo( data.str ) `hash_=` hash )
                     .aka( "Comparing a String to " + hash ) must beTrue
             }
         }
@@ -80,7 +81,7 @@ class AlgoTest extends Specification {
 
     // BCrypt produces salted hashes, so we can only assert against the format
     // of the resulting hashes
-    def testBCrypt( data: TestData ) {
+    def testBCrypt( data: TestData ) = {
         "Using BCrypt, the apply methods on the Algo object" in {
             "Hash a String" in {
                 Algo.bcrypt()(data.str).hex must

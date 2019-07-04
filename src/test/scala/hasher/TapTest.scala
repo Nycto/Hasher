@@ -1,9 +1,10 @@
 package test.roundeights.hasher
 
 import org.specs2.mutable._
-
 import com.roundeights.hasher.{Algo, Hasher}
+
 import scala.io.{Codec, Source}
+import scala.language.postfixOps
 
 class TapTest extends Specification {
 
@@ -36,26 +37,26 @@ class TapTest extends Specification {
                 val tap = algo.tap( data.stream )
                 val string = Source.fromInputStream(tap)(Codec.UTF8).mkString
                 string must_== data.str
-                ( tap hash= hash ) must_== true
+                ( tap `hash_=` hash ) must_== true
             }
             "match a Reader" in {
                 val tap = algo.tap( data.reader )
                 val string = tap.mkString
                 string must_== data.str
-                ( tap hash= hash ) must_== true
+                ( tap `hash_=` hash ) must_== true
             }
             "match a Source" in {
                 val tap = algo.tap( data.source )
                 val string = tap.mkString
                 string must_== data.str
-                ( tap hash= hash ) must_== true
+                ( tap `hash_=` hash ) must_== true
             }
         }
     }
 
     // BCrypt produces salted hashes, so we can only assert against the format
     // of the resulting hashes
-    def testBCrypt( data: TestData ) {
+    def testBCrypt( data: TestData ) = {
         "Using BCrypt, the Tap.hash method" in {
             "Hash a Stream" in {
                 val tap = Algo.bcrypt.tap( data.stream )

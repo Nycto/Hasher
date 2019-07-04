@@ -1,11 +1,10 @@
 package test.roundeights.hasher
 
-import org.specs2.specification.Example
-
 import com.roundeights.hasher.{Algo, Hasher}
-
 import java.io.ByteArrayInputStream
 import java.io.StringReader
+
+import org.specs2.specification.core.Fragment
 
 import scala.io.{Codec, Source}
 
@@ -192,7 +191,7 @@ case class TestData (
 
     def length = str.length
 
-    def runAgainstUnsalted (run: (Algo, TestData, String) => Unit) = {
+    def runAgainstUnsalted (run: (Algo, TestData, String) => Fragment) = {
         run( Algo.md5, this, md5ed )
         run( Algo.sha1, this, sha1ed )
         run( Algo.sha256, this, sha256ed )
@@ -206,7 +205,7 @@ case class TestData (
         pbkdf2ed.map( run(Algo.pbkdf2("secret", 1000, 128), this, _) )
     }
 
-    def runAgainstAll (run: (Algo, TestData, String) => Unit) = {
+    def runAgainstAll (run: (Algo, TestData, String) => Fragment) = {
         runAgainstUnsalted( run )
         run( Algo.bcrypt, this, bcrypted )
         run( Algo.bcrypt(12), this, bcrypted12 )

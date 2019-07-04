@@ -4,9 +4,9 @@ organization := "com.roundeights"
 
 version := "1.2.1"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.8"
 
-crossScalaVersions := Seq("2.11.8", "2.10.6")
+crossScalaVersions := Seq("2.13.0", "2.12.8", "2.11.12")
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions ++= Seq("-deprecation", "-feature")
@@ -57,5 +57,5 @@ pomExtra := (
 // Application dependencies
 libraryDependencies ++= Seq(
     "org.mindrot" % "jbcrypt" % "0.4" % "optional",
-    "org.specs2" %% "specs2" % "2.4.+" % "test"
+    "org.specs2" %% "specs2-core" % "4.6.0" % "test"
 )
